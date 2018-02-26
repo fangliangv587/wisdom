@@ -1,0 +1,23 @@
+ext {
+    android_support_version = '26.1.0'
+
+    android = [
+            compileSdkVersion: 26,
+            applicationId    : "com.xz.cenco.wisdom",
+            minSdkVersion    : 19,
+            targetSdkVersion : 26,
+            versionCode      : 1,
+            versionName      : "1.0"
+    ]
+
+    dependencies = [
+            //android.support
+            "appcompat-v7"        : "com.android.support:appcompat-v7:${android_support_version}",
+            "recyclerview-v7"     : "com.android.support:recyclerview-v7:${android_support_version}",
+            "xcolorpicker"        : "com.github.wuzhendev:android-xcolorpicker:1.0.0",
+            "constraint-layout"   : "com.android.support.constraint:constraint-layout:1.0.2",
+            "greendao"            : "org.greenrobot:greendao:3.2.2",
+            "lib-common"          : "com.github.fangliangv587:lib-common:0.0.2",
+            "marquee"             : "com.dalong:marqueeview:1.0.1",
+    ]
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.xz.cenco.wisdom.MainActivity">
+
+    <Button
+        style="@style/normalViewStyle"
+        android:text="设 置"
+        android:onClick="settingClick"
+        />
+    <Button
+        style="@style/normalViewStyle"
+        android:text="内 容"
+        android:onClick="contentClick"
+        />
+
+    <Button
+        style="@style/normalViewStyle"
+        android:text="展 示"
+        android:onClick="showClick"
+        />
+
+
+
+
+</LinearLayout>

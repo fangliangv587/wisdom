@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <EditText
+        style="@style/FullViewStyle"
+        android:id="@+id/typeName"/>
+    <Button
+        style="@style/normalViewStyle"
+        android:onClick="addClick"
+        android:id="@+id/addBtn"
+        android:text="增 加"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycleView"></ListView>
+
+</LinearLayout>
