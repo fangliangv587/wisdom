@@ -1,9 +1,18 @@
 package com.xz.cenco.wisdom;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
+import android.media.Image;
+import android.media.ImageReader;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
+import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,11 +26,17 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cenco.lib.common.BitmapUtil;
+import com.cenco.lib.common.LogUtil;
+import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.TimerHelper;
 import com.xz.cenco.wisdom.entity.Wisdom;
 import com.xz.cenco.wisdom.entity.WisdomDao;
 import com.xz.cenco.wisdom.util.SPUtil;
+import com.xz.cenco.wisdom.util.Util;
 
+import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Random;
 
@@ -29,9 +44,17 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class FxService2 extends Service implements TimerHelper.TimerListener {
 
+    private static final int REQUEST_MEDIA_PROJECTION = 1;
     private static final String TAG = "FxService";
     TextView mFloatTv;
     TimerHelper timerHelper;
+
+    private  boolean test = false;
+
+    private MediaProjection mMediaProjection;
+    private ImageReader mImageReader = null;
+    private VirtualDisplay mVirtualDisplay = null;
+
     @Override
     public void onCreate()
     {
@@ -41,6 +64,13 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         createFloatView();
         setFloatContent();
         initTimer();
+        initCapture();
+    }
+
+    private void initCapture() {
+        int screenHeight = ScreenUtil.getScreenHeight(this);
+        int screenWidth = ScreenUtil.getScreenWidth(this);
+        mImageReader = ImageReader.newInstance(screenWidth, screenHeight, 0x1, 2); //ImageFormat.RGB_565
     }
 
     private void setFloatContent() {
@@ -100,9 +130,14 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     private void resetFloatView() {
         mFloatTv.setAlpha(SPUtil.getAlpha(this));
         mFloatTv.setTextSize(SPUtil.getSize(this));
-        mFloatTv.setTextColor(SPUtil.getColor(this));
+//        mFloatTv.setTextColor(SPUtil.getColor(this));
         if (SPUtil.hasBgColor(this)){
-            mFloatTv.setBackgroundColor(SPUtil.getBgColor(this));
+            int bgColor = SPUtil.getBgColor(this);
+            int red = Color.red(bgColor);
+            int green = Color.green(bgColor);
+            int blue = Color.blue(bgColor);
+            LogUtil.i("背景色：red:"+red+",green:"+green+",blue:"+blue);
+            mFloatTv.setBackgroundColor(bgColor);
         }else {
             mFloatTv.setBackgroundColor(Color.TRANSPARENT);
         }
@@ -136,6 +171,9 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     @Override
     public void onTimerRunning(int current, int total) {
 
+        if (current != 0 && current%3==0 ){
+            capture();
+        }
     }
 
     @Override
@@ -144,5 +182,63 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         int interval = SPUtil.getInterval(this);
         timerHelper.setTotalSecond(interval);
         timerHelper.start();
+    }
+
+
+    private void capture(){
+        LogUtil.i("capture");
+        if (mMediaProjection ==null){
+            mMediaProjection = App.mediaProjectionManager.getMediaProjection(App.captureResultCode, App.captureIntent);
+        }
+        int screenHeight = ScreenUtil.getScreenHeight(this);
+        int screenWidth = ScreenUtil.getScreenWidth(this);
+        mVirtualDisplay = mMediaProjection.createVirtualDisplay("screen-mirror",
+                screenWidth, screenHeight, App.screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                mImageReader.getSurface(), null, null);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Image image = mImageReader.acquireLatestImage();
+        int width = image.getWidth();
+        int height = image.getHeight();
+        final Image.Plane[] planes = image.getPlanes();
+        final ByteBuffer buffer = planes[0].getBuffer();
+        int pixelStride = planes[0].getPixelStride();
+        int rowStride = planes[0].getRowStride();
+        int rowPadding = rowStride - pixelStride * width;
+        Bitmap bitmap = Bitmap.createBitmap(width+rowPadding/pixelStride, height, Bitmap.Config.ARGB_8888);
+        bitmap.copyPixelsFromBuffer(buffer);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0,width, height);
+        image.close();
+
+        int statusBarHeight = Util.getStatusBarHeight(this);
+        LogUtil.i("状态栏高度:"+statusBarHeight);
+        int positionX = SPUtil.getPositionX(this);
+        int positionY = SPUtil.getPositionY(this) + statusBarHeight +10;
+        int color = bitmap.getPixel(positionX, positionY);
+
+        int inverseColor = Util.getInverseColor(color);
+        mFloatTv.setTextColor(inverseColor);
+
+//        int red = Color.red(color);
+//        int green = Color.green(color);
+//        int blue = Color.blue(color);
+//        LogUtil.w("取色：red:"+red+",green:"+green+",blue:"+blue);
+//
+//
+//
+//        String path = Environment.getExternalStorageDirectory()+ File.separator+"wisdom/capture/screen.jpg";
+//        File file = new File(path);
+//        if(!file.getParentFile().exists()){
+//            file.getParentFile().mkdirs();
+//        }
+//        BitmapUtil.saveBitmap(bitmap,path);
+//        LogUtil.i("save");
+//        test = true;
+
     }
 }

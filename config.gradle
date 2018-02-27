@@ -4,7 +4,7 @@ ext {
     android = [
             compileSdkVersion: 26,
             applicationId    : "com.xz.cenco.wisdom",
-            minSdkVersion    : 19,
+            minSdkVersion    : 21,
             targetSdkVersion : 26,
             versionCode      : 1,
             versionName      : "1.0"
@@ -17,7 +17,6 @@ ext {
             "xcolorpicker"        : "com.github.wuzhendev:android-xcolorpicker:1.0.0",
             "constraint-layout"   : "com.android.support.constraint:constraint-layout:1.0.2",
             "greendao"            : "org.greenrobot:greendao:3.2.2",
-            "lib-common"          : "com.github.fangliangv587:lib-common:0.0.2",
-            "marquee"             : "com.dalong:marqueeview:1.0.1",
+            "lib-common"          : "com.github.fangliangv587:lib-common:0.0.7",
     ]
 }
