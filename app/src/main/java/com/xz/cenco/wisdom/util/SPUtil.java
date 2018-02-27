@@ -27,7 +27,7 @@ public class SPUtil {
     private static final String interval = "internval";
     private static final String oritation = "oritation";
 
-    private static final int defaultMode = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
+    private static final int defaultMode = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(spname, 0);

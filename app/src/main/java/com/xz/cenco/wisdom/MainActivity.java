@@ -1,9 +1,13 @@
 package com.xz.cenco.wisdom;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
 //        TextView tv = findViewById(R.id.float_id);
 //        tv.setSelected(true);
+
+
     }
 
     private void protect() {

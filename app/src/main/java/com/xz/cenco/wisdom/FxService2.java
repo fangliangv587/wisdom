@@ -92,13 +92,16 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         return null;
     }
 
+
+
     private void createFloatView()
     {
         LayoutParams wmParams = new LayoutParams();
         //获取的是WindowManagerImpl.CompatModeWrapper
         WindowManager mWindowManager = (WindowManager)getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         //设置window type
-        wmParams.type = LayoutParams.TYPE_PHONE;
+//        wmParams.type = LayoutParams.TYPE_PHONE;
+        wmParams.type = LayoutParams.TYPE_SYSTEM_OVERLAY;
         //设置图片格式，效果为背景透明
         wmParams.format = PixelFormat.RGBA_8888;
         //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
@@ -109,6 +112,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         // 以屏幕左上角为原点，设置x、y初始值，相对于gravity
         wmParams.x = SPUtil.getPositionX(this);
         wmParams.y = SPUtil.getPositionY(this);
+        wmParams.y -= Util.getStatusBarHeight(this);
 
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
@@ -117,7 +121,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         LayoutInflater inflater = LayoutInflater.from(getApplication());  
         //获取浮动窗口视图所在布局  
         LinearLayout mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout2, null);
-
+//        mFloatLayout.setBackgroundColor(Color.argb(128,255,0,0));
         //添加mFloatLayout  
         mWindowManager.addView(mFloatLayout, wmParams);  
         //浮动窗口按钮  
@@ -223,7 +227,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         int statusBarHeight = Util.getStatusBarHeight(this);
         LogUtil.i("状态栏高度:"+statusBarHeight);
         int positionX = SPUtil.getPositionX(this);
-        int positionY = SPUtil.getPositionY(this) + statusBarHeight +10;
+        int positionY = SPUtil.getPositionY(this)  +10;
         int color = bitmap.getPixel(positionX, positionY);
         bitmap.recycle();
         int inverseColor = Util.getInverseColor(color);
