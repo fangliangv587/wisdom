@@ -40,7 +40,6 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Random;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class FxService2 extends Service implements TimerHelper.TimerListener {
 
@@ -145,10 +144,17 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     }
       
     @Override  
-    public void onDestroy()   
-    {  
-        // TODO Auto-generated method stub  
-        super.onDestroy();  
+    public void onDestroy(){
+        // TODO Auto-generated method stub
+        if (mVirtualDisplay != null){
+            mVirtualDisplay.release();
+            mVirtualDisplay = null;
+        }
+        if (mMediaProjection != null) {
+            mMediaProjection.stop();
+            mMediaProjection = null;
+        }
+        super.onDestroy();
 
     }
 
@@ -212,7 +218,6 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         int rowPadding = rowStride - pixelStride * width;
         Bitmap bitmap = Bitmap.createBitmap(width+rowPadding/pixelStride, height, Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(buffer);
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0,width, height);
         image.close();
 
         int statusBarHeight = Util.getStatusBarHeight(this);
@@ -220,25 +225,12 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         int positionX = SPUtil.getPositionX(this);
         int positionY = SPUtil.getPositionY(this) + statusBarHeight +10;
         int color = bitmap.getPixel(positionX, positionY);
-
+        bitmap.recycle();
         int inverseColor = Util.getInverseColor(color);
         mFloatTv.setTextColor(inverseColor);
 
-//        int red = Color.red(color);
-//        int green = Color.green(color);
-//        int blue = Color.blue(color);
-//        LogUtil.w("取色：red:"+red+",green:"+green+",blue:"+blue);
-//
-//
-//
-//        String path = Environment.getExternalStorageDirectory()+ File.separator+"wisdom/capture/screen.jpg";
-//        File file = new File(path);
-//        if(!file.getParentFile().exists()){
-//            file.getParentFile().mkdirs();
-//        }
-//        BitmapUtil.saveBitmap(bitmap,path);
-//        LogUtil.i("save");
-//        test = true;
 
     }
+
+
 }

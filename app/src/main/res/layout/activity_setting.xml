@@ -27,6 +27,10 @@
     <CheckBox
         style="@style/normalViewStyle"
         android:text="响应式"/>
+    <CheckBox
+        style="@style/normalViewStyle"
+        android:id="@+id/textDirection"
+        android:text="水平展示"/>
 
     <TextView
         style="@style/normalViewStyle"

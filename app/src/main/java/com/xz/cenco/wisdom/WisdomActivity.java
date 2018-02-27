@@ -1,5 +1,6 @@
 package com.xz.cenco.wisdom;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by Administrator on 2018/2/25.
  */
 
-public class WisdomActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class WisdomActivity extends BaseActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     WisdomDao wisdomDao;
     EditText typeNameEt;
@@ -68,6 +69,7 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
         ListView listView = findViewById(R.id.recycleView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
 
         query();
 
@@ -91,5 +93,25 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        final Dialog dialog = new Dialog(this);
+        Button button = new Button(this);
+        button.setText("删  除");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Wisdom wisdom = wisdoms.get(position);
+                wisdomDao.delete(wisdom);
+                dialog.dismiss();
+                query();
+            }
+        });
+        dialog.setContentView(button);
+        dialog.show();
+
+        return true;
     }
 }

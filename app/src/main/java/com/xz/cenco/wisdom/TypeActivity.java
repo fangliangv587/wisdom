@@ -1,6 +1,7 @@
 package com.xz.cenco.wisdom;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.cenco.lib.common.ToastUtil;
+import com.xz.cenco.wisdom.entity.Wisdom;
+import com.xz.cenco.wisdom.entity.WisdomDao;
 import com.xz.cenco.wisdom.entity.WisdomType;
 import com.xz.cenco.wisdom.entity.WisdomTypeDao;
 
@@ -26,7 +30,7 @@ import java.util.List;
  * Created by Administrator on 2018/2/25.
  */
 
-public class ContentTypeActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class TypeActivity extends BaseActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     WisdomTypeDao typeDao;
     EditText typeNameEt;
@@ -64,6 +68,7 @@ public class ContentTypeActivity extends BaseActivity implements AdapterView.OnI
         ListView listView = findViewById(R.id.recycleView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
 
         query();
 
@@ -91,5 +96,30 @@ public class ContentTypeActivity extends BaseActivity implements AdapterView.OnI
         intent.putExtra("typeName",wisdomType.getName());
         intent.putExtra("typeId",wisdomType.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        final Dialog dialog = new Dialog(this);
+        Button button = new Button(this);
+        button.setText("删  除");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WisdomType wisdomType = wisdomTypes.get(position);
+                typeDao.delete(wisdomType);
+
+                WisdomDao wisdomDao = getApp().getDaoSession().getWisdomDao();
+                List<Wisdom> list = wisdomDao.queryBuilder().where(WisdomDao.Properties.Type.eq(wisdomType.getId())).list();
+                for (Wisdom w : list){
+                    wisdomDao.delete(w);
+                }
+                dialog.dismiss();
+                query();
+            }
+        });
+        dialog.setContentView(button);
+        dialog.show();
+        return true;
     }
 }

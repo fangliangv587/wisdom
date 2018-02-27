@@ -6,14 +6,9 @@ import android.content.Intent;
 import android.media.projection.MediaProjectionManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.webkit.WebHistoryItem;
-import android.widget.TextView;
 
-import com.cenco.lib.common.LogUtil;
 import com.cenco.lib.common.ScreenUtil;
-import com.xz.cenco.wisdom.util.Util;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void contentClick(View view){
-        Intent intent = new Intent(this, ContentTypeActivity.class);
+        Intent intent = new Intent(this, TypeActivity.class);
         startActivity(intent);
     }
     public void settingClick(View view){

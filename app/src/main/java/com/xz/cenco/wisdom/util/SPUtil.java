@@ -25,11 +25,23 @@ public class SPUtil {
     private static final String positionX = "positionX";
     private static final String positionY = "positionY";
     private static final String interval = "internval";
+    private static final String oritation = "oritation";
 
     private static final int defaultMode = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE;
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(spname, 0);
+    }
+
+    public static void setOritation(Context context,boolean alphaValue){
+        SharedPreferences sp = getSharedPreferences(context);
+        sp.edit().putBoolean(oritation,alphaValue).commit();
+    }
+
+    public static boolean getOritation(Context context){
+        SharedPreferences sp = getSharedPreferences(context);
+        boolean alphaValue = sp.getBoolean(oritation,true);
+        return alphaValue;
     }
 
     public static void setAlpha(Context context,float alphaValue){

@@ -26,7 +26,7 @@
 
         <service android:name="com.xz.cenco.wisdom.FxService2"/>
         <activity android:name="com.xz.cenco.wisdom.SettingActivity"/>
-        <activity android:name="com.xz.cenco.wisdom.ContentTypeActivity"/>
+        <activity android:name="com.xz.cenco.wisdom.TypeActivity"/>
         <activity android:name="com.xz.cenco.wisdom.WisdomActivity"/>
     </application>
 

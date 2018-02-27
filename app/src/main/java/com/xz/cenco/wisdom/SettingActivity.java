@@ -50,6 +50,7 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
     SeekBar alphaseekbar;
     SeekBar sizeseekbar;
     CheckBox bgCheck;
+    CheckBox textDirectionCheck;
     EditText intervalTime;
 
     static final int type_text = 0;
@@ -86,6 +87,10 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
         bgCheck.setOnCheckedChangeListener(this);
         bgCheck.setChecked(SPUtil.hasBgColor(this));
         bgColorView.setEnabled(SPUtil.hasBgColor(this));
+
+        textDirectionCheck = findViewById(R.id.textDirection);
+        textDirectionCheck.setOnCheckedChangeListener(this);
+        textDirectionCheck.setChecked(SPUtil.getOritation(this));
 
         intervalTime = findViewById(R.id.intervalTime);
         intervalTime.setText(""+SPUtil.getInterval(this));
@@ -227,6 +232,9 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
             SPUtil.setHasBgColor(this, isChecked);
             bgColorView.setEnabled(isChecked);
             resetFloatView();
+        }
+        if (buttonView == textDirectionCheck){
+
         }
     }
 
