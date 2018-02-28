@@ -66,6 +66,31 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         setFloatContent();
         initTimer();
         initCapture();
+        initScreenListner();
+    }
+
+    private void initScreenListner() {
+        ScreenListener l = new ScreenListener(this);
+        l.begin(new ScreenListener.ScreenStateListener() {
+
+            @Override
+            public void onUserPresent() {
+                LogUtil.i( "onUserPresent");
+                mFloatTv.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onScreenOn() {
+                LogUtil.i( "onScreenOn");
+                mFloatTv.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onScreenOff() {
+                LogUtil.i(  "onScreenOff");
+                mFloatTv.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void initCapture() {

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.cenco.lib.common.LogUtil;
 import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.ToastUtil;
 
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         initView();
         hideWisdom();
 //        startCapture();
+        test();
+    }
+
+    private void test() {
 
     }
 
