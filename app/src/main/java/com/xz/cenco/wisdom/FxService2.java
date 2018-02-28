@@ -53,6 +53,8 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     private MediaProjection mMediaProjection;
     private ImageReader mImageReader = null;
     private VirtualDisplay mVirtualDisplay = null;
+    WindowManager mWindowManager;
+    LinearLayout mFloatLayout;
 
     @Override
     public void onCreate()
@@ -98,7 +100,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     {
         LayoutParams wmParams = new LayoutParams();
         //获取的是WindowManagerImpl.CompatModeWrapper
-        WindowManager mWindowManager = (WindowManager)getApplication().getSystemService(getApplication().WINDOW_SERVICE);
+        mWindowManager = (WindowManager)getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         //设置window type
 //        wmParams.type = LayoutParams.TYPE_PHONE;
         wmParams.type = LayoutParams.TYPE_SYSTEM_OVERLAY;
@@ -116,11 +118,11 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
 
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
-        wmParams.height = LayoutParams.WRAP_CONTENT;
+        wmParams.height = Util.getStatusBarHeight(this);;
 
         LayoutInflater inflater = LayoutInflater.from(getApplication());  
         //获取浮动窗口视图所在布局  
-        LinearLayout mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout2, null);
+        mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout2, null);
 //        mFloatLayout.setBackgroundColor(Color.argb(128,255,0,0));
         //添加mFloatLayout  
         mWindowManager.addView(mFloatLayout, wmParams);  
@@ -133,7 +135,9 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     private void resetFloatView() {
         mFloatTv.setAlpha(SPUtil.getAlpha(this));
         mFloatTv.setTextSize(SPUtil.getSize(this));
-//        mFloatTv.setTextColor(SPUtil.getColor(this));
+        if (!SPUtil.getAutocolor(this)){
+            mFloatTv.setTextColor(SPUtil.getColor(this));
+        }
         if (SPUtil.hasBgColor(this)){
             int bgColor = SPUtil.getBgColor(this);
             int red = Color.red(bgColor);
@@ -144,6 +148,16 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         }else {
             mFloatTv.setBackgroundColor(Color.TRANSPARENT);
         }
+
+
+        int screenWidth = ScreenUtil.getScreenWidth(this);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mFloatTv.getLayoutParams();
+        int startX = SPUtil.getStartX(this);
+        int stopX = SPUtil.getStopX(this);
+        LogUtil.i("startX="+startX+",stopX="+stopX);
+        params.rightMargin = screenWidth - stopX;
+        params.leftMargin = startX;
+        mFloatTv.setLayoutParams(params);
 
     }
       
@@ -158,6 +172,11 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
             mMediaProjection.stop();
             mMediaProjection = null;
         }
+
+        if (mFloatLayout != null) {
+            mWindowManager.removeView(mFloatLayout);
+        }
+
         super.onDestroy();
 
     }
@@ -181,7 +200,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     @Override
     public void onTimerRunning(int current, int total) {
 
-        if (current != 0 && current%3==0 ){
+        if (current != 0 && current%3==0 && SPUtil.getAutocolor(this)){
             capture();
         }
     }

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.cenco.lib.common.ScreenUtil;
+import com.cenco.lib.common.ToastUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         hideWisdom();
-        startCapture();
+//        startCapture();
 
     }
 
@@ -41,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-//        TextView tv = findViewById(R.id.float_id);
-//        tv.setSelected(true);
 
 
     }
@@ -56,14 +55,27 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void settingClick(View view){
+        if (checkPermission()) return;
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
     }
     public void showClick(View view){
+        if (checkPermission()) return;
         Intent intent = new Intent(MainActivity.this, FxService2.class);
         startService(intent);
         finish();
         protect();
+    }
+
+    private boolean checkPermission() {
+        if(!Settings.canDrawOverlays(this)){
+            //没有悬浮窗权限,跳转申请
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            startActivity(intent);
+            ToastUtil.show(this,"请赋予悬浮窗权限");
+            return true;
+        }
+        return false;
     }
 
     private void hideWisdom(){

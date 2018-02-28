@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.WindowManager.LayoutParams;
 
+import com.cenco.lib.common.ScreenUtil;
+
 /**
  * Created by Administrator on 2018/2/23.
  */
@@ -26,11 +28,25 @@ public class SPUtil {
     private static final String positionY = "positionY";
     private static final String interval = "internval";
     private static final String oritation = "oritation";
+    private static final String autocolor = "autocolor";
+    private static final String startX = "startX";
+    private static final String stopX = "stopX";
 
     private static final int defaultMode = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(spname, 0);
+    }
+
+    public static void setAutocolor(Context context,boolean alphaValue){
+        SharedPreferences sp = getSharedPreferences(context);
+        sp.edit().putBoolean(autocolor,alphaValue).commit();
+    }
+
+    public static boolean getAutocolor(Context context){
+        SharedPreferences sp = getSharedPreferences(context);
+        boolean alphaValue = sp.getBoolean(oritation,false);
+        return alphaValue;
     }
 
     public static void setOritation(Context context,boolean alphaValue){
@@ -138,7 +154,26 @@ public class SPUtil {
         return positionYValue;
     }
 
+    public static void setStartX(Context context,int positionXValue){
+        SharedPreferences sp = getSharedPreferences(context);
+        sp.edit().putInt(startX,positionXValue).commit();
+    }
 
+    public static int getStartX(Context context){
+        SharedPreferences sp = getSharedPreferences(context);
+        int positionXValue = sp.getInt(startX,0);
+        return positionXValue;
+    }
+    public static void setStopX(Context context,int positionXValue){
+        SharedPreferences sp = getSharedPreferences(context);
+        sp.edit().putInt(stopX,positionXValue).commit();
+    }
+
+    public static int getStopX(Context context){
+        SharedPreferences sp = getSharedPreferences(context);
+        int positionXValue = sp.getInt(stopX, ScreenUtil.getScreenWidth(context));
+        return positionXValue;
+    }
 
 
 }

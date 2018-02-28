@@ -23,6 +23,20 @@
     <SeekBar
         style="@style/FullViewStyle"
         android:id="@+id/sizeseekbar"/>
+    <TextView
+        style="@style/normalViewStyle"
+        android:text="起点位置"/>
+
+    <SeekBar
+        style="@style/FullViewStyle"
+        android:id="@+id/startSeekbar"/>
+    <TextView
+        style="@style/normalViewStyle"
+        android:text="终点位置"/>
+
+    <SeekBar
+        style="@style/FullViewStyle"
+        android:id="@+id/stopSeekbar"/>
 
     <CheckBox
         style="@style/normalViewStyle"

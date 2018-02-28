@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -26,9 +27,12 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.cenco.lib.common.LogUtil;
+import com.cenco.lib.common.ScreenUtil;
 import com.xcolorpicker.android.OnColorSelectListener;
 import com.xcolorpicker.android.XColorPicker;
 import com.xz.cenco.wisdom.util.SPUtil;
+import com.xz.cenco.wisdom.util.Util;
 import com.xz.cenco.wisdom.util.WallpaperDrawable;
 
 /**
@@ -50,6 +54,8 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
     View bgColorView;
     SeekBar alphaseekbar;
     SeekBar sizeseekbar;
+    SeekBar startSeekbar;
+    SeekBar stopSeekbar;
     CheckBox bgCheck;
     CheckBox textDirectionCheck;
     EditText intervalTime;
@@ -61,10 +67,6 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_setting);
 
@@ -89,6 +91,20 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
         sizeseekbar = findViewById(R.id.sizeseekbar);
         sizeseekbar.setOnSeekBarChangeListener(this);
         sizeseekbar.setProgress(SPUtil.getSize(this));
+
+        startSeekbar = findViewById(R.id.startSeekbar);
+        startSeekbar.setOnSeekBarChangeListener(this);
+        startSeekbar.setMax(ScreenUtil.getScreenWidth(this));
+        int startX = SPUtil.getStartX(this);
+        LogUtil.i("startX = "+ startX);
+        startSeekbar.setProgress(startX);
+
+        stopSeekbar = findViewById(R.id.stopSeekbar);
+        stopSeekbar.setOnSeekBarChangeListener(this);
+        stopSeekbar.setMax(ScreenUtil.getScreenWidth(this));
+        int stopX = SPUtil.getStopX(this);
+        LogUtil.i("stopX = "+ stopX);
+        stopSeekbar.setProgress(stopX);
 
         bgCheck = findViewById(R.id.bgCheck);
         bgCheck.setOnCheckedChangeListener(this);
@@ -126,23 +142,24 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
         //获取的是WindowManagerImpl.CompatModeWrapper
         mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         //设置window type
-        wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
         //设置图片格式，效果为背景透明
         wmParams.format = PixelFormat.RGBA_8888;
-//        wmParams.flags = SPUtil.getMode(this);
-        wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        wmParams.flags = SPUtil.getMode(this);
+//        wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         wmParams.gravity = Gravity.LEFT | Gravity.TOP;
         wmParams.x = SPUtil.getPositionX(this);
         wmParams.y = SPUtil.getPositionY(this);
 
         wmParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        wmParams.height = Util.getStatusBarHeight(this);
 
         LayoutInflater inflater = LayoutInflater.from(getApplication());
         mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout2, null);
         mFloatLayout.setOnTouchListener(this);
         mWindowManager.addView(mFloatLayout, wmParams);
         mFloatTv = mFloatLayout.findViewById(R.id.float_id);
+
         resetFloatView();
     }
 
@@ -156,6 +173,14 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
             mFloatTv.setBackgroundColor(Color.TRANSPARENT);
         }
 
+        int screenWidth = ScreenUtil.getScreenWidth(this);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mFloatTv.getLayoutParams();
+        int startX = SPUtil.getStartX(this);
+        int stopX = SPUtil.getStopX(this);
+        LogUtil.i("startX="+startX+",stopX="+stopX);
+        params.rightMargin = screenWidth - stopX;
+        params.leftMargin = startX;
+        mFloatTv.setLayoutParams(params);
     }
 
     @Override
@@ -213,12 +238,22 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        if (!fromUser){
+            return;
+        }
         if (seekBar == alphaseekbar) {
             float alpha = progress * 1.0f / 100;
             SPUtil.setAlpha(this, alpha);
             resetFloatView();
         } else if (seekBar == sizeseekbar) {
             SPUtil.setSize(this, progress);
+            resetFloatView();
+        }else if (seekBar == startSeekbar){
+            SPUtil.setStartX(this,progress);
+            resetFloatView();
+        }else if (seekBar == stopSeekbar){
+            SPUtil.setStopX(this,progress);
             resetFloatView();
         }
     }
