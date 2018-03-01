@@ -1,10 +1,11 @@
 package com.xz.cenco.wisdom;
 
-import android.Manifest;
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -27,20 +28,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         hideWisdom();
-//        startCapture();
-        test();
+        keepalive();
     }
 
-    private void test() {
+    private void keepalive() {
+        /*
+        *  http://blog.csdn.net/liubinwyzbt/article/details/79079134
+        * */
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        JobInfo.Builder jb = new JobInfo.Builder(1, new ComponentName(getPackageName(), MyJobService.class.getName()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            jb.setPeriodic(15 * 60 * 1000, 5 * 60 *1000);
+        }else {
+            jb .setPeriodic(2*1000);
+        }
 
+        JobInfo jobInfo = jb .build();
+        int schedule = jobScheduler.schedule(jobInfo);
+        if (schedule == JobScheduler.RESULT_SUCCESS){
+            LogUtil.i("保活计划成功");
+        }else{
+            LogUtil.e("保活计划失败");
+        }
     }
 
     private void startCapture() {
 
         MediaProjectionManager mMediaProjectionManager = (MediaProjectionManager)
                 getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-        startActivityForResult(
-                mMediaProjectionManager.createScreenCaptureIntent(),
+        startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(),
                 REQUEST_MEDIA_PROJECTION);
         App.mediaProjectionManager = mMediaProjectionManager;
         App.screenDensity = ScreenUtil.getScreenDensity(this);

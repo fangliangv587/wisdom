@@ -25,7 +25,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.xz.cenco.wisdom.FxService2"/>
+        <service android:name="com.xz.cenco.wisdom.FxService2"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.xz.cenco.wisdom.MyJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
         <activity android:name="com.xz.cenco.wisdom.SettingActivity"/>
         <activity android:name="com.xz.cenco.wisdom.TypeActivity"/>
         <activity android:name="com.xz.cenco.wisdom.WisdomActivity"/>

@@ -47,6 +47,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     private static final String TAG = "FxService";
     TextView mFloatTv;
     TimerHelper timerHelper;
+    ScreenListener screenListener;
 
     private  boolean test = false;
 
@@ -61,7 +62,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     {
         // TODO Auto-generated method stub
         super.onCreate();
-        Log.i(TAG, "oncreat");
+        LogUtil.i("FxService2 oncreate");
         createFloatView();
         setFloatContent();
         initTimer();
@@ -69,9 +70,16 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         initScreenListner();
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        LogUtil.i("onStartCommand");
+        return super.onStartCommand(intent, flags, startId);
+
+    }
+
     private void initScreenListner() {
-        ScreenListener l = new ScreenListener(this);
-        l.begin(new ScreenListener.ScreenStateListener() {
+         screenListener = new ScreenListener(this);
+        screenListener.begin(new ScreenListener.ScreenStateListener() {
 
             @Override
             public void onUserPresent() {
@@ -202,6 +210,11 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
             mWindowManager.removeView(mFloatLayout);
         }
 
+        if (screenListener!=null){
+            screenListener.stop();
+        }
+
+
         super.onDestroy();
 
     }
@@ -212,7 +225,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         WisdomDao wisdomDao = app.getDaoSession().getWisdomDao();
         List<Wisdom> list = wisdomDao.queryBuilder().list();
         if (list==null || list.size() ==0){
-            return "";
+            return "还没有添加名言警句!";
         }
         Random random = new Random();
         int index = random.nextInt(list.size());

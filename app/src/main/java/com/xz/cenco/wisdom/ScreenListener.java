@@ -46,6 +46,10 @@ public class ScreenListener {
 //        getScreenState();
     }
 
+    public void stop(){
+        unregisterListener();
+    }
+
     /**
      * 获取screen状态
      */

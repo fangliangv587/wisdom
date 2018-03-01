@@ -177,7 +177,7 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mFloatTv.getLayoutParams();
         int startX = SPUtil.getStartX(this);
         int stopX = SPUtil.getStopX(this);
-        LogUtil.i("startX="+startX+",stopX="+stopX);
+//        LogUtil.i("startX="+startX+",stopX="+stopX);
         params.rightMargin = screenWidth - stopX;
         params.leftMargin = startX;
         mFloatTv.setLayoutParams(params);
