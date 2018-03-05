@@ -20,7 +20,6 @@ android {
     }
 }
 
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation rootProject.ext.dependencies[ "appcompat-v7"]
@@ -29,6 +28,9 @@ dependencies {
     implementation rootProject.ext.dependencies[ "xcolorpicker"]
     implementation rootProject.ext.dependencies[ "greendao"]
     implementation rootProject.ext.dependencies[ "lib-common"]
+    implementation rootProject.ext.dependencies[ "bugly"]
+
+
 
 }
 

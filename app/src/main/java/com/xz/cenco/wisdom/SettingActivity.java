@@ -27,8 +27,8 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.cenco.lib.common.LogUtil;
 import com.cenco.lib.common.ScreenUtil;
+import com.cenco.lib.common.log.LogUtils;
 import com.xcolorpicker.android.OnColorSelectListener;
 import com.xcolorpicker.android.XColorPicker;
 import com.xz.cenco.wisdom.util.SPUtil;
@@ -96,14 +96,14 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
         startSeekbar.setOnSeekBarChangeListener(this);
         startSeekbar.setMax(ScreenUtil.getScreenWidth(this));
         int startX = SPUtil.getStartX(this);
-        LogUtil.i("startX = "+ startX);
+        LogUtils.i("startX = "+ startX);
         startSeekbar.setProgress(startX);
 
         stopSeekbar = findViewById(R.id.stopSeekbar);
         stopSeekbar.setOnSeekBarChangeListener(this);
         stopSeekbar.setMax(ScreenUtil.getScreenWidth(this));
         int stopX = SPUtil.getStopX(this);
-        LogUtil.i("stopX = "+ stopX);
+        LogUtils.i("stopX = "+ stopX);
         stopSeekbar.setProgress(stopX);
 
         bgCheck = findViewById(R.id.bgCheck);

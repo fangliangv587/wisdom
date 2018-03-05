@@ -9,7 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
-import com.cenco.lib.common.LogUtil;
+
+import com.cenco.lib.common.log.LogUtils;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class MyJobService extends JobService {
         public boolean handleMessage(Message msg) {
 
             if (!isServiceRunning(MyJobService.this,FxService2.class.getName())){
-                LogUtil.w("启动服务");
+                LogUtils.w("启动服务");
                 Intent intent = new Intent(MyJobService.this, FxService2.class);
                 startService(intent);
             }
@@ -33,18 +34,18 @@ public class MyJobService extends JobService {
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtil.i("MyJobService onCreate");
+        LogUtils.i("MyJobService onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtil.i("MyJobService onStartCommand");
+        LogUtils.i("MyJobService onStartCommand");
         return START_STICKY;
     }
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        LogUtil.i("onStartJob");
+        LogUtils.i("onStartJob");
         Message m = Message.obtain();
         m.obj = params;
         handler.sendMessage(m);
@@ -53,7 +54,7 @@ public class MyJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        LogUtil.w("onStopJob");
+        LogUtils.w("onStopJob");
         handler.removeCallbacksAndMessages(null);
         return false;
     }

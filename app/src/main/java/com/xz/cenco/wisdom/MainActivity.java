@@ -13,9 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.cenco.lib.common.LogUtil;
 import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.ToastUtil;
+import com.cenco.lib.common.log.LogUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
         JobInfo jobInfo = jb .build();
         int schedule = jobScheduler.schedule(jobInfo);
         if (schedule == JobScheduler.RESULT_SUCCESS){
-            LogUtil.i("保活计划成功");
+            LogUtils.i("保活计划成功");
         }else{
-            LogUtil.e("保活计划失败");
+            LogUtils.e("保活计划失败");
         }
     }
 
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private void protect() {
 
     }
+
 
     public void contentClick(View view){
         Intent intent = new Intent(this, TypeActivity.class);
@@ -102,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
     private void hideWisdom(){
         Intent intent = new Intent(MainActivity.this, FxService2.class);
         stopService(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        showClick(null);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.xz.cenco.wisdom;
 
+import android.app.KeyguardManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +28,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cenco.lib.common.BitmapUtil;
-import com.cenco.lib.common.LogUtil;
 import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.TimerHelper;
+import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.entity.Wisdom;
 import com.xz.cenco.wisdom.entity.WisdomDao;
 import com.xz.cenco.wisdom.util.SPUtil;
@@ -62,7 +63,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
     {
         // TODO Auto-generated method stub
         super.onCreate();
-        LogUtil.i("FxService2 oncreate");
+        LogUtils.i("FxService2 oncreate");
         createFloatView();
         setFloatContent();
         initTimer();
@@ -72,7 +73,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtil.i("onStartCommand");
+        LogUtils.i("onStartCommand");
         return super.onStartCommand(intent, flags, startId);
 
     }
@@ -83,19 +84,27 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
 
             @Override
             public void onUserPresent() {
-                LogUtil.i( "onUserPresent");
+                LogUtils.i( "onUserPresent");
                 mFloatTv.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onScreenOn() {
-                LogUtil.i( "onScreenOn");
-                mFloatTv.setVisibility(View.INVISIBLE);
+                LogUtils.i( "onScreenOn");
+                KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+                boolean flag = mKeyguardManager.inKeyguardRestrictedInputMode();
+                LogUtils.d( "flag="+flag);
+                if (flag){
+                    mFloatTv.setVisibility(View.INVISIBLE);
+                }else {
+                    mFloatTv.setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override
             public void onScreenOff() {
-                LogUtil.i(  "onScreenOff");
+                LogUtils.i(  "onScreenOff");
                 mFloatTv.setVisibility(View.INVISIBLE);
             }
         });
@@ -176,7 +185,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
             int red = Color.red(bgColor);
             int green = Color.green(bgColor);
             int blue = Color.blue(bgColor);
-            LogUtil.i("背景色：red:"+red+",green:"+green+",blue:"+blue);
+            LogUtils.i("背景色：red:"+red+",green:"+green+",blue:"+blue);
             mFloatTv.setBackgroundColor(bgColor);
         }else {
             mFloatTv.setBackgroundColor(Color.TRANSPARENT);
@@ -187,7 +196,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mFloatTv.getLayoutParams();
         int startX = SPUtil.getStartX(this);
         int stopX = SPUtil.getStopX(this);
-        LogUtil.i("startX="+startX+",stopX="+stopX);
+        LogUtils.i("startX="+startX+",stopX="+stopX);
         params.rightMargin = screenWidth - stopX;
         params.leftMargin = startX;
         mFloatTv.setLayoutParams(params);
@@ -253,7 +262,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
 
 
     private void capture(){
-        LogUtil.i("capture");
+        LogUtils.i("capture");
         if (mMediaProjection ==null){
             mMediaProjection = App.mediaProjectionManager.getMediaProjection(App.captureResultCode, App.captureIntent);
         }
@@ -282,7 +291,7 @@ public class FxService2 extends Service implements TimerHelper.TimerListener {
         image.close();
 
         int statusBarHeight = Util.getStatusBarHeight(this);
-        LogUtil.i("状态栏高度:"+statusBarHeight);
+        LogUtils.i("状态栏高度:"+statusBarHeight);
         int positionX = SPUtil.getPositionX(this);
         int positionY = SPUtil.getPositionY(this)  +10;
         int color = bitmap.getPixel(positionX, positionY);
