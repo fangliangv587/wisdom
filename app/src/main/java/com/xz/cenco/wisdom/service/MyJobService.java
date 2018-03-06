@@ -1,13 +1,16 @@
-package com.xz.cenco.wisdom;
+package com.xz.cenco.wisdom.service;
 
 import android.app.ActivityManager;
+import android.app.job.JobInfo;
 import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
 import android.app.job.JobService;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 
 import com.cenco.lib.common.log.LogUtils;
@@ -20,9 +23,9 @@ public class MyJobService extends JobService {
         @Override
         public boolean handleMessage(Message msg) {
 
-            if (!isServiceRunning(MyJobService.this,FxService2.class.getName())){
+            if (!isServiceRunning(MyJobService.this, WisdomService.class.getName())) {
                 LogUtils.w("启动服务");
-                Intent intent = new Intent(MyJobService.this, FxService2.class);
+                Intent intent = new Intent(MyJobService.this, WisdomService.class);
                 startService(intent);
             }
             JobParameters param = (JobParameters) msg.obj;
@@ -46,10 +49,29 @@ public class MyJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         LogUtils.i("onStartJob");
-        Message m = Message.obtain();
-        m.obj = params;
-        handler.sendMessage(m);
-        return true;
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            LogUtils.d("JobSchedulerService", "7.0 handleMessage task running");
+
+            if (!isServiceRunning(MyJobService.this, WisdomService.class.getName())) {
+                LogUtils.w("启动服务");
+                Intent intent = new Intent(MyJobService.this, WisdomService.class);
+                startService(intent);
+            }
+            //创建一个新的JobScheduler任务
+            scheduleRefresh();
+            jobFinished(params, false);
+            LogUtils.d("JobSchedulerService", "7.0 handleMessage task end~~" + System.currentTimeMillis());
+            return true;
+        } else {
+            Message m = Message.obtain();
+            m.obj = params;
+            handler.sendMessage(m);
+            return true;
+        }
+
+
     }
 
     @Override
@@ -78,5 +100,25 @@ public class MyJobService extends JobService {
             }
         }
         return false;
+    }
+
+
+    private void scheduleRefresh() {
+        JobScheduler mJobScheduler = (JobScheduler) getApplicationContext()
+                .getSystemService(JOB_SCHEDULER_SERVICE);
+        //jobId可根据实际情况设定
+        JobInfo.Builder mJobBuilder =
+                new JobInfo.Builder(0,
+                        new ComponentName(getPackageName(),
+                                MyJobService.class.getName()));
+
+        mJobBuilder.setMinimumLatency(2 * 60 * 1000).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        JobInfo build = mJobBuilder.build();
+        int schedule = mJobScheduler.schedule(build);
+        if (schedule == JobScheduler.RESULT_SUCCESS) {
+            LogUtils.d("JobSchedulerService", "7.0 schedule the service SUCCESS!");
+        } else {
+            LogUtils.d("JobSchedulerService", "7.0 Unable to schedule the service FAILURE!");
+        }
     }
 }

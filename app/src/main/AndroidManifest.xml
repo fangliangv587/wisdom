@@ -19,11 +19,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".App"
+        android:name=".activity.App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,13 +31,18 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.xz.cenco.wisdom.FxService2"
+        <service android:name="com.xz.cenco.wisdom.service.WisdomService"
+            />
+
+        <service android:name="com.xz.cenco.wisdom.service.MyJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <service android:name="com.xz.cenco.wisdom.MyJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <activity android:name="com.xz.cenco.wisdom.SettingActivity"/>
-        <activity android:name="com.xz.cenco.wisdom.TypeActivity"/>
-        <activity android:name="com.xz.cenco.wisdom.WisdomActivity"/>
+
+
+        <activity android:name="com.xz.cenco.wisdom.activity.SettingActivity"/>
+        <activity android:name="com.xz.cenco.wisdom.activity.TypeActivity"/>
+        <activity android:name="com.xz.cenco.wisdom.activity.WisdomActivity"/>
+
+
     </application>
 
 </manifest>

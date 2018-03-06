@@ -1,4 +1,4 @@
-package com.xz.cenco.wisdom;
+package com.xz.cenco.wisdom.activity;
 
 import android.app.Application;
 import android.content.Context;
@@ -31,8 +31,6 @@ public class App extends Application {
     private DaoSession daoSession;
     public static int screenDensity;
     public static int captureResultCode;
-    public static Intent captureIntent;
-    public static MediaProjectionManager mediaProjectionManager;
     ;
 
     @Override
@@ -41,12 +39,17 @@ public class App extends Application {
 
         initBugly();
         initLog();
+        initAlive();
+    }
+
+    private void initAlive() {
+
     }
 
     private void initLog() {
 
         String path = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"wisdom"+File.separator+"log";
-        LogUtils.init(this,path);
+        LogUtils.init("appwisdom",false,path);
 
 
     }

@@ -1,7 +1,6 @@
-package com.xz.cenco.wisdom;
+package com.xz.cenco.wisdom.activity;
 
 import android.app.Activity;
-import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 

@@ -31,6 +31,5 @@ dependencies {
     implementation rootProject.ext.dependencies[ "bugly"]
 
 
-
 }
 

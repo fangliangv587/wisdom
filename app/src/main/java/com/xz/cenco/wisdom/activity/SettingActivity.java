@@ -1,4 +1,4 @@
-package com.xz.cenco.wisdom;
+package com.xz.cenco.wisdom.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -31,6 +31,7 @@ import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xcolorpicker.android.OnColorSelectListener;
 import com.xcolorpicker.android.XColorPicker;
+import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.util.SPUtil;
 import com.xz.cenco.wisdom.util.Util;
 import com.xz.cenco.wisdom.util.WallpaperDrawable;
@@ -76,7 +77,7 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
 
     private void initView() {
 
-        setBackground();
+//        setBackground();
 
         textColorView = findViewById(R.id.textColorView);
         textColorView.setBackgroundColor(SPUtil.getColor(this));

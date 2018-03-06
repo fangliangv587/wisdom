@@ -7,10 +7,25 @@
     <EditText
         style="@style/FullViewStyle"
         android:id="@+id/typeName"/>
-    <Button
-        style="@style/normalViewStyle"
-        android:onClick="addClick"
-        android:text="增 加"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            style="@style/normalViewStyle"
+            android:onClick="addClick"
+            android:text="增 加"/>
+        <Button
+            style="@style/normalViewStyle"
+            android:onClick="backupClick"
+            android:text="备 份"/>
+        <Button
+            style="@style/normalViewStyle"
+            android:onClick="restoreClick"
+            android:text="还 原"/>
+    </LinearLayout>
+
 
     <ListView
         android:layout_width="match_parent"
