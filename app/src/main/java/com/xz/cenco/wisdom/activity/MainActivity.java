@@ -1,6 +1,5 @@
 package com.xz.cenco.wisdom.activity;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
@@ -8,14 +7,13 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 
-import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.service.MyJobService;
@@ -24,16 +22,27 @@ import com.xz.cenco.wisdom.service.WisdomService;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_MEDIA_PROJECTION = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        hideWisdom();
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        stopWisdom();
+    }
+
+
+    @Override
+    public void onWindowAttributesChanged(WindowManager.LayoutParams params) {
+        super.onWindowAttributesChanged(params);
+        int a = getWindow().getAttributes().flags;
     }
 
     private void keepalive() {
@@ -85,7 +94,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
 
+        View decorView = getWindow().getDecorView();
+        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
 
+            }
+        });
     }
 
 
@@ -102,10 +117,10 @@ public class MainActivity extends AppCompatActivity {
     }
     public void showClick(View view){
         if (checkPermission()) return;
-        Intent intent = new Intent(MainActivity.this, WisdomService.class);
-        startService(intent);
+        startWisdom();
         finish();
     }
+
 
     private boolean checkPermission() {
         if(!Settings.canDrawOverlays(this)){
@@ -118,16 +133,21 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void hideWisdom(){
+    private void stopWisdom(){
         Intent intent = new Intent(MainActivity.this, WisdomService.class);
         stopService(intent);
+    }
+
+    private void startWisdom() {
+        Intent intent = new Intent(MainActivity.this, WisdomService.class);
+        startService(intent);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        showClick(null);
-        keepalive();
+        startWisdom();
+//        keepalive();
     }
 
 

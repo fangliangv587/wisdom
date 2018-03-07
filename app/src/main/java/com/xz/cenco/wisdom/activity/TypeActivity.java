@@ -1,6 +1,8 @@
 package com.xz.cenco.wisdom.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +17,7 @@ import android.widget.ListView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.log.LogUtils;
@@ -70,6 +73,7 @@ public class TypeActivity extends BaseActivity implements AdapterView.OnItemClic
             data.add(backup);
         }
         backups.setData(data);
+        backups.setDate(DateUtil.getDateString());
 
         String content = JSON.toJSONString(backups);
         boolean result = IOUtils.writeFileFromString(C.file.backup_data_path, content);
@@ -83,29 +87,43 @@ public class TypeActivity extends BaseActivity implements AdapterView.OnItemClic
             return;
         }
         String content = IOUtils.readFile2String(C.file.backup_data_path);
-        Backups backups = JSON.parseObject(content, Backups.class);
-        List<Backups.Backup> data = backups.getData();
-        if (data!=null){
-            WisdomDao wisdomDao = getApp().getDaoSession().getWisdomDao();
-            wisdomDao.deleteAll();
-            typeDao.deleteAll();
-            List<WisdomType>  wisdomTypes = typeDao.queryBuilder().list();
-            if (wisdomTypes == null || wisdomTypes.size() == 0){
-                LogUtils.i("删除源数据成功");
-            }else {
-                LogUtils.i("删除源数据失败");
-            }
-            for (Backups.Backup backup: data){
-                WisdomType type = backup.getType();
-                List<Wisdom> wisdoms = backup.getWisdoms();
-                typeDao.insert(type);
-                for (Wisdom wisdom : wisdoms){
-                    wisdomDao.insert(wisdom);
+        final Backups backups = JSON.parseObject(content, Backups.class);
+        if (backups==null){return;}
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle("提示").setMessage("您确定要恢复到 " + backups.getDate() + " 的备份吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                List<Backups.Backup> data = backups.getData();
+                if (data!=null){
+                    WisdomDao wisdomDao = getApp().getDaoSession().getWisdomDao();
+                    wisdomDao.deleteAll();
+                    typeDao.deleteAll();
+                    List<WisdomType>  wisdomTypes = typeDao.queryBuilder().list();
+                    if (wisdomTypes == null || wisdomTypes.size() == 0){
+                        LogUtils.i("删除源数据成功");
+                    }else {
+                        ToastUtil.show(mContext,"删除源数据失败");
+                        return;
+                    }
+                    for (Backups.Backup backup: data){
+                        WisdomType type = backup.getType();
+                        List<Wisdom> wisdoms = backup.getWisdoms();
+                        typeDao.insert(type);
+                        for (Wisdom wisdom : wisdoms){
+                            wisdomDao.insert(wisdom);
+                        }
+                    }
+                    query();
+                    ToastUtil.show(mContext,"数据恢复成功");
                 }
             }
-            query();
-            ToastUtil.show(this,"数据恢复成功");
-        }
+        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).create();
+        dialog.show();
+
 
     }
     public void addClick(View view){

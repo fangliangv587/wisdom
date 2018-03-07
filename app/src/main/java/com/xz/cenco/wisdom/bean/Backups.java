@@ -13,6 +13,15 @@ import java.util.List;
 public class Backups {
 
     private List<Backup> data;
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public List<Backup> getData() {
         return data;

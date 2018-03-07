@@ -13,6 +13,7 @@ import com.cenco.lib.common.log.LogUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xz.cenco.wisdom.entity.DaoMaster;
 import com.xz.cenco.wisdom.entity.DaoSession;
+import com.xz.cenco.wisdom.util.C;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -29,9 +30,6 @@ public class App extends Application {
 
 
     private DaoSession daoSession;
-    public static int screenDensity;
-    public static int captureResultCode;
-    ;
 
     @Override
     public void onCreate() {
@@ -47,11 +45,7 @@ public class App extends Application {
     }
 
     private void initLog() {
-
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"wisdom"+File.separator+"log";
-        LogUtils.init("appwisdom",false,path);
-
-
+        LogUtils.init("appwisdom",false, C.file.log_path);
     }
 
     private void initBugly() {

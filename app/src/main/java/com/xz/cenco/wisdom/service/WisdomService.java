@@ -11,7 +11,9 @@ import android.os.Build;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
@@ -62,6 +64,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
     private void initView() {
         createFloatView();
         setFloatContent();
+
     }
 
     @Override
@@ -158,6 +161,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
         //浮动窗口按钮  
         mFloatTv = mFloatLayout.findViewById(R.id.float_id);
         resetFloatView();
+
 
     }
 
