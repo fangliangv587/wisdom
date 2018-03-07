@@ -8,6 +8,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,12 @@ import com.xz.cenco.wisdom.service.WisdomService;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +46,6 @@ public class MainActivity extends AppCompatActivity {
         stopWisdom();
     }
 
-
-    @Override
-    public void onWindowAttributesChanged(WindowManager.LayoutParams params) {
-        super.onWindowAttributesChanged(params);
-        int a = getWindow().getAttributes().flags;
-    }
 
     private void keepalive() {
         scheduler();
@@ -94,13 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
 
-        View decorView = getWindow().getDecorView();
-        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
 
-            }
-        });
     }
 
 

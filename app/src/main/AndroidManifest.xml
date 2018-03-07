@@ -41,6 +41,7 @@
         <activity android:name="com.xz.cenco.wisdom.activity.SettingActivity"/>
         <activity android:name="com.xz.cenco.wisdom.activity.TypeActivity"/>
         <activity android:name="com.xz.cenco.wisdom.activity.WisdomActivity"/>
+        <activity android:name="com.xz.cenco.wisdom.activity.ColorActivity"/>
 
 
     </application>

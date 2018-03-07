@@ -15,6 +15,7 @@ public class C {
      */
     public static final class extra{
         public static final String float_service_name = "float_service_name";
+        public static final String color = "color";
     }
 
     /**

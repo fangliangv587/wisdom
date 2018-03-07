@@ -3,6 +3,7 @@ package com.xz.cenco.wisdom.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.WallpaperManager;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,15 +16,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -32,6 +29,7 @@ import com.cenco.lib.common.log.LogUtils;
 import com.xcolorpicker.android.OnColorSelectListener;
 import com.xcolorpicker.android.XColorPicker;
 import com.xz.cenco.wisdom.R;
+import com.xz.cenco.wisdom.util.C;
 import com.xz.cenco.wisdom.util.SPUtil;
 import com.xz.cenco.wisdom.util.Util;
 import com.xz.cenco.wisdom.util.WallpaperDrawable;
@@ -40,7 +38,7 @@ import com.xz.cenco.wisdom.util.WallpaperDrawable;
  * Created by Administrator on 2018/2/23.
  */
 
-public class SettingActivity extends Activity implements View.OnTouchListener, OnColorSelectListener, SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
+public class SettingActivity extends Activity implements View.OnTouchListener,  SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
 
     //定义浮动窗口布局
     LinearLayout mFloatLayout;
@@ -61,9 +59,8 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
     CheckBox textDirectionCheck;
     EditText intervalTime;
 
-    static final int type_text = 0;
-    static final int type_bg = 1;
-    int type;
+    static  final int request_text_color  = 0x0001;
+    static  final int request_bg_color  = 0x0002;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,18 +120,20 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
 
     public void colorClick(View v) {
 
+        int request = 0;
+        int color =0;
         if (v == textColorView) {
-            type = type_text;
+            request = request_text_color;
+            color = SPUtil.getColor(this);
         } else {
-            type = type_bg;
+            request = request_bg_color;
+            color = SPUtil.getBgColor(this);
         }
 
-        XColorPicker picker = new XColorPicker(this);
-        picker.setOnColorSelectListener(this);
+        Intent intent = new Intent(this, ColorActivity.class);
+        intent.putExtra(C.extra.color,color);
+        startActivityForResult(intent,request);
 
-        dialog = new Dialog(this);
-        dialog.setContentView(picker);
-        dialog.show();
     }
 
 
@@ -223,19 +222,7 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
         }
     }
 
-    @Override
-    public void onColorSelected(int newColor, int oldColor) {
-        dialog.dismiss();
-        if (type == type_text) {
-            textColorView.setBackgroundColor(newColor);
-            SPUtil.setColor(this, newColor);
-            resetFloatView();
-        } else if (type == type_bg) {
-            bgColorView.setBackgroundColor(newColor);
-            SPUtil.setBgColor(this, newColor);
-            resetFloatView();
-        }
-    }
+
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -308,6 +295,27 @@ public class SettingActivity extends Activity implements View.OnTouchListener, O
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
 
+        if (resultCode!=RESULT_OK){
+            return;
+        }
+        if (requestCode == request_text_color){
+            int color = data.getIntExtra(C.extra.color, 0);
+            SPUtil.setColor(this,color);
+            textColorView.setBackgroundColor(color);
+            return;
+        }
+
+        if (requestCode == request_bg_color){
+            int color = data.getIntExtra(C.extra.color, 0);
+            SPUtil.setBgColor(this,color);
+            bgColorView.setBackgroundColor(color);
+            return;
+        }
+
+    }
 }

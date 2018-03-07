@@ -2,11 +2,6 @@ package com.xz.cenco.wisdom.activity;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.media.projection.MediaProjectionManager;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.text.TextUtils;
 
 import com.cenco.lib.common.log.LogUtils;
@@ -18,7 +13,6 @@ import com.xz.cenco.wisdom.util.C;
 import org.greenrobot.greendao.database.Database;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
