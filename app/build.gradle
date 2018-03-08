@@ -29,7 +29,7 @@ dependencies {
     implementation rootProject.ext.dependencies[ "greendao"]
     implementation rootProject.ext.dependencies[ "lib-common"]
     implementation rootProject.ext.dependencies[ "bugly"]
-
+    compile 'com.facebook.stetho:stetho:1.5.0'
 
 }
 

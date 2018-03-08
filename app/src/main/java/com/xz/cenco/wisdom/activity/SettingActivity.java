@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.log.LogUtils;

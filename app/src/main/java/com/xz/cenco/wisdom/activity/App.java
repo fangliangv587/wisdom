@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.cenco.lib.common.log.LogUtils;
+import com.facebook.stetho.Stetho;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xz.cenco.wisdom.entity.DaoMaster;
 import com.xz.cenco.wisdom.entity.DaoSession;
@@ -32,6 +33,11 @@ public class App extends Application {
         initBugly();
         initLog();
         initAlive();
+        initStetho();
+    }
+
+    private void initStetho() {
+        Stetho.initializeWithDefaults(this);
     }
 
     private void initAlive() {

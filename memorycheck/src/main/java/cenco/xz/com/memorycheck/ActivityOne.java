@@ -10,6 +10,7 @@ public class ActivityOne extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        WindowManagerPolicy a;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
