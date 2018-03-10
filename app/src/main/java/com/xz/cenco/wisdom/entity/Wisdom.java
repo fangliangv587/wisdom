@@ -24,6 +24,7 @@ public class Wisdom {
     @NotNull
     private Date date;
 
+
     @Generated(hash = 279511505)
     public Wisdom(Long id, @NotNull String text, Long type, @NotNull Date date) {
         this.id = id;

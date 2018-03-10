@@ -1,6 +1,7 @@
 package com.xz.cenco.wisdom.activity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -16,10 +17,14 @@ import com.cenco.lib.common.ToastUtil;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.entity.Wisdom;
 import com.xz.cenco.wisdom.entity.WisdomDao;
+import com.xz.cenco.wisdom.util.C;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import cn.qqtheme.framework.picker.DatePicker;
+import cn.qqtheme.framework.util.ConvertUtils;
 
 /**
  * Created by Administrator on 2018/2/25.
@@ -29,11 +34,11 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
 
     WisdomDao wisdomDao;
     EditText typeNameEt;
+    String typeName;
+    long typeId;
     ArrayAdapter<String> adapter;
     List<Wisdom> wisdoms;
     List<String> list = new ArrayList<>();
-    String typeName;
-    long typeId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,26 +50,52 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
 
     }
 
+
+    public void onYearMonthDayPicker(View view) {
+        final DatePicker picker = new DatePicker(this);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setUseWeight(true);
+        picker.setTopPadding(ConvertUtils.toPx(this, 10));
+        picker.setRangeEnd(2111, 1, 11);
+        picker.setRangeStart(2016, 8, 29);
+        picker.setSelectedItem(2050, 10, 14);
+        picker.setResetWhileWheel(false);
+        picker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
+            @Override
+            public void onDatePicked(String year, String month, String day) {
+                ToastUtil.show(mContext,year + "-" + month + "-" + day);
+            }
+        });
+        picker.setOnWheelListener(new DatePicker.OnWheelListener() {
+            @Override
+            public void onYearWheeled(int index, String year) {
+                picker.setTitleText(year + "-" + picker.getSelectedMonth() + "-" + picker.getSelectedDay());
+            }
+
+            @Override
+            public void onMonthWheeled(int index, String month) {
+                picker.setTitleText(picker.getSelectedYear() + "-" + month + "-" + picker.getSelectedDay());
+            }
+
+            @Override
+            public void onDayWheeled(int index, String day) {
+                picker.setTitleText(picker.getSelectedYear() + "-" + picker.getSelectedMonth() + "-" + day);
+            }
+        });
+        picker.show();
+    }
+
     public void addClick(View view){
-        String text = typeNameEt.getText().toString().trim();
-        if (TextUtils.isEmpty(text)){
-            ToastUtil.show(this,"不能为空");
-            return;
-        }
-        typeNameEt.setText("");
-        Wisdom type = new Wisdom();
-        type.setText(text);
-        type.setType(typeId);
-        type.setDate(new Date());
-        wisdomDao.insert(type);
-        query();
+        Intent intent = new Intent(this, WisdomAddActivity.class);
+        intent.putExtra("typeName",typeName);
+        intent.putExtra("typeId",typeId);
+        startActivityForResult(intent, C.request.wisdom_add);
     }
 
     private void initView() {
 
         typeNameEt = findViewById(R.id.typeName);
-        Button addBtn = findViewById(R.id.addBtn);
-        addBtn.setText(addBtn.getText().toString()+"（"+typeName+")");
+
         adapter = new ArrayAdapter<String>
                 (this,android.R.layout.simple_expandable_list_item_1,list);
         ListView listView = findViewById(R.id.recycleView);
@@ -114,5 +145,17 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
         dialog.show();
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK){
+            return;
+        }
+
+        if (requestCode == C.request.wisdom_add){
+            query();
+        }
     }
 }

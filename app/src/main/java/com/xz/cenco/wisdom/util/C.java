@@ -28,4 +28,9 @@ public class C {
         public static final String backup_data_path = backup_path + File.separator +"data.txt";
     }
 
+    public static final class request{
+        public static final int type_add = 0x0001;
+        public static final int wisdom_add = 0x0002;
+    }
+
 }

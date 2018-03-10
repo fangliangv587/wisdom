@@ -40,7 +40,7 @@ import java.util.List;
 public class TypeActivity extends BaseActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     WisdomTypeDao typeDao;
-    EditText typeNameEt;
+
     ArrayAdapter<String> adapter;
     List<WisdomType> wisdomTypes;
     List<String> list = new ArrayList<>();
@@ -125,24 +125,28 @@ public class TypeActivity extends BaseActivity implements AdapterView.OnItemClic
 
 
     }
-    public void addClick(View view){
-        String typeName = typeNameEt.getText().toString().trim();
-        if (TextUtils.isEmpty(typeName)){
-            ToastUtil.show(this,"不能为空");
-            return;
-        }
-        typeNameEt.setText("");
-        WisdomType type = new WisdomType();
-        type.setName(typeName);
-        type.setDate(new Date());
-        typeDao.insert(type);
-        query();
+
+
+    public void  addClick(View view){
+        Intent intent = new Intent(this, TypeAddActivity.class);
+        startActivityForResult(intent,C.request.type_add);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK){
+            return;
+        }
+
+        if (requestCode == C.request.type_add){
+            query();
+        }
+    }
 
     private void initView() {
 
-        typeNameEt = findViewById(R.id.typeName);
+
         adapter = new ArrayAdapter<String>
                 (this,android.R.layout.simple_expandable_list_item_1,list);
         ListView listView = findViewById(R.id.recycleView);

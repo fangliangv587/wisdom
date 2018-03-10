@@ -11,6 +11,7 @@ public class ActivityOne extends Activity {
         super.onCreate(savedInstanceState);
 
 //        WindowManagerPolicy a;
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
