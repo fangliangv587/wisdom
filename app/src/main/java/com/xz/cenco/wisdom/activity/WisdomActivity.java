@@ -51,40 +51,6 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
     }
 
 
-    public void onYearMonthDayPicker(View view) {
-        final DatePicker picker = new DatePicker(this);
-        picker.setCanceledOnTouchOutside(true);
-        picker.setUseWeight(true);
-        picker.setTopPadding(ConvertUtils.toPx(this, 10));
-        picker.setRangeEnd(2111, 1, 11);
-        picker.setRangeStart(2016, 8, 29);
-        picker.setSelectedItem(2050, 10, 14);
-        picker.setResetWhileWheel(false);
-        picker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
-            @Override
-            public void onDatePicked(String year, String month, String day) {
-                ToastUtil.show(mContext,year + "-" + month + "-" + day);
-            }
-        });
-        picker.setOnWheelListener(new DatePicker.OnWheelListener() {
-            @Override
-            public void onYearWheeled(int index, String year) {
-                picker.setTitleText(year + "-" + picker.getSelectedMonth() + "-" + picker.getSelectedDay());
-            }
-
-            @Override
-            public void onMonthWheeled(int index, String month) {
-                picker.setTitleText(picker.getSelectedYear() + "-" + month + "-" + picker.getSelectedDay());
-            }
-
-            @Override
-            public void onDayWheeled(int index, String day) {
-                picker.setTitleText(picker.getSelectedYear() + "-" + picker.getSelectedMonth() + "-" + day);
-            }
-        });
-        picker.show();
-    }
-
     public void addClick(View view){
         Intent intent = new Intent(this, WisdomAddActivity.class);
         intent.putExtra("typeName",typeName);

@@ -15,10 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.alibaba.fastjson.JSON;
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.ToastUtil;
+import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.bean.Backups;
@@ -74,7 +74,7 @@ public class TypeActivity extends BaseActivity implements AdapterView.OnItemClic
         backups.setData(data);
         backups.setDate(DateUtil.getDateString());
 
-        String content = JSON.toJSONString(backups);
+        String content = GsonUtil.toJson(backups);
         boolean result = IOUtils.writeFileFromString(C.file.backup_data_path, content);
         LogUtils.i("数据备份:"+result);
         ToastUtil.show(this,"数据备份"+ (result?"成功":"失败"));
@@ -86,8 +86,11 @@ public class TypeActivity extends BaseActivity implements AdapterView.OnItemClic
             return;
         }
         String content = IOUtils.readFile2String(C.file.backup_data_path);
-        final Backups backups = JSON.parseObject(content, Backups.class);
-        if (backups==null){return;}
+        final Backups backups = GsonUtil.fromJson(content,Backups.class);
+        if (backups==null){
+            ToastUtil.show(this,"尚无备份数据");
+            return;
+        }
         AlertDialog dialog = new AlertDialog.Builder(this).setTitle("提示").setMessage("您确定要恢复到 " + backups.getDate() + " 的备份吗?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
