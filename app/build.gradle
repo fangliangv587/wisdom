@@ -20,7 +20,6 @@ android {
     }
 }
 
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation rootProject.ext.dependencies["appcompat-v7"]

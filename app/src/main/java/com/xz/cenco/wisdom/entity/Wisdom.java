@@ -19,17 +19,26 @@ public class Wisdom {
     @NotNull
     private String text;
 
+    private String comment;
+
     private Long type;
+
+    private Date startDate;
+    private Date stopDate;
 
     @NotNull
     private Date date;
 
 
-    @Generated(hash = 279511505)
-    public Wisdom(Long id, @NotNull String text, Long type, @NotNull Date date) {
+    @Generated(hash = 1672336008)
+    public Wisdom(Long id, @NotNull String text, String comment, Long type,
+            Date startDate, Date stopDate, @NotNull Date date) {
         this.id = id;
         this.text = text;
+        this.comment = comment;
         this.type = type;
+        this.startDate = startDate;
+        this.stopDate = stopDate;
         this.date = date;
     }
 
@@ -67,6 +76,30 @@ public class Wisdom {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getStartDate() {
+        return this.startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getStopDate() {
+        return this.stopDate;
+    }
+
+    public void setStopDate(Date stopDate) {
+        this.stopDate = stopDate;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 }
