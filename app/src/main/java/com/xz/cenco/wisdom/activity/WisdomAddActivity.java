@@ -15,6 +15,7 @@ import com.xz.cenco.wisdom.entity.WisdomDao;
 import java.util.Date;
 
 import cn.qqtheme.framework.picker.DatePicker;
+import cn.qqtheme.framework.picker.TimePicker;
 import cn.qqtheme.framework.util.ConvertUtils;
 
 public class WisdomAddActivity extends BaseActivity {
@@ -23,9 +24,13 @@ public class WisdomAddActivity extends BaseActivity {
     WisdomDao wisdomDao;
     EditText wisdomNameEt;
     EditText commentEt;
-    Button stopDate;
-    Button startDate;
+    Button stopDateBtn;
+    Button startDateBtn;
+    Button startPeriodBtn;
+    Button stopPeriodBtn;
     String typeName;
+    String startDate;
+    String stopDate;
     String startTime;
     String stopTime;
     long typeId;
@@ -34,35 +39,61 @@ public class WisdomAddActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wisdom_add);
-        wisdomNameEt = findViewById(R.id.wisdomName);
-        commentEt = findViewById(R.id.comment);
-        startDate = findViewById(R.id.startDate);
-        stopDate = findViewById(R.id.stopDate);
+
         wisdomDao = getApp().getDaoSession().getWisdomDao();
         typeName = getIntent().getStringExtra("typeName");
         typeId = getIntent().getLongExtra("typeId", -1);
+
+        initView();
     }
 
+    private void initView() {
+        wisdomNameEt = findViewById(R.id.wisdomName);
+        commentEt = findViewById(R.id.comment);
+        startDateBtn = findViewById(R.id.startDate);
+        stopDateBtn = findViewById(R.id.stopDate);
+        startPeriodBtn = findViewById(R.id.startPeriod);
+        stopPeriodBtn = findViewById(R.id.stopPeriod);
 
-    public void onYearMonthDayPicker(final int tag) {
+        startDate = getDateString("2000","1","1");
+        stopDate = getDateString("2100","1","1");
+        startTime = getTimeString("0","0");
+        stopTime = getTimeString("23","59");
+        startDateBtn.setText(startDate);
+        stopDateBtn.setText(stopDate);
+        startPeriodBtn.setText(startTime);
+        stopPeriodBtn.setText(stopTime);
+
+    }
+
+    public String getDateString(String year,String month,String day){
+        String str = year + "-" + month + "-" + day;
+        return str;
+    }
+    public String getTimeString(String hour,String minute){
+        String str = hour + ":" + minute ;
+        return str;
+    }
+
+    public void onYearMonthDayPicker(final int tag,Date date) {
         final DatePicker picker = new DatePicker(this);
         picker.setCanceledOnTouchOutside(true);
         picker.setUseWeight(true);
         picker.setTopPadding(ConvertUtils.toPx(this, 10));
-        picker.setRangeEnd(2050, 1, 11);
-        picker.setRangeStart(2000, 8, 29);
-        picker.setSelectedItem(2018, 3, 14);
+        picker.setRangeEnd(2200, 1, 11);
+        picker.setRangeStart(1900, 8, 29);
+        picker.setSelectedItem(DateUtil.getYear(date), DateUtil.getMonth(date), DateUtil.getDay(date));
         picker.setResetWhileWheel(false);
         picker.setOnDatePickListener(new DatePicker.OnYearMonthDayPickListener() {
             @Override
             public void onDatePicked(String year, String month, String day) {
-                String str = year + "-" + month + "-" + day;
+                String str =getDateString(year,month,day);
                 if (tag == 0){
-                    startTime = str;
-                    startDate.setText(str);
+                    startDate = str;
+                    startDateBtn.setText(str);
                 }else {
-                    stopTime = str;
-                    stopDate.setText(str);
+                    stopDate = str;
+                    stopDateBtn.setText(str);
                 }
             }
         });
@@ -85,6 +116,44 @@ public class WisdomAddActivity extends BaseActivity {
         picker.show();
     }
 
+
+    public void onTimePicker(final int tag,Date date) {
+        final TimePicker picker = new TimePicker(this);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setUseWeight(true);
+        picker.setTopPadding(ConvertUtils.toPx(this, 10));
+
+        picker.setRangeEnd(23,59);
+        picker.setRangeStart(0,0);
+        picker.setSelectedItem(DateUtil.getHour(date), DateUtil.getMinute(date));
+        picker.setResetWhileWheel(false);
+        picker.setOnTimePickListener(new TimePicker.OnTimePickListener() {
+            @Override
+            public void onTimePicked(String hour, String minute) {
+                if (tag == 0){
+                    startTime = getTimeString(hour,minute);
+                    startPeriodBtn.setText(startTime);
+                }else {
+                    stopTime = getTimeString(hour,minute);
+                    stopPeriodBtn.setText(stopTime);
+                }
+            }
+        });
+        picker.setOnWheelListener(new TimePicker.OnWheelListener() {
+            @Override
+            public void onHourWheeled(int index, String hour) {
+                picker.setTitleText(hour+":"+picker.getSelectedMinute());
+            }
+
+            @Override
+            public void onMinuteWheeled(int index, String minute) {
+                picker.setTitleText(picker.getSelectedHour()+":"+minute);
+            }
+        });
+
+        picker.show();
+    }
+
     public void addClick(View view){
         String text = wisdomNameEt.getText().toString().trim();
         if (TextUtils.isEmpty(text)){
@@ -92,11 +161,11 @@ public class WisdomAddActivity extends BaseActivity {
             return;
         }
 
-        if(TextUtils.isEmpty(startTime)){
+        if(TextUtils.isEmpty(startDate)){
             ToastUtil.show(this,"开始时间不能为空");
             return;
         }
-        if(TextUtils.isEmpty(stopTime)){
+        if(TextUtils.isEmpty(stopDate)){
             ToastUtil.show(this,"结束时间不能为空");
             return;
         }
@@ -105,8 +174,10 @@ public class WisdomAddActivity extends BaseActivity {
         wisdom.setText(text);
         wisdom.setType(typeId);
         wisdom.setDate(new Date());
-        wisdom.setStartDate(DateUtil.getDate(startTime,DateUtil.FORMAT_YMD));
-        wisdom.setStopDate(DateUtil.getDate(stopTime,DateUtil.FORMAT_YMD));
+        wisdom.setStartDate(startDate);
+        wisdom.setStopDate(stopDate);
+        wisdom.setStartPeriodTime(startTime);
+        wisdom.setStopPeriodTime(stopTime);
         wisdom.setComment(commentEt.getText().toString().trim());
         wisdomDao.insert(wisdom);
 
@@ -115,10 +186,24 @@ public class WisdomAddActivity extends BaseActivity {
     }
 
     public void onStartDateClick(View view) {
-        onYearMonthDayPicker(0);
+        Date date = DateUtil.getDate(startDate, DateUtil.FORMAT_YMD);
+        onYearMonthDayPicker(0,date);
+
     }
 
     public void onStopDateClick(View view) {
-        onYearMonthDayPicker(1);
+        Date date = DateUtil.getDate(stopDate, DateUtil.FORMAT_YMD);
+        onYearMonthDayPicker(1,date);
+    }
+
+    public void onStartPeriodClick(View view) {
+        Date date = DateUtil.getDate(startTime, DateUtil.FORMAT_HM);
+        onTimePicker(0,date);
+    }
+
+    public void onStopPeriodClick(View view) {
+        Date date = DateUtil.getDate(stopTime, DateUtil.FORMAT_HM);
+        onTimePicker(1,date);
+
     }
 }

@@ -17,16 +17,55 @@
         android:hint="备注"
         android:id="@+id/comment" />
 
-    <Button
-        style="@style/normalViewStyle"
-        android:onClick="onStartDateClick"
-        android:id="@+id/startDate"
-        android:text=" 开始日期 "/>
-    <Button
-        style="@style/normalViewStyle"
-        android:onClick="onStopDateClick"
-        android:id="@+id/stopDate"
-        android:text=" 结束日期 "/>
+    <RelativeLayout
+        style="@style/FullViewStyle"
+        >
+        <TextView
+            style="@style/normalViewStyle"
+            android:layout_centerVertical="true"
+            android:text="展示日期"/>
+        <Button
+            style="@style/normalViewStyle"
+            android:onClick="onStartDateClick"
+            android:id="@+id/startDate"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/stopDate"
+            android:text=" 开始日期 "/>
+        <Button
+            style="@style/normalViewStyle"
+            android:onClick="onStopDateClick"
+            android:id="@+id/stopDate"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text=" 结束日期 "/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        style="@style/FullViewStyle"
+        >
+        <TextView
+            style="@style/normalViewStyle"
+            android:layout_centerVertical="true"
+            android:text="展示时段"/>
+        <Button
+            style="@style/normalViewStyle"
+            android:onClick="onStartPeriodClick"
+            android:id="@+id/startPeriod"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/stopPeriod"
+            android:text=" 开始时段 "/>
+        <Button
+            style="@style/normalViewStyle"
+            android:onClick="onStopPeriodClick"
+            android:id="@+id/stopPeriod"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text=" 结束时段 "/>
+
+    </RelativeLayout>
+
 
     <Button
         style="@style/normalViewStyle"

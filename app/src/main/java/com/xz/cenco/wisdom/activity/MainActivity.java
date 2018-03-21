@@ -142,8 +142,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startWisdom();
-//        keepalive();
+        if(Settings.canDrawOverlays(this)){
+            startWisdom();
+        }else {
+            ToastUtil.show(this,"未开启悬浮窗权限");
+        }
     }
 
 

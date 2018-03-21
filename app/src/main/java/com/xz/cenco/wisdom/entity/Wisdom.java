@@ -23,22 +23,26 @@ public class Wisdom {
 
     private Long type;
 
-    private Date startDate;
-    private Date stopDate;
+    private String startDate;
+    private String stopDate;
+    private String startPeriodTime;
+    private String stopPeriodTime;
 
     @NotNull
     private Date date;
 
-
-    @Generated(hash = 1672336008)
+    @Generated(hash = 2143487901)
     public Wisdom(Long id, @NotNull String text, String comment, Long type,
-            Date startDate, Date stopDate, @NotNull Date date) {
+            String startDate, String stopDate, String startPeriodTime,
+            String stopPeriodTime, @NotNull Date date) {
         this.id = id;
         this.text = text;
         this.comment = comment;
         this.type = type;
         this.startDate = startDate;
         this.stopDate = stopDate;
+        this.startPeriodTime = startPeriodTime;
+        this.stopPeriodTime = stopPeriodTime;
         this.date = date;
     }
 
@@ -62,12 +66,52 @@ public class Wisdom {
         this.text = text;
     }
 
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public Long getType() {
         return this.type;
     }
 
     public void setType(Long type) {
         this.type = type;
+    }
+
+    public String getStartDate() {
+        return this.startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getStopDate() {
+        return this.stopDate;
+    }
+
+    public void setStopDate(String stopDate) {
+        this.stopDate = stopDate;
+    }
+
+    public String getStartPeriodTime() {
+        return this.startPeriodTime;
+    }
+
+    public void setStartPeriodTime(String startPeriodTime) {
+        this.startPeriodTime = startPeriodTime;
+    }
+
+    public String getStopPeriodTime() {
+        return this.stopPeriodTime;
+    }
+
+    public void setStopPeriodTime(String stopPeriodTime) {
+        this.stopPeriodTime = stopPeriodTime;
     }
 
     public Date getDate() {
@@ -78,28 +122,6 @@ public class Wisdom {
         this.date = date;
     }
 
-    public Date getStartDate() {
-        return this.startDate;
-    }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getStopDate() {
-        return this.stopDate;
-    }
-
-    public void setStopDate(Date stopDate) {
-        this.stopDate = stopDate;
-    }
-
-    public String getComment() {
-        return this.comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 
 }

@@ -15,6 +15,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
@@ -26,6 +27,8 @@ import com.xz.cenco.wisdom.entity.WisdomDao;
 import com.xz.cenco.wisdom.util.SPUtil;
 import com.xz.cenco.wisdom.util.Util;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -40,6 +43,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
     LinearLayout mFloatLayout;
 
     public static final int NOTICE_ID = 100;
+    int totalSecond;
 
     @Override
     public void onCreate()
@@ -210,14 +214,40 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
         App app = (App) getApplication();
         WisdomDao wisdomDao = app.getDaoSession().getWisdomDao();
         List<Wisdom> list = wisdomDao.queryBuilder().list();
-        if (list==null || list.size() ==0){
-            return "还没有添加名言警句!";
+        List<Wisdom> filterList = filter(list);
+        if (filterList==null || filterList.size() ==0){
+            return "好好学习，天天向上!";
         }
         Random random = new Random();
-        int index = random.nextInt(list.size());
-        Wisdom wisdom = list.get(index);
+        int index = random.nextInt(filterList.size());
+        Wisdom wisdom = filterList.get(index);
         return wisdom.getText();
 
+    }
+
+    private List<Wisdom> filter(List<Wisdom> list) {
+        if (list == null){
+            return null;
+        }
+        ArrayList<Wisdom> fliterList = new ArrayList<>();
+        Date date = new Date();
+        for(Wisdom wisdom : list){
+            String startDateStr = wisdom.getStartDate();
+            String stopDateStr = wisdom.getStopDate();
+            String startPeriodTimeStr = wisdom.getStartPeriodTime();
+            String stopPeriodTimeStr = wisdom.getStopPeriodTime();
+
+            Date startDate = DateUtil.getDate(startDateStr, DateUtil.FORMAT_YMD);
+            Date stopDate = DateUtil.getDate(stopDateStr, DateUtil.FORMAT_YMD);
+            Date startTime = DateUtil.getDate(startPeriodTimeStr, DateUtil.FORMAT_HM);
+            Date stopTime = DateUtil.getDate(stopPeriodTimeStr, DateUtil.FORMAT_HM);
+
+            if (DateUtil.isInPeriodDate(date,startDate,stopDate,DateUtil.FORMAT_YMD) && DateUtil.isInPeriodDate(date,startTime,stopTime,DateUtil.FORMAT_HM)){
+                fliterList.add(wisdom);
+            }
+
+        }
+        return fliterList;
     }
 
 
