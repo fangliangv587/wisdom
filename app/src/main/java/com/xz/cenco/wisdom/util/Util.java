@@ -2,6 +2,9 @@ package com.xz.cenco.wisdom.util;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
+import android.view.WindowManager;
+
 import com.cenco.lib.common.log.LogUtils;
 
 /**
@@ -28,5 +31,17 @@ public class Util {
         int blue1 = (blue + 255/2)%255;
         LogUtils.w("相反色：red:"+red1+",green:"+green1+",blue:"+blue1);
         return Color.argb(255,red1,green1,blue1);
+    }
+
+    /**
+     * 弹出框类型
+     * @return
+     */
+    public static int getWindowType(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            return WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else{
+            return WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        }
     }
 }

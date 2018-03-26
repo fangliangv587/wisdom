@@ -24,6 +24,7 @@ import com.xz.cenco.wisdom.ScreenListener;
 import com.xz.cenco.wisdom.activity.App;
 import com.xz.cenco.wisdom.entity.Wisdom;
 import com.xz.cenco.wisdom.entity.WisdomDao;
+import com.xz.cenco.wisdom.util.C;
 import com.xz.cenco.wisdom.util.SPUtil;
 import com.xz.cenco.wisdom.util.Util;
 
@@ -41,6 +42,8 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
 
     WindowManager mWindowManager;
     LinearLayout mFloatLayout;
+
+    List<Wisdom> filterList;
 
     public static final int NOTICE_ID = 100;
     int totalSecond;
@@ -135,7 +138,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
         mWindowManager = (WindowManager)getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         //设置window type
 //        wmParams.type = LayoutParams.TYPE_PHONE;
-        wmParams.type = LayoutParams.TYPE_SYSTEM_OVERLAY;
+        wmParams.type = Util.getWindowType();
         //设置图片格式，效果为背景透明
         wmParams.format = PixelFormat.RGBA_8888;
         //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
@@ -211,16 +214,22 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
 
 
     private String getShowWisdom(){
-        App app = (App) getApplication();
-        WisdomDao wisdomDao = app.getDaoSession().getWisdomDao();
-        List<Wisdom> list = wisdomDao.queryBuilder().list();
-        List<Wisdom> filterList = filter(list);
+        if (filterList==null || filterList.size() == 0){
+            App app = (App) getApplication();
+            WisdomDao wisdomDao = app.getDaoSession().getWisdomDao();
+            List<Wisdom> list = wisdomDao.queryBuilder().list();
+            filterList = filter(list);
+            LogUtils.d("查询数据库");
+        }
+
         if (filterList==null || filterList.size() ==0){
             return "好好学习，天天向上!";
         }
+
         Random random = new Random();
         int index = random.nextInt(filterList.size());
         Wisdom wisdom = filterList.get(index);
+        filterList.remove(index);
         return wisdom.getText();
 
     }
@@ -259,6 +268,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
 
     @Override
     public void onTimerOver() {
+        LogUtils.d("timer over:"+filterList.size());
         setFloatContent();
         int interval = SPUtil.getInterval(this);
         timerHelper.setTotalSecond(interval);

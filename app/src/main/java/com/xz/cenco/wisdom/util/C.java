@@ -4,6 +4,9 @@ import android.os.Environment;
 
 import java.io.File;
 
+import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+
 /**
  * Created by Administrator on 2018/3/6.
  */
@@ -28,9 +31,15 @@ public class C {
         public static final String backup_data_path = backup_path + File.separator +"data.txt";
     }
 
+    /**
+     * 请求码
+     */
     public static final class request{
         public static final int type_add = 0x0001;
         public static final int wisdom_add = 0x0002;
+    }
+
+    public static final class system{
     }
 
 }

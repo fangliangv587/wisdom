@@ -143,7 +143,7 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
         //获取的是WindowManagerImpl.CompatModeWrapper
         mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         //设置window type
-        wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        wmParams.type = Util.getWindowType();
         //设置图片格式，效果为背景透明
         wmParams.format = PixelFormat.RGBA_8888;
         wmParams.flags = SPUtil.getMode(this);

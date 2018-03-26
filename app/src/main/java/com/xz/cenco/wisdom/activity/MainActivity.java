@@ -1,5 +1,6 @@
 package com.xz.cenco.wisdom.activity;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.cenco.lib.common.PermissionManager;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.service.MyJobService;
@@ -36,8 +38,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        permission();
 
+    }
 
+    private void permission() {
+        PermissionManager manager = new PermissionManager(this);
+        manager.requestPermission(null, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @Override
