@@ -48,12 +48,12 @@ public class WisdomAddActivity extends BaseActivity {
     }
 
     private void initView() {
-        wisdomNameEt = findViewById(R.id.wisdomName);
-        commentEt = findViewById(R.id.comment);
-        startDateBtn = findViewById(R.id.startDate);
-        stopDateBtn = findViewById(R.id.stopDate);
-        startPeriodBtn = findViewById(R.id.startPeriod);
-        stopPeriodBtn = findViewById(R.id.stopPeriod);
+        wisdomNameEt = (EditText)findViewById(R.id.wisdomName);
+        commentEt =(EditText) findViewById(R.id.comment);
+        startDateBtn =(Button) findViewById(R.id.startDate);
+        stopDateBtn =(Button) findViewById(R.id.stopDate);
+        startPeriodBtn =(Button) findViewById(R.id.startPeriod);
+        stopPeriodBtn =(Button) findViewById(R.id.stopPeriod);
 
         startDate = getDateString("2000","1","1");
         stopDate = getDateString("2100","1","1");

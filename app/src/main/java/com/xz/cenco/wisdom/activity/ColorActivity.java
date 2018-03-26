@@ -37,9 +37,9 @@ public class ColorActivity extends BaseActivity implements SeekBar.OnSeekBarChan
 
     private void initView() {
 
-        redSeekbar = findViewById(R.id.redSeekbar);
-        greenSeekbar = findViewById(R.id.greenSeekbar);
-        blueSeekbar = findViewById(R.id.blueSeekbar);
+        redSeekbar =(SeekBar) findViewById(R.id.redSeekbar);
+        greenSeekbar =(SeekBar)  findViewById(R.id.greenSeekbar);
+        blueSeekbar = (SeekBar) findViewById(R.id.blueSeekbar);
         redSeekbar.setOnSeekBarChangeListener(this);
         greenSeekbar.setOnSeekBarChangeListener(this);
         blueSeekbar.setOnSeekBarChangeListener(this);

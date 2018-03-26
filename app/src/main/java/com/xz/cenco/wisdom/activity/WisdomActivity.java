@@ -60,11 +60,11 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
 
     private void initView() {
 
-        typeNameEt = findViewById(R.id.typeName);
+        typeNameEt = (EditText)findViewById(R.id.typeName);
 
         adapter = new ArrayAdapter<String>
                 (this,android.R.layout.simple_expandable_list_item_1,list);
-        ListView listView = findViewById(R.id.recycleView);
+        ListView listView = (ListView)findViewById(R.id.recycleView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);

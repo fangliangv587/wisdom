@@ -82,39 +82,39 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
         bgColorView = findViewById(R.id.bgColorView);
         bgColorView.setBackgroundColor(SPUtil.getBgColor(this));
 
-        alphaseekbar = findViewById(R.id.seekbar);
+        alphaseekbar = (SeekBar) findViewById(R.id.seekbar);
         alphaseekbar.setOnSeekBarChangeListener(this);
         int progress = (int) (SPUtil.getAlpha(this) * 100);
         alphaseekbar.setProgress(progress);
 
-        sizeseekbar = findViewById(R.id.sizeseekbar);
+        sizeseekbar = (SeekBar) findViewById(R.id.sizeseekbar);
         sizeseekbar.setOnSeekBarChangeListener(this);
         sizeseekbar.setProgress(SPUtil.getSize(this));
 
-        startSeekbar = findViewById(R.id.startSeekbar);
+        startSeekbar =(SeekBar)  findViewById(R.id.startSeekbar);
         startSeekbar.setOnSeekBarChangeListener(this);
         startSeekbar.setMax(ScreenUtil.getScreenWidth(this));
         int startX = SPUtil.getStartX(this);
         LogUtils.i("startX = "+ startX);
         startSeekbar.setProgress(startX);
 
-        stopSeekbar = findViewById(R.id.stopSeekbar);
+        stopSeekbar =(SeekBar)  findViewById(R.id.stopSeekbar);
         stopSeekbar.setOnSeekBarChangeListener(this);
         stopSeekbar.setMax(ScreenUtil.getScreenWidth(this));
         int stopX = SPUtil.getStopX(this);
         LogUtils.i("stopX = "+ stopX);
         stopSeekbar.setProgress(stopX);
 
-        bgCheck = findViewById(R.id.bgCheck);
+        bgCheck = (CheckBox) findViewById(R.id.bgCheck);
         bgCheck.setOnCheckedChangeListener(this);
         bgCheck.setChecked(SPUtil.hasBgColor(this));
         bgColorView.setEnabled(SPUtil.hasBgColor(this));
 
-        textDirectionCheck = findViewById(R.id.textDirection);
+        textDirectionCheck =(CheckBox)  findViewById(R.id.textDirection);
         textDirectionCheck.setOnCheckedChangeListener(this);
         textDirectionCheck.setChecked(SPUtil.getOritation(this));
 
-        intervalTime = findViewById(R.id.intervalTime);
+        intervalTime =(EditText) findViewById(R.id.intervalTime);
         intervalTime.setText(""+SPUtil.getInterval(this));
 
     }
@@ -159,7 +159,7 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
         mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout2, null);
         mFloatLayout.setOnTouchListener(this);
         mWindowManager.addView(mFloatLayout, wmParams);
-        mFloatTv = mFloatLayout.findViewById(R.id.float_id);
+        mFloatTv =(TextView) mFloatLayout.findViewById(R.id.float_id);
 
         resetFloatView();
     }

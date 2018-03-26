@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,6 @@ import com.xz.cenco.wisdom.ScreenListener;
 import com.xz.cenco.wisdom.activity.App;
 import com.xz.cenco.wisdom.entity.Wisdom;
 import com.xz.cenco.wisdom.entity.WisdomDao;
-import com.xz.cenco.wisdom.util.C;
 import com.xz.cenco.wisdom.util.SPUtil;
 import com.xz.cenco.wisdom.util.Util;
 
@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class WisdomService extends Service implements TimerHelper.TimerListener {
+public class WisdomService extends Service implements TimerHelper.TimerListener, View.OnSystemUiVisibilityChangeListener {
 
     TextView mFloatTv;
     TimerHelper timerHelper;
@@ -44,6 +44,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
     LinearLayout mFloatLayout;
 
     List<Wisdom> filterList;
+    ActivityMonitorThread monitorThread;
 
     public static final int NOTICE_ID = 100;
     int totalSecond;
@@ -57,11 +58,13 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
         initView();
         initTimer();
         initScreenListner();
-        startForeground();
+        startActivityMonitor();
     }
 
-    private void startForeground() {
+    private void startActivityMonitor() {
 
+//        monitorThread = new ActivityMonitorThread(this);
+//        monitorThread.start();
     }
 
     private void initView() {
@@ -159,10 +162,13 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
         //获取浮动窗口视图所在布局  
         mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout2, null);
 //        mFloatLayout.setBackgroundColor(Color.argb(128,255,0,0));
+        mFloatLayout.setOnSystemUiVisibilityChangeListener(this);
         //添加mFloatLayout  
-        mWindowManager.addView(mFloatLayout, wmParams);  
+        mWindowManager.addView(mFloatLayout, wmParams);
+
+
         //浮动窗口按钮  
-        mFloatTv = mFloatLayout.findViewById(R.id.float_id);
+        mFloatTv = (TextView) mFloatLayout.findViewById(R.id.float_id);
         resetFloatView();
 
 
@@ -208,6 +214,10 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
 
         if (screenListener!=null){
             screenListener.stop();
+        }
+
+        if (monitorThread!=null){
+            monitorThread.termination();
         }
         super.onDestroy();
     }
@@ -276,9 +286,11 @@ public class WisdomService extends Service implements TimerHelper.TimerListener 
     }
 
 
-
-
-
+    @Override
+    public void onSystemUiVisibilityChange(int visibility) {
+        int a = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        Log.d("xzsystemui","visibility:"+visibility);
+    }
 
 
 }

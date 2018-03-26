@@ -23,7 +23,7 @@ public class TypeAddActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_type_add);
         typeDao = getApp().getDaoSession().getWisdomTypeDao();
-        typeNameEt = findViewById(R.id.typeName);
+        typeNameEt =(EditText) findViewById(R.id.typeName);
     }
 
     public void addClick(View view){

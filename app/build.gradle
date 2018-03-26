@@ -31,6 +31,7 @@ dependencies {
     implementation rootProject.ext.dependencies["lib-common"]
     implementation rootProject.ext.dependencies["bugly"]
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.jaredrummler:android-processes:1.1.1'
     compile 'com.facebook.stetho:stetho:1.5.0'
     compile('cn.qqtheme.framework:WheelPicker:latest.release') {
         exclude group: 'com.android.support'

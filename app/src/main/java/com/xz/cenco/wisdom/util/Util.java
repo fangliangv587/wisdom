@@ -6,6 +6,7 @@ import android.os.Build;
 import android.view.WindowManager;
 
 import com.cenco.lib.common.log.LogUtils;
+import com.xz.cenco.wisdom.service.DetectionService;
 
 /**
  * Created by Administrator on 2018/2/27.
@@ -38,10 +39,20 @@ public class Util {
      * @return
      */
     public static int getWindowType(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            return WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        }else{
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//            return WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+//        }else{
             return WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        }
+//        }
+    }
+
+
+    /**
+     * 方法6：使用 Android AccessibilityService 探测窗口变化，跟据系统回传的参数获取 前台对象 的包名与类名
+     *
+     * @param packageName 需要检查是否位于栈顶的App的包名
+     */
+    public static boolean isForegroundPkgViaDetectionService(String packageName) {
+        return packageName.equals(DetectionService.foregroundPackageName);
     }
 }

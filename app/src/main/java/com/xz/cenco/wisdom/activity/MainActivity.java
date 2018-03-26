@@ -1,6 +1,8 @@
 package com.xz.cenco.wisdom.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
@@ -8,13 +10,17 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.cenco.lib.common.PermissionManager;
@@ -23,6 +29,12 @@ import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.service.MyJobService;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.service.WisdomService;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    final static String TAG = "AccessibilityUtil";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +54,113 @@ public class MainActivity extends AppCompatActivity {
         initView();
         permission();
 
+        setStatusBarDarkMode(true,this);
+
+        setupTransparentSystemBarsForLmp();
+
+        anyMethod();
+
+    }
+
+    // 此方法用来判断当前应用的辅助功能服务是否开启
+    public static boolean isAccessibilitySettingsOn(Context context) {
+        int accessibilityEnabled = 0;
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(context.getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+        if (accessibilityEnabled == 1) {
+            String services = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (services != null) {
+                return services.toLowerCase().contains(context.getPackageName().toLowerCase());
+            }
+        }
+
+        return false;
+    }
+
+    private void anyMethod() {
+        // 判断辅助功能是否开启
+        if (!isAccessibilitySettingsOn(this)) {
+            // 引导至辅助功能设置页面
+            startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+        } else {
+            // 执行辅助功能服务相关操作
+        }
+    }
+
+
+    public void test(){
+        List<ActivityManager.RunningAppProcessInfo> runningAppsInfo = new ArrayList<>();
+        PackageManager pm = getPackageManager();
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        am.getAppTasks();
+        List<ActivityManager.RunningServiceInfo> runningServices = am
+                .getRunningServices(Integer.MAX_VALUE);
+        for (ActivityManager.RunningServiceInfo service : runningServices) {
+
+            String pkgName = service.process.split(":")[0];
+
+            Activity activity=null;
+            activity.setTaskDescription(null);
+
+
+        }
+    }
+
+
+    private void setupTransparentSystemBarsForLmp() {
+        // TODO(sansid): use the APIs directly when compiling against L sdk.
+        // Currently we use reflection to access the flags and the API to set the transparency
+        // on the System bars.
+            String TAG = "systemBar";
+            try {
+                getWindow().getAttributes().systemUiVisibility |=
+                        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                Field drawsSysBackgroundsField = WindowManager.LayoutParams.class.getField(
+                        "FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS");
+                getWindow().addFlags(drawsSysBackgroundsField.getInt(null));
+
+                Method setStatusBarColorMethod =
+                        Window.class.getDeclaredMethod("setStatusBarColor", int.class);
+                Method setNavigationBarColorMethod =
+                        Window.class.getDeclaredMethod("setNavigationBarColor", int.class);
+                setStatusBarColorMethod.invoke(getWindow(), Color.TRANSPARENT);
+                setNavigationBarColorMethod.invoke(getWindow(), Color.TRANSPARENT);
+            } catch (NoSuchFieldException e) {
+                Log.w(TAG, "NoSuchFieldException while setting up transparent bars");
+            } catch (NoSuchMethodException ex) {
+                Log.w(TAG, "NoSuchMethodException while setting up transparent bars");
+            } catch (IllegalAccessException e) {
+                Log.w(TAG, "IllegalAccessException while setting up transparent bars");
+            } catch (IllegalArgumentException e) {
+                Log.w(TAG, "IllegalArgumentException while setting up transparent bars");
+            } catch (InvocationTargetException e) {
+                Log.w(TAG, "InvocationTargetException while setting up transparent bars");
+            } finally {}
+
+    }
+
+    public void setStatusBarDarkMode(boolean darkmode, Activity activity) {
+        Class<? extends Window> clazz = activity.getWindow().getClass();
+        try {
+            int darkModeFlag = 0;
+            Class<?> layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
+            Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
+            darkModeFlag = field.getInt(layoutParams);
+            Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
+            extraFlagField.invoke(activity.getWindow(), darkmode ? darkModeFlag : 0, darkModeFlag);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void permission() {
@@ -52,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         stopWisdom();
     }
+
+
 
 
     private void keepalive() {
@@ -155,6 +278,8 @@ public class MainActivity extends AppCompatActivity {
             ToastUtil.show(this,"未开启悬浮窗权限");
         }
     }
+
+
 
 
 }

@@ -4,8 +4,6 @@ import android.os.Environment;
 
 import java.io.File;
 
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 
 /**
  * Created by Administrator on 2018/3/6.
