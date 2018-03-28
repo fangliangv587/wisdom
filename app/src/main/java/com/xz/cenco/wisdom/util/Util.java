@@ -55,4 +55,21 @@ public class Util {
     public static boolean isForegroundPkgViaDetectionService(String packageName) {
         return packageName.equals(DetectionService.foregroundPackageName);
     }
+
+    public static String getColor(int color){
+        String red = Integer.toHexString(Color.red(color));
+        if (red.length() == 1){
+            red = "0"+ red;
+        }
+        String green = Integer.toHexString(Color.green(color));
+        if (green.length() == 1){
+            green = "0"+ green;
+        }
+        String blue = Integer.toHexString(Color.blue(color));
+        if (blue.length() == 1){
+            blue = "0"+ blue;
+        }
+
+        return "#"+red+green+blue;
+    }
 }

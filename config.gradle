@@ -2,7 +2,7 @@ ext {
     android_support_version = '25.1.0'
 
     android = [
-            compileSdkVersion: 25,
+            compileSdkVersion: 26,
             applicationId    : "com.xz.cenco.wisdom",
             minSdkVersion    : 23,
             targetSdkVersion : 25,

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -112,10 +113,15 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
     }
 
 
-    private void setFloatContent() {
+    private int setFloatContent() {
         String wisdom = getShowWisdom();
         mFloatTv.setText(wisdom);
         mFloatTv.setSelected(true);
+        if (TextUtils.isEmpty(wisdom)){
+            return 0;
+        }else {
+            return wisdom.length();
+        }
     }
 
     private void initTimer() {
@@ -279,9 +285,11 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
     @Override
     public void onTimerOver() {
         LogUtils.d("timer over:"+filterList.size());
-        setFloatContent();
+        int textLength = setFloatContent();
+        int textTime = textLength * 2;
         int interval = SPUtil.getInterval(this);
-        timerHelper.setTotalSecond(interval);
+        int max = textTime>interval?textTime:interval;
+        timerHelper.setTotalSecond(max);
         timerHelper.start();
     }
 

@@ -1,1 +1,1 @@
-include ':app', ':memorycheck', ':HdmiDemo', ':discovery'
+include ':app'
