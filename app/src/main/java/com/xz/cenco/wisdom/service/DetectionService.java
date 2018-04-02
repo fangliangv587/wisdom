@@ -3,14 +3,19 @@ package com.xz.cenco.wisdom.service;
 import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.view.View;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 import com.cenco.lib.common.log.LogUtils;
+import com.xz.cenco.wisdom.ScreenListener;
 import com.xz.cenco.wisdom.util.Util;
 
 import java.lang.reflect.Field;
@@ -26,12 +31,54 @@ public class DetectionService extends AccessibilityService {
     final static String TAG = "DetectionService";
 
     public static String foregroundPackageName;
+    ScreenListener screenListener;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return 0; // 根据需要返回不同的语义值
     }
 
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initScreenListner();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (screenListener!=null){
+            screenListener.stop();
+        }
+    }
+
+    private void initScreenListner() {
+        screenListener = new ScreenListener(this);
+        screenListener.begin(new ScreenListener.ScreenStateListener() {
+
+            @Override
+            public void onUserPresent() {
+                LogUtils.i( TAG,"解锁");
+
+            }
+
+            @Override
+            public void onScreenOn() {
+                KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+                boolean flag = mKeyguardManager.inKeyguardRestrictedInputMode();
+                LogUtils.i( TAG,"开屏  "+ flag);
+
+
+            }
+
+            @Override
+            public void onScreenOff() {
+                LogUtils.i(  TAG,"锁屏");
+
+            }
+        });
+    }
 
     /**
      * 重载辅助功能事件回调函数，对窗口状态变化事件进行处理
@@ -46,7 +93,7 @@ public class DetectionService extends AccessibilityService {
              */
             foregroundPackageName = event.getPackageName().toString();
 
-            LogUtils.w("onAccessibilityEvent","foregroundPackageName="+foregroundPackageName);
+            LogUtils.w(TAG,"foregroundPackageName="+foregroundPackageName);
 
             /*
              * 基于以下还可以做很多事情，比如判断当前界面是否是 Activity，是否系统应用等，
@@ -55,17 +102,17 @@ public class DetectionService extends AccessibilityService {
             ComponentName cName = new ComponentName(event.getPackageName().toString(),
                     event.getClassName().toString());
             String className = cName.getClassName();
-            LogUtils.i("onAccessibilityEvent","foregroundClassName="+className);
+            LogUtils.i(TAG,"foregroundClassName="+className);
 //            LogUtils.d(event.toString());
 
 
 //            getActivity();
 
-            AccessibilityNodeInfo rootNodeInfo = getRootInActiveWindow();
-
 
         }
     }
+
+
 
     public  Activity getActivity() {
         Class activityThreadClass = null;

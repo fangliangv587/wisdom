@@ -39,7 +39,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
 
     TextView mFloatTv;
     TimerHelper timerHelper;
-    ScreenListener screenListener;
+
 
     WindowManager mWindowManager;
     LinearLayout mFloatLayout;
@@ -58,7 +58,6 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
         LogUtils.i("FxService2 oncreate");
         initView();
         initTimer();
-        initScreenListner();
         startActivityMonitor();
     }
 
@@ -80,37 +79,37 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
         return START_STICKY;
 
     }
-
-    private void initScreenListner() {
-        screenListener = new ScreenListener(this);
-        screenListener.begin(new ScreenListener.ScreenStateListener() {
-
-            @Override
-            public void onUserPresent() {
-                LogUtils.i( "解锁");
-                mFloatTv.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onScreenOn() {
-                KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-                boolean flag = mKeyguardManager.inKeyguardRestrictedInputMode();
-                LogUtils.i( "开屏  "+ flag);
-                if (flag){
-                    mFloatTv.setVisibility(View.INVISIBLE);
-                }else {
-                    mFloatTv.setVisibility(View.VISIBLE);
-                }
-
-            }
-
-            @Override
-            public void onScreenOff() {
-                LogUtils.i(  "锁屏");
-                mFloatTv.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
+//
+//    private void initScreenListner() {
+//        screenListener = new ScreenListener(this);
+//        screenListener.begin(new ScreenListener.ScreenStateListener() {
+//
+//            @Override
+//            public void onUserPresent() {
+//                LogUtils.i( "screen","解锁");
+//                mFloatTv.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onScreenOn() {
+//                KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+//                boolean flag = mKeyguardManager.inKeyguardRestrictedInputMode();
+//                LogUtils.i( "screen","开屏  "+ flag);
+//                if (flag){
+//                    mFloatTv.setVisibility(View.INVISIBLE);
+//                }else {
+//                    mFloatTv.setVisibility(View.VISIBLE);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onScreenOff() {
+//                LogUtils.i(  "screen","锁屏");
+//                mFloatTv.setVisibility(View.INVISIBLE);
+//            }
+//        });
+//    }
 
 
     private int setFloatContent() {
@@ -218,9 +217,7 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
             mWindowManager.removeView(mFloatLayout);
         }
 
-        if (screenListener!=null){
-            screenListener.stop();
-        }
+
 
         if (monitorThread!=null){
             monitorThread.termination();

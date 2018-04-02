@@ -333,11 +333,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
     }
-    public void showClick(View view){
-        if (checkPermission()) return;
-        startWisdom();
-        finish();
-    }
+
 
 
     private boolean checkPermission() {
