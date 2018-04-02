@@ -1,5 +1,7 @@
 package com.xz.cenco.doctor;
 
+import com.cenco.lib.common.log.LogUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +12,11 @@ import java.util.List;
 public class DataHelper {
 
     private static List<FeeRatio> list;
+    private static List<Person> personList;
 
-    public static List<FeeRatio> getFeeRatios(){
+    public static List<FeeRatio> getFeeRatios() {
 
-        if (list != null){
+        if (list != null) {
             return list;
         }
         list = new ArrayList<>();
@@ -61,15 +64,85 @@ public class DataHelper {
         return list;
     }
 
-    public static int getTotalFee(int startAge,int liveAge,boolean withHealth){
-        List<FeeRatio> list = getFeeRatios();
-        int total =0;
 
-        for (int i = 0;i<list.size();i++){
+    public static int getTotalFee(int currentAge, int liveAge, boolean withHealth) {
+
+        int a = currentAge;
+        List<FeeRatio> list = getFeeRatios();
+        int total = 0;
+
+        for (int i = 0; i < list.size(); i++) {
             FeeRatio feeRatio = list.get(i);
-            int startAge1 = feeRatio.getStartAge();
+            int startAge = feeRatio.getStartAge();
             int stopAge = feeRatio.getStopAge();
+            boolean up = currentAge >= startAge && currentAge <= stopAge;
+            boolean down = currentAge <= liveAge;
+            for (int j = startAge; up && down && j <= stopAge; j++) {
+                int fee = withHealth ? feeRatio.getPriceWithHealth() : feeRatio.getPriceWithoutHealth();
+                total += fee;
+                LogUtils.d("年龄" + currentAge + "缴费" + fee);
+                currentAge++;
+                if (currentAge>liveAge){
+                    break;
+                }
+            }
+
         }
-        return 0;
+
+        LogUtils.d("年龄(" + a +"-"+liveAge + ")共缴费" + total);
+        return total;
+    }
+
+    public static int getYearFeeInFamily(int destYear){
+        List<Person> personList = getPersonList();
+        int total = 0;
+        for (Person p : personList){
+            int birthYear = p.getBirthYear();
+            int age = destYear - birthYear;
+            int totalFee = getTotalFee(age, age, p.isDoctor());
+
+
+            p.setDestYear(destYear);
+            p.setFee(totalFee);
+
+            total += totalFee;
+        }
+
+        return total;
+    }
+
+
+
+    public static List<Person> getPersonList(){
+
+        if(personList!=null){
+            return personList;
+        }
+        personList= new ArrayList<>();
+
+        Person person1 = new Person("心中", 1989, true);
+        Person person2 = new Person("姗姗", 1990, true);
+        Person person3 = new Person("姗爸", 1966, true);
+        Person person4 = new Person("姗妈", 1964, true);
+        Person person5 = new Person("忠爸", 1963, true);
+        Person person6 = new Person("忠妈", 1965, true);
+        personList.add(person1);
+        personList.add(person2);
+        personList.add(person3);
+        personList.add(person4);
+        personList.add(person5);
+        personList.add(person6);
+        return personList;
+    }
+
+
+    public static String getPersonString(){
+        List<Person> list = getPersonList();
+        StringBuffer sb = new StringBuffer();
+        for (Person p:list
+             ) {
+            sb.append(p.toString()+"\r\n");
+        }
+        return sb.toString();
     }
 }

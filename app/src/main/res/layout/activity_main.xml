@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.xz.cenco.wisdom.activity.MainActivity">
+    tools:context="com.xz.cenco.wisdom.com.xz.cenco.MainActivity">
 
     <Button
         style="@style/normalViewStyle"
@@ -18,11 +18,11 @@
         android:onClick="contentClick"
         />
 
+
     <Button
         style="@style/normalViewStyle"
-        android:text="展 示"
-        android:visibility="invisible"
-        android:onClick="showClick"
+        android:text="好医保"
+        android:onClick="doctorClick"
         />
 
 

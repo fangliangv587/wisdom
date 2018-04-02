@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.util.Util;
@@ -45,7 +46,7 @@ public class DetectionService extends AccessibilityService {
              */
             foregroundPackageName = event.getPackageName().toString();
 
-//            LogUtils.d("onAccessibilityEvent","foregroundPackageName="+foregroundPackageName);
+            LogUtils.w("onAccessibilityEvent","foregroundPackageName="+foregroundPackageName);
 
             /*
              * 基于以下还可以做很多事情，比如判断当前界面是否是 Activity，是否系统应用等，
@@ -58,7 +59,9 @@ public class DetectionService extends AccessibilityService {
 //            LogUtils.d(event.toString());
 
 
-            getActivity();
+//            getActivity();
+
+            AccessibilityNodeInfo rootNodeInfo = getRootInActiveWindow();
 
 
         }

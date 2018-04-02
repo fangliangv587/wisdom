@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/curAgeEt"
+        android:inputType="number"
+        android:hint="当前年龄"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/endAgeEt"
+        android:inputType="number"
+        android:layout_height="wrap_content"
+        android:hint="到期年龄"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="是否有医保"
+        android:id="@+id/hasDoctorCB"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="计算"
+        android:id="@+id/calcBtn"
+        android:onClick="sureClick"/>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/yearBtn"
+        android:text="年份选择"
+        android:onClick="yearClick"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/personFeeTv"/>
+
+</LinearLayout>

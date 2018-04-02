@@ -1,4 +1,4 @@
-package com.xz.cenco.wisdom.activity;
+package com.xz.cenco;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,12 +7,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
-import android.app.usage.UsageStats;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -28,11 +26,12 @@ import android.view.WindowManager;
 import com.cenco.lib.common.PermissionManager;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.log.LogUtils;
-import com.jaeger.library.StatusBarUtil;
+import com.xz.cenco.doctor.DoctorQueryActivity;
+import com.xz.cenco.wisdom.activity.SettingActivity;
+import com.xz.cenco.wisdom.activity.TypeActivity;
 import com.xz.cenco.wisdom.service.MyJobService;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.service.WisdomService;
-import com.xz.cenco.wisdom.util.ReflectionUtils;
 import com.xz.cenco.wisdom.util.Util;
 
 import java.lang.reflect.Field;
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         permission();
-
+        assist();
 
     }
 
@@ -175,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void anyMethod() {
+    private void assist() {
         // 判断辅助功能是否开启
         if (!isAccessibilitySettingsOn(this)) {
             // 引导至辅助功能设置页面
@@ -373,6 +372,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
+    public void doctorClick(View view) {
+        Intent intent = new Intent(this, DoctorQueryActivity.class);
+        startActivity(intent);
+    }
 }
