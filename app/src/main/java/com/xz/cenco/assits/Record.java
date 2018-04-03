@@ -117,12 +117,8 @@ public class Record {
      * @return
      */
     public int getStayTime(){
-        if (inTime == null){
-            inTime = DateUtil.getDateString(DateUtil.FORMAT_HMS);
-        }
-
-        if (outTime == null){
-            outTime = DateUtil.getDateString(DateUtil.FORMAT_HMS);
+        if (inTime == null || outTime == null){
+            return 0;
         }
 
         Date dateIn = DateUtil.getDate(inTime, DateUtil.FORMAT_HMS);

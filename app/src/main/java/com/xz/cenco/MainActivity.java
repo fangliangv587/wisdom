@@ -35,6 +35,9 @@ import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.service.WisdomService;
 import com.xz.cenco.wisdom.util.Util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -92,79 +95,12 @@ public class MainActivity extends AppCompatActivity {
             // 引导至辅助功能设置页面
             startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
         } else {
+            LogUtils.i("已经打开了");
             // 执行辅助功能服务相关操作
         }
     }
 
 
-    public void test(){
-        List<ActivityManager.RunningAppProcessInfo> runningAppsInfo = new ArrayList<>();
-        PackageManager pm = getPackageManager();
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        am.getAppTasks();
-        List<ActivityManager.RunningServiceInfo> runningServices = am
-                .getRunningServices(Integer.MAX_VALUE);
-        for (ActivityManager.RunningServiceInfo service : runningServices) {
-
-            String pkgName = service.process.split(":")[0];
-
-            Activity activity=null;
-            activity.setTaskDescription(null);
-
-
-        }
-    }
-
-
-    private void setupTransparentSystemBarsForLmp() {
-        // TODO(sansid): use the APIs directly when compiling against L sdk.
-        // Currently we use reflection to access the flags and the API to set the transparency
-        // on the System bars.
-            String TAG = "systemBar";
-            try {
-                getWindow().getAttributes().systemUiVisibility |=
-                        (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                Field drawsSysBackgroundsField = WindowManager.LayoutParams.class.getField(
-                        "FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS");
-                getWindow().addFlags(drawsSysBackgroundsField.getInt(null));
-
-                Method setStatusBarColorMethod =
-                        Window.class.getDeclaredMethod("setStatusBarColor", int.class);
-                Method setNavigationBarColorMethod =
-                        Window.class.getDeclaredMethod("setNavigationBarColor", int.class);
-                setStatusBarColorMethod.invoke(getWindow(), Color.TRANSPARENT);
-                setNavigationBarColorMethod.invoke(getWindow(), Color.TRANSPARENT);
-            } catch (NoSuchFieldException e) {
-                Log.w(TAG, "NoSuchFieldException while setting up transparent bars");
-            } catch (NoSuchMethodException ex) {
-                Log.w(TAG, "NoSuchMethodException while setting up transparent bars");
-            } catch (IllegalAccessException e) {
-                Log.w(TAG, "IllegalAccessException while setting up transparent bars");
-            } catch (IllegalArgumentException e) {
-                Log.w(TAG, "IllegalArgumentException while setting up transparent bars");
-            } catch (InvocationTargetException e) {
-                Log.w(TAG, "InvocationTargetException while setting up transparent bars");
-            } finally {}
-
-    }
-
-    public void setStatusBarDarkMode(boolean darkmode, Activity activity) {
-        Class<? extends Window> clazz = activity.getWindow().getClass();
-        try {
-            int darkModeFlag = 0;
-            Class<?> layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
-            Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
-            darkModeFlag = field.getInt(layoutParams);
-            Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
-            extraFlagField.invoke(activity.getWindow(), darkmode ? darkModeFlag : 0, darkModeFlag);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void permission() {
         PermissionManager manager = new PermissionManager(this);
