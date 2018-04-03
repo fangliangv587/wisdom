@@ -25,6 +25,12 @@
         android:onClick="doctorClick"
         />
 
+    <Button
+        style="@style/normalViewStyle"
+        android:text="轨迹记录"
+        android:onClick="recordClick"
+        />
+
 
 
 

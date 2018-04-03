@@ -1,12 +1,11 @@
 package com.xz.cenco.wisdom.util;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.WindowManager;
 
 import com.cenco.lib.common.log.LogUtils;
-import com.xz.cenco.wisdom.service.DetectionService;
 
 /**
  * Created by Administrator on 2018/2/27.
@@ -50,11 +49,10 @@ public class Util {
     /**
      * 方法6：使用 Android AccessibilityService 探测窗口变化，跟据系统回传的参数获取 前台对象 的包名与类名
      *
-     * @param packageName 需要检查是否位于栈顶的App的包名
      */
-    public static boolean isForegroundPkgViaDetectionService(String packageName) {
-        return packageName.equals(DetectionService.foregroundPackageName);
-    }
+//    public static boolean isForegroundPkgViaDetectionService(String packageName) {
+//        return packageName.equals(DetectionService.foregroundPackageName);
+//    }
 
     public static String getColor(int color){
         String red = Integer.toHexString(Color.red(color));
@@ -71,5 +69,18 @@ public class Util {
         }
 
         return "#"+red+green+blue;
+    }
+
+
+    public static String getProgramNameByPackageName(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        String name = null;
+        try {
+            name = pm.getApplicationLabel(
+                    pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA)).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 }

@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import com.cenco.lib.common.PermissionManager;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.log.LogUtils;
+import com.xz.cenco.assits.AssitActivity;
 import com.xz.cenco.doctor.DoctorQueryActivity;
 import com.xz.cenco.wisdom.activity.SettingActivity;
 import com.xz.cenco.wisdom.activity.TypeActivity;
@@ -62,96 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void getActivityThread(){
-//        ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE) ;
-//        ActivityManager.getService();
-//        Context c = null;
-//        c.getApplicationContext();
-//        ActivityStack s;
-//        IApplicationThread ===> ActivityRecord .app.thread;
-//        TaskRecord t;
-    }
 
-    public  Activity getActivity() {
-        Class activityThreadClass = null;
-        try {
-            activityThreadClass = Class.forName("android.app.ActivityThread");
-
-            Method[] methods = activityThreadClass.getMethods();
-            Method[] declaredMethods = activityThreadClass.getDeclaredMethods();
-
-            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
-            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
-            activitiesField.setAccessible(true);
-            Map activities = (Map) activitiesField.get(activityThread);
-            for (Object activityRecord : activities.values()) {
-                Class activityRecordClass = activityRecord.getClass();
-                Field[] fields = activityRecordClass.getDeclaredFields();
-                LogUtils.d("---"+activityRecordClass.getName());
-                Field pausedField = activityRecordClass.getDeclaredField("paused");
-                Field activityField = activityRecordClass.getDeclaredField("activity");
-                Field windowField = activityRecordClass.getDeclaredField("window");
-                LogUtils.d("activity ---"+activityField.getName());
-
-                activityField.setAccessible(true);
-                windowField.setAccessible(true);
-                Object o = activityField.get(activityRecord);
-                Window w = (Window) windowField.get(activityRecord);
-
-                String name = o.getClass().getName();
-                String name1 = o.getClass().getPackage().getName();
-                LogUtils.d("activity ---"+activityField.getName());
-
-                int statusBarColor = w.getStatusBarColor();
-                String sss = Util.getColor(statusBarColor);
-                LogUtils.i("getWindow statusBarColor color  ="+sss);
-            }
-        }  catch (Exception e) {
-            e.printStackTrace();
-            LogUtils.e(e.getMessage());
-        }
-        return null;
-    }
-
-
-    public void getStatusBarColor(String className){
-
-
-        int statusBarColor = this.getWindow().getStatusBarColor();
-        String sss = Util.getColor(statusBarColor);
-        LogUtils.i("getWindow statusBarColor color  ="+sss);
-
-        try {
-            LogUtils.d(className);
-
-
-
-
-            AppCompatActivity instance = (AppCompatActivity) Class.forName(className).newInstance();
-            Window window = instance.getWindow();
-            LogUtils.w("window:"+window);
-//            int statusBarColor1 = window.getStatusBarColor();
-//            String sss1 = Util.getColor(statusBarColor1);
-//            LogUtils.w("getWindow statusBarColor color  ="+sss1);
-
-
-//            Object value = ReflectionUtils.getFieldValue(this, "mTaskDescription");
-//            LogUtils.i("ReflectionUtils getFieldValue ="+value);
-//            int mColorBackground = (int) ReflectionUtils.getFieldValue(value, "mColorBackground");
-//            int colorPrimary = (int) ReflectionUtils.getFieldValue(value, "mColorPrimary");
-//            LogUtils.i("ReflectionUtils mColorBackground ="+mColorBackground);
-//            LogUtils.i("ReflectionUtils colorPrimary ="+colorPrimary);
-//            String color1 = Util.getColor(mColorBackground);
-//            String color2 = Util.getColor(colorPrimary);
-//            LogUtils.i("ReflectionUtils mColorBackground color  ="+color1);
-//            LogUtils.i("ReflectionUtils colorPrimary color  ="+color2);
-
-
-        }catch (Exception e) {
-            e.printStackTrace();
-            LogUtils.e("onAccessibilityEvent","NoSuchFieldException:"+e.getMessage());
-        }
-    }
 
     // 此方法用来判断当前应用的辅助功能服务是否开启
     public static boolean isAccessibilitySettingsOn(Context context) {
@@ -323,8 +235,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    public void recordClick(View view){
+        Intent intent = new Intent(this, AssitActivity.class);
+        startActivity(intent);
+    }
     public void contentClick(View view){
-        getActivity();
+
         Intent intent = new Intent(this, TypeActivity.class);
         startActivity(intent);
     }

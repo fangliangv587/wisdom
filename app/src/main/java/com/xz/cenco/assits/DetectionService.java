@@ -1,24 +1,23 @@
-package com.xz.cenco.wisdom.service;
+package com.xz.cenco.assits;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.view.View;
+import android.text.TextUtils;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityWindowInfo;
 
+import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.ScreenListener;
+import com.xz.cenco.wisdom.activity.App;
 import com.xz.cenco.wisdom.util.Util;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,16 +27,12 @@ import java.util.Map;
  */
 public class DetectionService extends AccessibilityService {
 
-    final static String TAG = "DetectionService";
+    final  String TAG = this.getClass().getName();
 
-    public static String foregroundPackageName;
-    ScreenListener screenListener;
+    private ScreenListener screenListener;
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return 0; // 根据需要返回不同的语义值
-    }
-
+    private String frontPackage;
+    private String curPackage;
 
     @Override
     public void onCreate() {
@@ -52,6 +47,70 @@ public class DetectionService extends AccessibilityService {
             screenListener.stop();
         }
     }
+
+
+
+    /**
+     * 重载辅助功能事件回调函数，对窗口状态变化事件进行处理
+     * @param event
+     */
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            /*
+             * 如果 与 DetectionService 相同进程，直接比较 foregroundPackageName 的值即可
+             * 如果在不同进程，可以利用 Intent 或 bind service 进行通信
+             */
+            String packageName = event.getPackageName().toString();
+
+            LogUtils.w(TAG,"foregroundPackageName="+packageName);
+
+
+            if (TextUtils.equals(this.curPackage,packageName)){
+
+            }else {
+                this.frontPackage = this.curPackage;
+                this.curPackage = packageName;
+                insertOrUpdate();
+            }
+
+
+        }
+    }
+
+
+    public void insertOrUpdate(){
+        App app = (App) getApplication();
+        RecordDao recordDao = app.getDaoSession().getRecordDao();
+
+        //更新旧的
+        if (this.frontPackage != null){
+            List<Record> list = recordDao.queryBuilder().orderDesc(RecordDao.Properties.Id).limit(1).list();
+            if (list!=null && list.size()>0){
+                Record record = list.get(0);
+                record.setOutTime(DateUtil.getDateString(DateUtil.FORMAT_HMS));
+                recordDao.update(record);
+            }
+        }
+
+        //插入新的
+        if (this.curPackage != null){
+            Record record = new Record();
+            record.setDate(DateUtil.getDateString(DateUtil.FORMAT_YMD));
+            record.setInTime(DateUtil.getDateString(DateUtil.FORMAT_HMS));
+            record.setPackageName(this.curPackage);
+            recordDao.insert(record);
+        }
+
+
+        List<Record> list = recordDao.queryBuilder().orderDesc(RecordDao.Properties.Id).limit(2).list();;
+        LogUtils.i("***********************");
+        for (int i = 0; i<list.size();i++){
+            LogUtils.d(i+":"+list.get(i).toString());
+        }
+
+    }
+
 
     private void initScreenListner() {
         screenListener = new ScreenListener(this);
@@ -79,40 +138,6 @@ public class DetectionService extends AccessibilityService {
             }
         });
     }
-
-    /**
-     * 重载辅助功能事件回调函数，对窗口状态变化事件进行处理
-     * @param event
-     */
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            /*
-             * 如果 与 DetectionService 相同进程，直接比较 foregroundPackageName 的值即可
-             * 如果在不同进程，可以利用 Intent 或 bind service 进行通信
-             */
-            foregroundPackageName = event.getPackageName().toString();
-
-            LogUtils.w(TAG,"foregroundPackageName="+foregroundPackageName);
-
-            /*
-             * 基于以下还可以做很多事情，比如判断当前界面是否是 Activity，是否系统应用等，
-             * 与主题无关就不再展开。
-             */
-            ComponentName cName = new ComponentName(event.getPackageName().toString(),
-                    event.getClassName().toString());
-            String className = cName.getClassName();
-            LogUtils.i(TAG,"foregroundClassName="+className);
-//            LogUtils.d(event.toString());
-
-
-//            getActivity();
-
-
-        }
-    }
-
-
 
     public  Activity getActivity() {
         Class activityThreadClass = null;
