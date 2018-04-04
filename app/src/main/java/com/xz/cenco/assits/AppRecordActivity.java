@@ -10,8 +10,12 @@ import com.xz.cenco.wisdom.activity.BaseActivity;
 import com.xz.cenco.wisdom.util.C;
 import com.xz.cenco.wisdom.util.Util;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import ezy.assist.compat.RomUtil;
 
 public class AppRecordActivity extends BaseActivity {
 
@@ -33,6 +37,9 @@ public class AppRecordActivity extends BaseActivity {
         listView = findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, appRecords);
         listView.setAdapter(adapter);
+
+
+
     }
 
     public List<String> getAppRecords(){
@@ -41,8 +48,16 @@ public class AppRecordActivity extends BaseActivity {
             return data;
         }
 
+        String romName = RomUtil.getName().toLowerCase();
+        String systemName = "android";
+
         List<Record> list = recordDao.queryBuilder().where(RecordDao.Properties.Date.eq(date)).list();
         for (Record r:list){
+            String packageName = r.getPackageName();
+            //跳过系统级应用
+            if (packageName.contains(romName) || packageName.contains(systemName)){
+                continue;
+            }
             data.add(getFormatString(r));
         }
         return data;
@@ -50,8 +65,8 @@ public class AppRecordActivity extends BaseActivity {
 
     public String getFormatString(Record r){
         int stayTime = r.getStayTime();
-//        return r.getId()+": "+r.getDate()+" "+ r.getInTime()+"进入，"+r.getOutTime()+"离开，驻留时间"+r.getStayTimeString(stayTime)+",应用:"+ Util.getProgramNameByPackageName(this,r.getPackageName());
-
-        return Util.getProgramNameByPackageName(this,r.getPackageName())+"  "+ r.getInTime() + "-"+ r.getOutTime()+"    "+r.getStayTimeString(stayTime);
+        String str = Util.getProgramNameByPackageName(this,r.getPackageName())+"  "+ r.getInTime() + "-"+ r.getOutTime()+"    "+r.getStayTimeString(stayTime);
+        str = str +"\r\n"+r.getPackageName();
+        return str;
     }
 }

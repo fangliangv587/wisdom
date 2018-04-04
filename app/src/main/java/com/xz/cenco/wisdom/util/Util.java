@@ -3,6 +3,7 @@ package com.xz.cenco.wisdom.util;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.WindowManager;
 
 import com.cenco.lib.common.log.LogUtils;
@@ -38,11 +39,11 @@ public class Util {
      * @return
      */
     public static int getWindowType(){
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            return WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-//        }else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            return WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else{
             return WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-//        }
+        }
     }
 
 

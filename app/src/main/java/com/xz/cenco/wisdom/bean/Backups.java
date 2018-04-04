@@ -12,8 +12,25 @@ import java.util.List;
 
 public class Backups {
 
-    private List<Backup> data;
+    private List<Wisdom> wisdoms;
     private String date;
+    private Setting setting;
+
+    public Setting getSetting() {
+        return setting;
+    }
+
+    public void setSetting(Setting setting) {
+        this.setting = setting;
+    }
+
+    public List<Wisdom> getWisdoms() {
+        return wisdoms;
+    }
+
+    public void setWisdoms(List<Wisdom> wisdoms) {
+        this.wisdoms = wisdoms;
+    }
 
     public String getDate() {
         return date;
@@ -21,34 +38,5 @@ public class Backups {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public List<Backup> getData() {
-        return data;
-    }
-
-    public void setData(List<Backup> data) {
-        this.data = data;
-    }
-
-    public static class Backup{
-        private WisdomType type;
-        private List<Wisdom> wisdoms;
-
-        public WisdomType getType() {
-            return type;
-        }
-
-        public void setType(WisdomType type) {
-            this.type = type;
-        }
-
-        public List<Wisdom> getWisdoms() {
-            return wisdoms;
-        }
-
-        public void setWisdoms(List<Wisdom> wisdoms) {
-            this.wisdoms = wisdoms;
-        }
     }
 }

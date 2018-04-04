@@ -45,7 +45,7 @@ public class SPUtil {
 
     public static boolean getAutocolor(Context context){
         SharedPreferences sp = getSharedPreferences(context);
-        boolean alphaValue = sp.getBoolean(oritation,false);
+        boolean alphaValue = sp.getBoolean(autocolor,false);
         return alphaValue;
     }
 
@@ -67,7 +67,7 @@ public class SPUtil {
 
     public static float getAlpha(Context context){
         SharedPreferences sp = getSharedPreferences(context);
-        float alphaValue = sp.getFloat(alpha,0.5f);
+        float alphaValue = sp.getFloat(alpha,1);
         return alphaValue;
     }
     public static void setMode(Context context,int modeValue){
@@ -98,7 +98,7 @@ public class SPUtil {
 
     public static int getColor(Context context){
         SharedPreferences sp = getSharedPreferences(context);
-        int colorValue = sp.getInt(color, Color.DKGRAY);
+        int colorValue = sp.getInt(color, Color.WHITE);
         return colorValue;
     }
     public static void setBgColor(Context context,int colorValue){
@@ -130,7 +130,7 @@ public class SPUtil {
 
     public static int getSize(Context context){
         SharedPreferences sp = getSharedPreferences(context);
-        int sizeValue = sp.getInt(size,20);
+        int sizeValue = sp.getInt(size,12);
         return sizeValue;
     }
     public static void setPositionX(Context context,int positionXValue){

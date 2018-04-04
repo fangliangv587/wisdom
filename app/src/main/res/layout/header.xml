@@ -12,6 +12,13 @@
         <Button
             style="@style/normalViewStyle"
             android:textColor="#FFFFFF"
+            android:text="设置"
+            android:onClick="settingClick"
+            />
+
+        <Button
+            style="@style/normalViewStyle"
+            android:textColor="#FFFFFF"
             android:text="增加"
             android:onClick="addClick"
             android:layout_alignParentRight="true"

@@ -19,6 +19,8 @@ import com.xz.cenco.wisdom.entity.Wisdom;
 import com.xz.cenco.wisdom.entity.WisdomDao;
 import com.xz.cenco.wisdom.util.C;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +53,11 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
     }
 
 
+    public void settingClick(View view){
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
+    }
+
     public void addClick(View view){
         Intent intent = new Intent(this, WisdomAddActivity.class);
         intent.putExtra("typeName",typeName);
@@ -74,7 +81,11 @@ public class WisdomActivity extends BaseActivity implements AdapterView.OnItemCl
     }
 
     private void query(){
-        wisdoms = wisdomDao.queryBuilder().where(WisdomDao.Properties.Type.eq(typeId)).list();
+        QueryBuilder<Wisdom> builder = wisdomDao.queryBuilder();
+        if (typeId != -1){
+            builder.where(WisdomDao.Properties.Type.eq(typeId));
+        }
+        wisdoms = builder.list();
         Log.d("xztag", wisdoms.size()+"");
         toStringList(wisdoms);
         adapter.notifyDataSetChanged();

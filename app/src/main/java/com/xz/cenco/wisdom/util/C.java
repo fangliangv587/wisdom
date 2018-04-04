@@ -37,6 +37,8 @@ public class C {
     public static final class request{
         public static final int type_add = 0x0001;
         public static final int wisdom_add = 0x0002;
+        public static final int permission_dialog = 0x0003;
+        public static final int permission_assist = 0x0004;
     }
 
     public static final class system{

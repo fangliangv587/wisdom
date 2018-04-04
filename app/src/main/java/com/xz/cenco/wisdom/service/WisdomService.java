@@ -45,7 +45,6 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
     LinearLayout mFloatLayout;
 
     List<Wisdom> filterList;
-    ActivityMonitorThread monitorThread;
 
     public static final int NOTICE_ID = 100;
     int totalSecond;
@@ -219,9 +218,6 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
 
 
 
-        if (monitorThread!=null){
-            monitorThread.termination();
-        }
         super.onDestroy();
     }
 

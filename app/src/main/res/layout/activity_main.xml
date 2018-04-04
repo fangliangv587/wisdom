@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.xz.cenco.wisdom.com.xz.cenco.MainActivity">
+    tools:context="com.xz.cenco.MainActivity">
+
+
 
     <Button
         style="@style/normalViewStyle"
