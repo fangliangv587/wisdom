@@ -12,9 +12,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/infoTv"/>
 
-    <ListView
+    <com.xz.cenco.common.widget.TreeView
+        android:id="@+id/tree_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/listView"></ListView>
+        android:cacheColorHint="@android:color/transparent"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:groupIndicator="@null"
+        android:smoothScrollbar="true"
+        android:divider="@null" />
 
 </LinearLayout>

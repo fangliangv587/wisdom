@@ -94,23 +94,7 @@ public class Record {
                 '}';
     }
 
-    public String getStayTimeString(int seconds){
-        if (seconds<60){
-            return seconds+"秒";
-        }
 
-        if (seconds<60*60){
-            int minute = seconds/60;
-            int second = seconds%60;
-            return minute+"分"+second+"秒";
-        }
-
-        int hour = seconds/(60*60);
-        int sec = seconds % (60 * 60);
-        int minute = sec/60;
-        int second = sec%60;
-        return hour+"时"+minute+"分"+second+"秒";
-    }
 
     /**
      * 返回驻留时间，单位秒
