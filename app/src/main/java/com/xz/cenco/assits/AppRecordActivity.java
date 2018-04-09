@@ -78,9 +78,9 @@ public class AppRecordActivity extends BaseActivity {
                 continue;
             }
             //跳过系统级应用
-            if (packageName.contains(romName) || packageName.contains(systemName)){
-                continue;
-            }
+//            if (packageName.contains(romName) || packageName.contains(systemName)){
+//                continue;
+//            }
 
             Track track = containTrack(trackList, packageName);
             if (track == null){
