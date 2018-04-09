@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.IOUtils;
@@ -19,6 +20,7 @@ import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.assits.AssitActivity;
+import com.xz.cenco.assits.DayRecordListActivity;
 import com.xz.cenco.doctor.DoctorQueryActivity;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 import com.xz.cenco.wisdom.activity.SettingActivity;
@@ -43,6 +45,8 @@ import java.util.List;
 import ezy.assist.compat.SettingsCompat;
 
 public class MainActivity extends BaseActivity {
+
+    private TextView trackStateTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +85,15 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        stopWisdom();
+        startWisdom();
+        trackStateTv.setText(isAccessibilitySettingsOn(this)? "已开启":"未开启");
     }
 
     private void initView() {
-
+        trackStateTv = findViewById(R.id.track_state);
     }
+
+
 
     public void recordClick(View view){
 
@@ -104,7 +111,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        Intent intent = new Intent(this, AssitActivity.class);
+        Intent intent = new Intent(this, DayRecordListActivity.class);
         startActivity(intent);
     }
     public void contentClick(View view){

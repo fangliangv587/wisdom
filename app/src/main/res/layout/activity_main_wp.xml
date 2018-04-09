@@ -54,14 +54,19 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:layout_centerInParent="true"
+                android:id="@+id/track"
                 android:textColor="@android:color/white"
                 android:text="轨迹记录"/>
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/a"
-                android:visibility="invisible"
-                android:layout_centerInParent="true"/>
+                android:textSize="14sp"
+                android:id="@+id/track_state"
+                android:layout_below="@+id/track"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:textColor="#EAE7E7"
+                android:text="未开启"/>
 
         </RelativeLayout>
 

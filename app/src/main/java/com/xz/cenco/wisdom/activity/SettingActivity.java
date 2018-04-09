@@ -3,13 +3,17 @@ package com.xz.cenco.wisdom.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.WallpaperManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -29,7 +33,9 @@ import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xcolorpicker.android.OnColorSelectListener;
 import com.xcolorpicker.android.XColorPicker;
+import com.xz.cenco.MainActivity;
 import com.xz.cenco.wisdom.R;
+import com.xz.cenco.wisdom.service.WisdomService;
 import com.xz.cenco.wisdom.util.C;
 import com.xz.cenco.wisdom.util.SPUtil;
 import com.xz.cenco.wisdom.util.Util;
@@ -39,15 +45,15 @@ import com.xz.cenco.wisdom.util.WallpaperDrawable;
  * Created by Administrator on 2018/2/23.
  */
 
-public class SettingActivity extends Activity implements View.OnTouchListener,  SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
+public class SettingActivity extends Activity implements  SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener {
 
     //定义浮动窗口布局
-    LinearLayout mFloatLayout;
-    WindowManager.LayoutParams wmParams;
+//    LinearLayout mFloatLayout;
+//    WindowManager.LayoutParams wmParams;
     //创建浮动窗口设置布局参数的对象
-    WindowManager mWindowManager;
+//    WindowManager mWindowManager;
 
-    TextView mFloatTv;
+//    TextView mFloatTv;
     int downY = 0;
     Dialog dialog;
     View textColorView;
@@ -63,14 +69,28 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
     static  final int request_text_color  = 0x0001;
     static  final int request_bg_color  = 0x0002;
 
+    WisdomService wisdomService;
+
+    private ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            WisdomService.MyBinder binder = (WisdomService.MyBinder) service;
+            wisdomService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_setting);
-
-        createFloatView();
         initView();
+        bindService();
     }
 
     private void initView() {
@@ -138,77 +158,6 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
     }
 
 
-    private void createFloatView() {
-        wmParams = new WindowManager.LayoutParams();
-        //获取的是WindowManagerImpl.CompatModeWrapper
-        mWindowManager = (WindowManager) getApplication().getSystemService(getApplication().WINDOW_SERVICE);
-        //设置window type
-        wmParams.type = Util.getWindowType();
-        //设置图片格式，效果为背景透明
-        wmParams.format = PixelFormat.RGBA_8888;
-        wmParams.flags = SPUtil.getMode(this);
-//        wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        wmParams.gravity = Gravity.LEFT | Gravity.TOP;
-        wmParams.x = SPUtil.getPositionX(this);
-        wmParams.y = SPUtil.getPositionY(this);
-
-        wmParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        wmParams.height = Util.getStatusBarHeight(this);
-
-        LayoutInflater inflater = LayoutInflater.from(getApplication());
-        mFloatLayout = (LinearLayout) inflater.inflate(R.layout.float_layout2, null);
-        mFloatLayout.setOnTouchListener(this);
-        mWindowManager.addView(mFloatLayout, wmParams);
-        mFloatTv =(TextView) mFloatLayout.findViewById(R.id.float_id);
-
-        resetFloatView();
-    }
-
-    private void resetFloatView() {
-        mFloatTv.setAlpha(SPUtil.getAlpha(this));
-        mFloatTv.setTextSize(SPUtil.getSize(this));
-        mFloatTv.setTextColor(SPUtil.getColor(this));
-        if (SPUtil.hasBgColor(this)) {
-            mFloatTv.setBackgroundColor(SPUtil.getBgColor(this));
-        } else {
-            mFloatTv.setBackgroundColor(Color.TRANSPARENT);
-        }
-
-        int screenWidth = ScreenUtil.getScreenWidth(this);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mFloatTv.getLayoutParams();
-        int startX = SPUtil.getStartX(this);
-        int stopX = SPUtil.getStopX(this);
-//        LogUtil.i("startX="+startX+",stopX="+stopX);
-        params.rightMargin = screenWidth - stopX;
-        params.leftMargin = startX;
-        mFloatTv.setLayoutParams(params);
-    }
-
-    @Override
-    //此处必须返回false，否则OnClickListener获取不到监听
-    public boolean onTouch(View v, MotionEvent event) {
-        // TODO Auto-generated method stub
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                downY = (int) event.getRawY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int y = (int) event.getRawY();
-                int distance = y - downY;
-                wmParams.y += distance;
-                mWindowManager.updateViewLayout(mFloatLayout, wmParams);
-                SPUtil.setPositionY(this, wmParams.y);
-                downY = (int) event.getRawY();
-                break;
-            case MotionEvent.ACTION_UP:
-
-                break;
-        }
-
-//        return isClick;
-        return false;
-    }
-
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
@@ -218,9 +167,12 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
             SPUtil.setInterval(this,i);
         }
         super.onDestroy();
-        if (mFloatLayout != null) {
-            mWindowManager.removeView(mFloatLayout);
-        }
+
+    }
+
+    private void bindService() {
+        Intent intent = new Intent(this, WisdomService.class);
+        bindService(intent,conn, Context.BIND_AUTO_CREATE);
     }
 
 
@@ -234,17 +186,15 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
         if (seekBar == alphaseekbar) {
             float alpha = progress * 1.0f / 100;
             SPUtil.setAlpha(this, alpha);
-            resetFloatView();
         } else if (seekBar == sizeseekbar) {
             SPUtil.setSize(this, progress);
-            resetFloatView();
         }else if (seekBar == startSeekbar){
             SPUtil.setStartX(this,progress);
-            resetFloatView();
         }else if (seekBar == stopSeekbar){
             SPUtil.setStopX(this,progress);
-            resetFloatView();
         }
+
+        resetFloatWindow();
     }
 
     @Override
@@ -262,11 +212,12 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
         if (buttonView == bgCheck) {
             SPUtil.setHasBgColor(this, isChecked);
             bgColorView.setEnabled(isChecked);
-            resetFloatView();
         }
         if (buttonView == textDirectionCheck){
 
         }
+
+        resetFloatWindow();
     }
 
 
@@ -308,15 +259,20 @@ public class SettingActivity extends Activity implements View.OnTouchListener,  
             int color = data.getIntExtra(C.extra.color, 0);
             SPUtil.setColor(this,color);
             textColorView.setBackgroundColor(color);
-            return;
         }
 
         if (requestCode == request_bg_color){
             int color = data.getIntExtra(C.extra.color, 0);
             SPUtil.setBgColor(this,color);
             bgColorView.setBackgroundColor(color);
-            return;
         }
+        resetFloatWindow();
+    }
 
+
+    public void resetFloatWindow(){
+        if (wisdomService!=null){
+            wisdomService.resetFloatView();
+        }
     }
 }

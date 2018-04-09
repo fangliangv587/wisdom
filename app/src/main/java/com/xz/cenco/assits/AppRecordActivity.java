@@ -85,6 +85,7 @@ public class AppRecordActivity extends BaseActivity {
             Track track = containTrack(trackList, packageName);
             if (track == null){
                 List<Record> recordList = new ArrayList<>();
+                recordList.add(r);
                 track = new Track(packageName,r.getStayTime(),recordList);
                 trackList.add(track);
             }else {

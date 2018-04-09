@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -73,6 +74,11 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
     }
 
     @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtils.i("onStartCommand");
         return START_STICKY;
@@ -129,11 +135,19 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
         timerHelper.start();
     }
 
+    public class MyBinder extends Binder {
+
+        public WisdomService getService(){
+            return WisdomService.this;
+        }
+    }
+    private MyBinder binder = new MyBinder();
+
     @Override
     public IBinder onBind(Intent intent)
     {
         // TODO Auto-generated method stub
-        return null;
+        return binder;
     }
 
 
@@ -178,7 +192,12 @@ public class WisdomService extends Service implements TimerHelper.TimerListener,
 
     }
 
-    private void resetFloatView() {
+    public void resetFloatView() {
+
+        if (mFloatTv == null){
+            return;
+        }
+
         mFloatTv.setAlpha(SPUtil.getAlpha(this));
         mFloatTv.setTextSize(SPUtil.getSize(this));
         if (!SPUtil.getAutocolor(this)){
