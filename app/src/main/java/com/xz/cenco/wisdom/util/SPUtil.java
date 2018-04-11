@@ -31,6 +31,7 @@ public class SPUtil {
     private static final String autocolor = "autocolor";
     private static final String startX = "startX";
     private static final String stopX = "stopX";
+    private static final String containSystemProcess = "containSystemProcess";
 
     private static final int defaultMode = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCHABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
@@ -38,6 +39,16 @@ public class SPUtil {
         return context.getSharedPreferences(spname, 0);
     }
 
+    public static void setContainSystemProcess(Context context,boolean alphaValue){
+        SharedPreferences sp = getSharedPreferences(context);
+        sp.edit().putBoolean(containSystemProcess,alphaValue).commit();
+    }
+
+    public static boolean getContainSystemProcess(Context context){
+        SharedPreferences sp = getSharedPreferences(context);
+        boolean alphaValue = sp.getBoolean(containSystemProcess,false);
+        return alphaValue;
+    }
     public static void setAutocolor(Context context,boolean alphaValue){
         SharedPreferences sp = getSharedPreferences(context);
         sp.edit().putBoolean(autocolor,alphaValue).commit();

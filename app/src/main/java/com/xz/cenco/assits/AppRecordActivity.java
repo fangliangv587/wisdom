@@ -6,7 +6,10 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,6 +17,7 @@ import com.xz.cenco.common.widget.TreeView;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 import com.xz.cenco.wisdom.util.C;
+import com.xz.cenco.wisdom.util.SPUtil;
 import com.xz.cenco.wisdom.util.Util;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -25,13 +29,15 @@ import java.util.List;
 
 import ezy.assist.compat.RomUtil;
 
-public class AppRecordActivity extends BaseActivity {
+public class AppRecordActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
     private RecordDao recordDao;
     private String date;
     private TextView infoTv;
     private ListView listView;
     private TreeView treeView;
+    private TreeViewAdapter adapter;
+    private boolean containSystem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +45,23 @@ public class AppRecordActivity extends BaseActivity {
         setContentView(R.layout.activity_app_record);
         date = getIntent().getStringExtra(C.extra.date);
         recordDao = getApp().getDaoSession().getRecordDao();
+
         infoTv = findViewById(R.id.infoTv);
+
+        containSystem = SPUtil.getContainSystemProcess(this);
+        CheckBox showSystemCb = findViewById(R.id.showSystemCb);
+        showSystemCb.setOnCheckedChangeListener(this);
+        showSystemCb.setChecked(containSystem);
+
         infoTv.setText(date);
 
         treeView = (TreeView) findViewById(R.id.tree_view);
         treeView.setHeaderView(getLayoutInflater().inflate(R.layout.list_head_view, treeView,
                 false));
-        TreeViewAdapter adapter = new TreeViewAdapter(this, treeView);
+        adapter = new TreeViewAdapter(this, treeView);
         List<Track> appTrackList = getAppTrack();
         adapter.setData(appTrackList);
         treeView.setAdapter(adapter);
-
-//        List<String> appRecords = getAppRecords();
-//        listView = findViewById(R.id.listView);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, appRecords);
-//        listView.setAdapter(adapter);
-
-
 
     }
 
@@ -63,9 +69,6 @@ public class AppRecordActivity extends BaseActivity {
         if (date == null){
             return null;
         }
-
-        String romName = RomUtil.getName().toLowerCase();
-        String systemName = "android";
 
         List<Record> list = recordDao.queryBuilder().where(RecordDao.Properties.Date.eq(date)).list();
         List<Track> trackList = new ArrayList<>();
@@ -78,9 +81,11 @@ public class AppRecordActivity extends BaseActivity {
                 continue;
             }
             //跳过系统级应用
-//            if (packageName.contains(romName) || packageName.contains(systemName)){
-//                continue;
-//            }
+            if (!containSystem){
+                if (isSystem(packageName)){
+                    continue;
+                }
+            }
 
             Track track = containTrack(trackList, packageName);
             if (track == null){
@@ -123,6 +128,19 @@ public class AppRecordActivity extends BaseActivity {
         return trackList;
     }
 
+    public boolean isSystem(String packageName){
+        String romName = RomUtil.getName().toLowerCase();
+        String[] tags ={romName,"android","system"};
+
+        for (String tag : tags){
+            if (packageName.contains(tag)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public Track containTrack(List<Track> list,String packageName){
         if (list == null || TextUtils.isEmpty(packageName)){
@@ -143,5 +161,15 @@ public class AppRecordActivity extends BaseActivity {
         String str = Util.getProgramNameByPackageName(this,r.getPackageName())+"  "+ r.getInTime() + "-"+ r.getOutTime()+"    "+Util.getStayTimeString(stayTime);
         str = str +"\r\n"+r.getPackageName();
         return str;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        containSystem = isChecked;
+        List<Track> appTrackList = getAppTrack();
+        SPUtil.setContainSystemProcess(this,isChecked);
+        if (adapter == null)return;
+        adapter.setData(appTrackList);
+        adapter.notifyDataSetChanged();
     }
 }

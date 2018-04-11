@@ -99,7 +99,6 @@ private Context context;
         Track track = getGroup(groupPosition);
 
         holder.name.setText(text);
-        holder.state.setText("Test state...");
         holder.icon.setImageDrawable(track.getDrawable());
         return convertView;
     }
@@ -119,12 +118,10 @@ private Context context;
 
     private class ChildHolder {
         TextView name;
-        TextView state;
         ImageView icon;
 
         public ChildHolder(View view) {
             name = (TextView) view.findViewById(R.id.contact_list_item_name);
-            state = (TextView) view.findViewById(R.id.cpntact_list_item_state);
             icon = (ImageView) view.findViewById(R.id.icon);
         }
     }
@@ -139,7 +136,12 @@ private Context context;
         GroupHolder holder = getGroupHolder(convertView);
 
         Track track = data.get(groupPosition);
-        String text = track.getAppName(context)+"("+track.getStanderTimeString()+")";
+
+        String appName = track.getAppName(context);
+        if (appName.contains(".")){
+            appName = appName.substring(appName.lastIndexOf(".")+1);
+        }
+        String text = appName+"("+track.getStanderTimeString()+")";
         holder.name.setText(text);
         holder.packageTv.setText(track.getPackageName());
         holder.onlineNum.setText(getChildrenCount(groupPosition) + "/" + getChildrenCount(groupPosition));

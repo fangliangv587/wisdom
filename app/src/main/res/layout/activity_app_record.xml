@@ -12,6 +12,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/infoTv"/>
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/showSystemCb"
+        android:text="显示系统程序"/>
+
     <com.xz.cenco.common.widget.TreeView
         android:id="@+id/tree_view"
         android:layout_width="match_parent"
