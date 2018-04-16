@@ -22,6 +22,7 @@ import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.assits.AssitActivity;
 import com.xz.cenco.assits.DayRecordListActivity;
 import com.xz.cenco.doctor.DoctorQueryActivity;
+import com.xz.cenco.test.TestActivity;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 import com.xz.cenco.wisdom.activity.SettingActivity;
 import com.xz.cenco.wisdom.activity.TypeActivity;
@@ -79,7 +80,7 @@ public class MainActivity extends BaseActivity {
 
     private void commonPermission() {
         PermissionManager manager = new PermissionManager(this);
-        manager.requestPermission(null, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        manager.requestPermission(null, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
     }
 
     @Override
@@ -254,5 +255,10 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
+    }
+
+    public void testClick(View view) {
+        Intent intent = new Intent(this, TestActivity.class);
+        startActivity(intent);
     }
 }
