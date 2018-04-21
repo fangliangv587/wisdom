@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.xz.cenco.test.async.AsyncActivity;
 import com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.activity.BaseActivity;
@@ -22,6 +23,11 @@ public class TestActivity extends BaseActivity {
 
     public void baiduPoliceVertifyClick(View view) {
         Intent intent = new Intent(this, PoliceVertifyActivity.class);
+        startActivity(intent);
+    }
+
+    public void asynClick(View view) {
+        Intent intent = new Intent(this, AsyncActivity.class);
         startActivity(intent);
     }
 }

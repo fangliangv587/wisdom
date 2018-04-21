@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cenco.lib.common.AssetUtil;
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.PermissionManager;
@@ -55,6 +56,11 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main_wp);
         initView();
         commonPermission();
+        actionReady();
+    }
+
+    private void actionReady() {
+        AssetUtil.copyFiles(this,"card",C.file.card_path);
     }
 
     // 此方法用来判断当前应用的辅助功能服务是否开启

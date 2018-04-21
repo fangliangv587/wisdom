@@ -4,7 +4,7 @@ ext {
     android = [
             compileSdkVersion: 26,
             applicationId    : "com.xz.cenco.wisdom",
-            minSdkVersion    : 23,
+            minSdkVersion    : 21,
             targetSdkVersion : 25,
             versionCode      : 1,
             versionName      : "1.0"

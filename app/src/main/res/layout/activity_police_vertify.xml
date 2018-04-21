@@ -12,10 +12,66 @@
         android:id="@+id/cameraView"
         android:layout_height="match_parent" />
 
-    <Button
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="vertifyClick"
-        android:text="公安验证"/>
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:id="@+id/cardIv"/>
+
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:layout_marginLeft="50dp"
+            android:id="@+id/cameraIv"/>
+
+    </LinearLayout>
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:id="@+id/aliveTv"/>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="aliveClick"
+            android:text="活体检测"/>
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:id="@+id/takeCompareTv"/>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="takeCompareClick"
+            android:text="拍照比对"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vertifyTv"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="vertifyClick"
+            android:text="公安验证"/>
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>

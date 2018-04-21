@@ -53,10 +53,10 @@
 
         <activity android:name="com.xz.cenco.assits.AssitActivity" />
         <activity android:name="com.xz.cenco.assits.DayRecordListActivity" />
-        <activity android:name="com.xz.cenco.assits.AppRecordActivity"></activity>
-
-        <activity android:name="com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity"></activity>
-        <activity android:name="com.xz.cenco.test.TestActivity"></activity>
+        <activity android:name="com.xz.cenco.assits.AppRecordActivity" />
+        <activity android:name="com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity" />
+        <activity android:name="com.xz.cenco.test.TestActivity" />
+        <activity android:name="com.xz.cenco.test.async.AsyncActivity"></activity>
     </application>
 
 </manifest>
