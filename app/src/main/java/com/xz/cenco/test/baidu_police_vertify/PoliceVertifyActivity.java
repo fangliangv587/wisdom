@@ -2,6 +2,7 @@ package com.xz.cenco.test.baidu_police_vertify;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
@@ -40,13 +41,14 @@ public class PoliceVertifyActivity extends Activity implements CameraView.Camera
     private TextView takeCompareTv;
     private TextView vertifyTv;
     private TextView aliveTv;
+    private CameraView cameraView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_police_vertify);
 
-        CameraView cameraView = findViewById(R.id.cameraView);
+        cameraView = findViewById(R.id.cameraView);
         cameraView.addListener(this);
         cameraView.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
         initToken();
@@ -141,10 +143,22 @@ public class PoliceVertifyActivity extends Activity implements CameraView.Camera
         HttpParams params = new HttpParams();
         params.put("images",images);
         params.put("image_liveness",image_liveness);
-        HttpUtil.post(url, params, new SimpleDialogCallback<String>(this) {
+        HttpUtil.post(url, params, new SimpleDialogCallback<BMatchResult>(this) {
             @Override
-            public void onSuccess(String s) {
-                takeCompareTv.setText(s);
+            public void onSuccess(BMatchResult s) {
+                String[] aliveness = s.getExt_info().getFaceliveness().split(",");
+                double alive = Double.parseDouble(aliveness[1]);
+                String str = null;
+                if (alive>=BUtil.threshold){
+                    str = "活体检测成功";
+                    LogUtils.w("是活体");
+                    takeCompareTv.setTextColor(Color.YELLOW);
+                }else {
+                    str = "活体检测失败";
+                    LogUtils.e("不是活体");
+                    takeCompareTv.setTextColor(Color.RED);
+                }
+                takeCompareTv.setText(str+"："+alive);
             }
 
             @Override
@@ -163,7 +177,6 @@ public class PoliceVertifyActivity extends Activity implements CameraView.Camera
     public void aliveClick(View view) {
 
         //官方推荐阈值
-        final double threshold= 0.393241;
 
         StringBuilder sb = new StringBuilder(ALIVE_URL);
         sb.append("?access_token=").append(token);
@@ -183,12 +196,14 @@ public class PoliceVertifyActivity extends Activity implements CameraView.Camera
                 double faceliveness = bAliveResult.getResult().get(0).getFaceliveness();
                 LogUtils.i("活体结果:"+bAliveResult.getResult().get(0).getFaceliveness());
                 String str=null;
-                if (faceliveness>=threshold){
+                if (faceliveness>=BUtil.threshold){
                     LogUtils.w("是活体");
-                    str="活体检测成功";
+                    str="活体检测成功:"+faceliveness;
+                    aliveTv.setTextColor(Color.YELLOW);
                 }else {
                     LogUtils.e("不是活体");
-                    str="活体检测失败";
+                    str="活体检测失败:"+faceliveness;
+                    aliveTv.setTextColor(Color.RED);
                 }
                 aliveTv.setText(str);
             }
@@ -199,5 +214,9 @@ public class PoliceVertifyActivity extends Activity implements CameraView.Camera
             }
         });
 
+    }
+
+    public void reverseCameraClick(View view) {
+        cameraView.reverseCamera();
     }
 }

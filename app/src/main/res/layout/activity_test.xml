@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="baiduPoliceVertifyClick"
-        android:text="百度公安验证测试"/>
+        android:text="百度人脸测试"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
