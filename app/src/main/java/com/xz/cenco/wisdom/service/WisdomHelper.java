@@ -32,12 +32,16 @@ import java.util.List;
 import java.util.Random;
 
 
-public class WisdomHelper  implements TimerHelper.TimerListener {
+public class WisdomHelper implements TimerHelper.TimerListener {
 
 
     private Service service;
     private int total;
     private int tempTotal;
+    private TextView mFloatTv;
+    private WindowManager mWindowManager;
+    private LinearLayout mFloatLayout;
+    private List<Wisdom> filterList;
 
     public WisdomHelper(Service context) {
         this.service = context;
@@ -45,11 +49,11 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
         resetFloatView();
     }
 
-    public void start(){
+    public void start() {
         action();
     }
 
-    public void stop(){
+    public void stop() {
 
         if (mFloatLayout != null) {
             mWindowManager.removeView(mFloatLayout);
@@ -57,9 +61,7 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
     }
 
 
-
-    private void createFloatView()
-    {
+    private void createFloatView() {
         LayoutParams wmParams = new LayoutParams();
         //获取的是WindowManagerImpl.CompatModeWrapper
         mWindowManager = (WindowManager) service.getSystemService(Context.WINDOW_SERVICE);
@@ -80,7 +82,8 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
 
         //设置悬浮窗口长宽数据
         wmParams.width = LayoutParams.MATCH_PARENT;
-        wmParams.height = Util.getStatusBarHeight(service);;
+        wmParams.height = Util.getStatusBarHeight(service);
+        ;
 
         LayoutInflater inflater = LayoutInflater.from(service);
         //获取浮动窗口视图所在布局
@@ -96,23 +99,23 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
 
     public void resetFloatView() {
 
-        if (mFloatTv == null){
+        if (mFloatTv == null) {
             return;
         }
 
         mFloatTv.setAlpha(SPUtil.getAlpha(service));
         mFloatTv.setTextSize(SPUtil.getSize(service));
-        if (!SPUtil.getAutocolor(service)){
+        if (!SPUtil.getAutocolor(service)) {
             mFloatTv.setTextColor(SPUtil.getColor(service));
         }
-        if (SPUtil.hasBgColor(service)){
+        if (SPUtil.hasBgColor(service)) {
             int bgColor = SPUtil.getBgColor(service);
             int red = Color.red(bgColor);
             int green = Color.green(bgColor);
             int blue = Color.blue(bgColor);
-            LogUtils.i("背景色：red:"+red+",green:"+green+",blue:"+blue);
+            LogUtils.i("背景色：red:" + red + ",green:" + green + ",blue:" + blue);
             mFloatTv.setBackgroundColor(bgColor);
-        }else {
+        } else {
             mFloatTv.setBackgroundColor(Color.TRANSPARENT);
         }
 
@@ -121,7 +124,7 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mFloatTv.getLayoutParams();
         int startX = SPUtil.getStartX(service);
         int stopX = SPUtil.getStopX(service);
-        LogUtils.i("startX="+startX+",stopX="+stopX);
+        LogUtils.i("startX=" + startX + ",stopX=" + stopX);
         params.rightMargin = screenWidth - stopX;
         params.leftMargin = startX;
         mFloatTv.setLayoutParams(params);
@@ -130,8 +133,8 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
     }
 
 
-    private String getShowWisdom(){
-        if (filterList==null || filterList.size() == 0){
+    private String getShowWisdom() {
+        if (filterList == null || filterList.size() == 0) {
             App app = (App) service.getApplication();
             WisdomDao wisdomDao = app.getDaoSession().getWisdomDao();
             List<Wisdom> list = wisdomDao.queryBuilder().list();
@@ -139,7 +142,7 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
             LogUtils.d("查询数据库");
         }
 
-        if (filterList==null || filterList.size() ==0){
+        if (filterList == null || filterList.size() == 0) {
             return "好好学习，天天向上!";
         }
 
@@ -152,12 +155,12 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
     }
 
     private List<Wisdom> filter(List<Wisdom> list) {
-        if (list == null){
+        if (list == null) {
             return null;
         }
         ArrayList<Wisdom> fliterList = new ArrayList<>();
         Date date = new Date();
-        for(Wisdom wisdom : list){
+        for (Wisdom wisdom : list) {
             String startDateStr = wisdom.getStartDate();
             String stopDateStr = wisdom.getStopDate();
             String startPeriodTimeStr = wisdom.getStartPeriodTime();
@@ -168,7 +171,7 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
             Date startTime = DateUtil.getDate(startPeriodTimeStr, DateUtil.FORMAT_HM);
             Date stopTime = DateUtil.getDate(stopPeriodTimeStr, DateUtil.FORMAT_HM);
 
-            if (DateUtil.isInPeriodDate(date,startDate,stopDate,DateUtil.FORMAT_YMD) && DateUtil.isInPeriodDate(date,startTime,stopTime,DateUtil.FORMAT_HM)){
+            if (DateUtil.isInPeriodDate(date, startDate, stopDate, DateUtil.FORMAT_YMD) && DateUtil.isInPeriodDate(date, startTime, stopTime, DateUtil.FORMAT_HM)) {
                 fliterList.add(wisdom);
             }
 
@@ -177,7 +180,7 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
     }
 
 
-    private void action(){
+    private void action() {
         String wisdom = getShowWisdom();
         mFloatTv.setText(wisdom);
         mFloatTv.setSelected(true);
@@ -185,8 +188,8 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
         int textLength = wisdom.length();
         int textTime = textLength * 2;
         int interval = SPUtil.getInterval(service);
-        int max = textTime>interval?textTime:interval;
-        LogUtils.d(wisdom+"----显示时间:"+max);
+        int max = textTime > interval ? textTime : interval;
+        LogUtils.d(wisdom + "----显示时间:" + max);
 
         total = max;
         tempTotal = total;
@@ -195,40 +198,14 @@ public class WisdomHelper  implements TimerHelper.TimerListener {
     }
 
 
-
-
-    TextView mFloatTv;
-
-
-
-    WindowManager mWindowManager;
-    LinearLayout mFloatLayout;
-
-    List<Wisdom> filterList;
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
-    public void onTimerRunning(int current, int total,boolean isOver) {
+    public void onTimerRunning(int current, int total, boolean isOver) {
 
         tempTotal--;
-        if (tempTotal==0){
+        if (tempTotal == 0) {
             action();
         }
     }
-
-
-
-
 
 
 }

@@ -33,6 +33,8 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         wisdomHelper.start();
 
 
+
+
         timerHelper = new TimerHelper(this);
         timerHelper.setInterval(1);
         timerHelper.start();
