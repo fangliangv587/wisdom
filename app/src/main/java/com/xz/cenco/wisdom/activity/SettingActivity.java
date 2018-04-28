@@ -34,6 +34,7 @@ import com.cenco.lib.common.log.LogUtils;
 import com.xcolorpicker.android.OnColorSelectListener;
 import com.xcolorpicker.android.XColorPicker;
 import com.xz.cenco.MainActivity;
+import com.xz.cenco.weed.TimerService;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.service.WisdomService;
 import com.xz.cenco.wisdom.util.C;
@@ -69,12 +70,12 @@ public class SettingActivity extends Activity implements  SeekBar.OnSeekBarChang
     static  final int request_text_color  = 0x0001;
     static  final int request_bg_color  = 0x0002;
 
-    WisdomService wisdomService;
+    TimerService wisdomService;
 
     private ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            WisdomService.MyBinder binder = (WisdomService.MyBinder) service;
+            TimerService.MyBinder binder = (TimerService.MyBinder) service;
             wisdomService = binder.getService();
         }
 
@@ -171,7 +172,7 @@ public class SettingActivity extends Activity implements  SeekBar.OnSeekBarChang
     }
 
     private void bindService() {
-        Intent intent = new Intent(this, WisdomService.class);
+        Intent intent = new Intent(this, TimerService.class);
         bindService(intent,conn, Context.BIND_AUTO_CREATE);
     }
 
@@ -272,7 +273,7 @@ public class SettingActivity extends Activity implements  SeekBar.OnSeekBarChang
 
     public void resetFloatWindow(){
         if (wisdomService!=null){
-            wisdomService.resetFloatView();
+            wisdomService.updateWisdom();
         }
     }
 }

@@ -24,6 +24,8 @@ import com.xz.cenco.assits.AssitActivity;
 import com.xz.cenco.assits.DayRecordListActivity;
 import com.xz.cenco.doctor.DoctorQueryActivity;
 import com.xz.cenco.test.TestActivity;
+import com.xz.cenco.weed.TimerService;
+import com.xz.cenco.weed.WeedListActivity;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 import com.xz.cenco.wisdom.activity.SettingActivity;
 import com.xz.cenco.wisdom.activity.TypeActivity;
@@ -230,12 +232,12 @@ public class MainActivity extends BaseActivity {
 
 
     private void stopWisdom(){
-        Intent intent = new Intent(MainActivity.this, WisdomService.class);
+        Intent intent = new Intent(MainActivity.this, TimerService.class);
         stopService(intent);
     }
 
     private void startWisdom() {
-        Intent intent = new Intent(MainActivity.this, WisdomService.class);
+        Intent intent = new Intent(MainActivity.this, TimerService.class);
         startService(intent);
     }
 
@@ -265,6 +267,11 @@ public class MainActivity extends BaseActivity {
 
     public void testClick(View view) {
         Intent intent = new Intent(this, TestActivity.class);
+        startActivity(intent);
+    }
+
+    public void weedClick(View view) {
+        Intent intent = new Intent(this, WeedListActivity.class);
         startActivity(intent);
     }
 }

@@ -57,6 +57,11 @@
         <activity android:name="com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity" />
         <activity android:name="com.xz.cenco.test.TestActivity" />
         <activity android:name="com.xz.cenco.test.async.AsyncActivity"></activity>
+        <activity android:name="com.xz.cenco.weed.WeedListActivity"></activity>
+        <activity android:name="com.xz.cenco.weed.TumblerActivity"></activity>
+
+        <service android:name="com.xz.cenco.weed.TimerService"/>
+
     </application>
 
 </manifest>
