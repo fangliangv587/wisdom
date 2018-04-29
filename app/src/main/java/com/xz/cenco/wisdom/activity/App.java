@@ -8,8 +8,8 @@ import com.cenco.lib.common.http.HttpUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.facebook.stetho.Stetho;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.xz.cenco.assits.DaoMaster;
-import com.xz.cenco.assits.DaoSession;
+import com.xz.cenco.wisdom.entity.DaoMaster;
+import com.xz.cenco.wisdom.entity.DaoSession;
 import com.xz.cenco.wisdom.util.C;
 
 import org.greenrobot.greendao.database.Database;

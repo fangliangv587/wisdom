@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
+import com.xz.cenco.weed.thumber.ThumberHelper;
 import com.xz.cenco.wisdom.service.WisdomHelper;
 import com.xz.cenco.wisdom.service.WisdomService;
 
@@ -20,6 +21,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
 
     private TimerHelper timerHelper;
     private WisdomHelper wisdomHelper;
+    private ThumberHelper thumberHelper;
 
     private MyBinder binder = new MyBinder();
 
@@ -32,13 +34,15 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         wisdomHelper = new WisdomHelper(this);
         wisdomHelper.start();
 
-
+//        thumberHelper = new ThumberHelper();
+//        thumberHelper.start();
 
 
         timerHelper = new TimerHelper(this);
         timerHelper.setInterval(1);
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
+//        timerHelper.addListener(thumberHelper);
 
     }
 

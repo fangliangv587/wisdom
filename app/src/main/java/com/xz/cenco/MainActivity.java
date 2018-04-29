@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -26,6 +27,7 @@ import com.xz.cenco.doctor.DoctorQueryActivity;
 import com.xz.cenco.test.TestActivity;
 import com.xz.cenco.weed.TimerService;
 import com.xz.cenco.weed.WeedListActivity;
+import com.xz.cenco.weed.thumber.ThumberHelper;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 import com.xz.cenco.wisdom.activity.SettingActivity;
 import com.xz.cenco.wisdom.activity.TypeActivity;
@@ -125,7 +127,7 @@ public class MainActivity extends BaseActivity {
     }
     public void contentClick(View view){
 
-        if(!Settings.canDrawOverlays(this)){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)){
             AlertDialog.newBuilder(this).setCancelable(false).setTitle(com.cenco.lib.common.R.string.title_dialog).setMessage("需要开启悬浮框权限才能使用此功能，您要开启此功能吗？").setPositiveButton(com.cenco.lib.common.R.string.resume, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     SettingsCompat.manageDrawOverlays(mContext);
@@ -244,7 +246,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(Settings.canDrawOverlays(this)){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)){
             startWisdom();
         }else {
             ToastUtil.show(this,"未开启悬浮窗权限");
@@ -266,8 +268,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void testClick(View view) {
-        Intent intent = new Intent(this, TestActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, TestActivity.class);
+//        startActivity(intent);
+        ThumberHelper helper = new ThumberHelper();
+        helper.start();
     }
 
     public void weedClick(View view) {
