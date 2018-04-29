@@ -268,10 +268,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public void testClick(View view) {
-//        Intent intent = new Intent(this, TestActivity.class);
-//        startActivity(intent);
-        ThumberHelper helper = new ThumberHelper();
-        helper.start();
+        Intent intent = new Intent(this, TestActivity.class);
+        startActivity(intent);
+//        ThumberHelper helper = new ThumberHelper();
+//        helper.start();
     }
 
     public void weedClick(View view) {

@@ -42,9 +42,21 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
     private String TAG = "Thumbler";
     private List<Account> users;
+    private  ThumberApiService request;
+    private final int  total = 30*60;//30分钟
+    private int count = 0;
+    private boolean loop = false;
 
     public ThumberHelper() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://www.ybol.vip/") // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // 支持RxJava
+                .build();
+
+        request = retrofit.create(ThumberApiService.class);
         users = Util.getUsers();
+        count =0;
 
     }
 
@@ -54,25 +66,13 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     }
 
 
-    public void main(String args[]) {
-
-//        System.setProperty("http.proxyHost", "127.0.0.1");
-//        System.setProperty("http.proxyPort", "8888");
-
-//        users = Util.getUsers();
-//        beginTask();
-
-
-        Account account = Util.getUsers().get(3);
-        sign(account);
-
-    }
-
     private void beginTask() {
         String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD);
         Account account = getAccount(dateString);
+        loop = false;
         if (account == null) {
-            LogUtils.w(TAG, dateString + "-任务完成");
+            LogUtils.w(TAG, dateString + "-任务完成",true);
+            loop = true;
             return;
         }
         sign(account);
@@ -98,13 +98,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
         LogUtils.i(TAG, account.toString());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://www.ybol.vip/") // 设置 网络请求 Url
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // 支持RxJava
-                .build();
 
-        final ThumberApiService request = retrofit.create(ThumberApiService.class);
         Observable<Response<ResponseBody>> observable1 = request.init();
 
 
@@ -204,7 +198,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                             return Observable.error(new Throwable("登录失败"));
                         }
 
-                        LogUtils.w(TAG, "登录结果:" + result.getSuccess());
+                        LogUtils.i(TAG, "登录结果:" + result.getSuccess());
 
 
                         Observable<Response<SignUserResult>> UserSignIn = request.UserSignIn(coockie, 1);
@@ -310,8 +304,13 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     }
 
     @Override
-    public void onTimerRunning(int current, int total, boolean b) {
-
+    public void onTimerRunning(int current, int n, boolean b) {
+        count++;
+        if (loop && count >=total){
+            LogUtils.w(TAG,"新一轮的查询签到",true);
+            count =0;
+            start();
+        }
     }
 
 }
