@@ -44,7 +44,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     private List<Account> users;
     private  ThumberApiService request;
     private final int  total = 30*60;//30分钟
-    private int count = 0;
+    private int count = 0;//计时器计数
     private boolean loop = false;
 
     public ThumberHelper() {
@@ -78,6 +78,12 @@ public class ThumberHelper implements TimerHelper.TimerListener {
         sign(account);
     }
 
+    private void printUserInfo() {
+        for (Account account : users) {
+            LogUtils.d(TAG,account.toString(),true);
+        }
+    }
+
 
     public Account getAccount(String date) {
 
@@ -96,7 +102,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
     public void sign(final Account account) {
 
-        LogUtils.i(TAG, account.toString());
+        LogUtils.i(TAG, account.getUsername());
 
 
         Observable<Response<ResponseBody>> observable1 = request.init();
@@ -218,7 +224,9 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         }
 
                         int isNo = result.getObj().getIsNo();
+                        account.setSignDays(result.getObj().getUser_CheckNum());
                         if (isNo == 1) {
+
                             account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
                             return Observable.error(new Throwable(result.getMsg()));
                         }
@@ -234,6 +242,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         SignResult result = response.body();
                         if (result.isSuccess()) {
                             account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
+                            LogUtils.w(TAG, account.getUsername()+" 签到成功",true);
                         } else {
                             account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), false);
                             return Observable.error(new Throwable("签到失败"));
@@ -268,7 +277,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         try {
                             String accountBalance = getAccountBalance(response.body().string());
                             account.setBalance(accountBalance);
-                            LogUtils.w(TAG, "余额：" + accountBalance);
+                            LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays(),true);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

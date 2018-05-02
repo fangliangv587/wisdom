@@ -1,6 +1,7 @@
 package com.xz.cenco.weed.thumber.bean;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -12,6 +13,7 @@ public class Account {
     private String password;
     private String bank;
     private String balance;
+    private int signDays;
     private Map<String,Boolean> result;
 
     public Account(String username, String password,String bank) {
@@ -57,6 +59,13 @@ public class Account {
         return result;
     }
 
+    public int getSignDays() {
+        return signDays;
+    }
+
+    public void setSignDays(int signDays) {
+        this.signDays = signDays;
+    }
 
     public void putResult(String date, boolean isok){
         result.put(date,isok);
@@ -65,9 +74,20 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+
+        String mes =username+":"+balance;
+
+        Iterator<String> iterator = result.keySet().iterator();
+        StringBuffer sb =  new StringBuffer();
+        sb.append("-----------------"+mes+"--------------------");
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            boolean value = result.get(key);
+            sb.append("\r\n");
+            sb.append("日期:"+key+",是否签到:"+value);
+        }
+
+
+        return sb.toString();
     }
 }
