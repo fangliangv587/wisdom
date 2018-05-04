@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.xz.cenco.test.async.AsyncActivity;
 import com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity;
+import com.xz.cenco.weed.coohua.CoohuaActivity;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 
@@ -28,6 +29,11 @@ public class TestActivity extends BaseActivity {
 
     public void asynClick(View view) {
         Intent intent = new Intent(this, AsyncActivity.class);
+        startActivity(intent);
+    }
+
+    public void kuhuaClick(View view) {
+        Intent intent = new Intent(this, CoohuaActivity.class);
         startActivity(intent);
     }
 }

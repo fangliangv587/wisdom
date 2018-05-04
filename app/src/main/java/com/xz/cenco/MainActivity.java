@@ -21,6 +21,7 @@ import com.cenco.lib.common.PermissionManager;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
+import com.coohua.android.jni.NativeJni;
 import com.xz.cenco.assits.AssitActivity;
 import com.xz.cenco.assits.DayRecordListActivity;
 import com.xz.cenco.doctor.DoctorQueryActivity;
@@ -270,8 +271,8 @@ public class MainActivity extends BaseActivity {
     public void testClick(View view) {
         Intent intent = new Intent(this, TestActivity.class);
         startActivity(intent);
-//        ThumberHelper helper = new ThumberHelper();
-//        helper.start();
+
+
     }
 
     public void weedClick(View view) {
