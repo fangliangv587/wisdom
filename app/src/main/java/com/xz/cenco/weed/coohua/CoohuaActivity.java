@@ -23,8 +23,7 @@ public class CoohuaActivity  extends Activity {
 
         setContentView(R.layout.activity_coohua);
 
-        testt();
-
+        CoohuaHelper helper = new CoohuaHelper();
     }
 
     private void testt() {
@@ -39,7 +38,7 @@ public class CoohuaActivity  extends Activity {
         String ticket="bbdea1097bb78412faed52ba8f4d3059";
         String str= version+"^"+userid+"^"+ticket;
 
-        byte[] adddd = Util.adddd(str.getBytes(), commonKey);
+        byte[] adddd = EncodeUtil.adddd(str.getBytes(), commonKey);
         byte[] encode = Base64.encode(adddd, 10);
         String result = new String(encode);
         LogUtils.i(tag,result);
