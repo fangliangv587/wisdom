@@ -38,11 +38,11 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         wisdomHelper.start();
 
         //不倒翁
-        thumberHelper = new ThumberHelper();
+        thumberHelper = new ThumberHelper(this);
         thumberHelper.start();
 
         //酷划
-        coohuaHelper = new CoohuaHelper();
+        coohuaHelper = new CoohuaHelper(this);
         coohuaHelper.start();
 
 

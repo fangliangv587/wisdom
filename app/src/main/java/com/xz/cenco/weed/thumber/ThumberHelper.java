@@ -1,5 +1,7 @@
 package com.xz.cenco.weed.thumber;
 
+import android.content.Context;
+
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
@@ -46,8 +48,10 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     private final int  total = 30*60;//30分钟
     private int count = 0;//计时器计数
     private boolean loop = false;
+    private Context context;
 
-    public ThumberHelper() {
+    public ThumberHelper(Context context) {
+        this.context =context;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.ybol.vip/") // 设置 网络请求 Url
                 .addConverterFactory(GsonConverterFactory.create())
@@ -67,6 +71,12 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
 
     private void beginTask() {
+
+        if (!com.xz.cenco.wisdom.util.Util.isNetworkAvailable(context)){
+            loop = true;
+            return;
+        }
+
         String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD);
         Account account = getAccount(dateString);
         loop = false;
@@ -258,6 +268,11 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
                     public void onError(Throwable e) {
                         LogUtils.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:" + e.getMessage()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        try {
+                            Thread.sleep(1000*10);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
                         beginTask();
                     }
 

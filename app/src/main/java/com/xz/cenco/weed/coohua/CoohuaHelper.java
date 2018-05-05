@@ -1,5 +1,6 @@
 package com.xz.cenco.weed.coohua;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.cenco.lib.common.DateUtil;
@@ -46,8 +47,10 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
     private List<User> users;
 
     private String TAG = "coohua";
+    private Context context;
 
-    public CoohuaHelper() {
+    public CoohuaHelper(Context context) {
+        this.context = context;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.coohua.com:8888/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -60,6 +63,11 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
     }
 
     public void start(){
+        if (!com.xz.cenco.wisdom.util.Util.isNetworkAvailable(context)){
+            loop = true;
+            LogUtils.d(TAG,"无网");
+            return;
+        }
 
         User user = getUser();
         loop = false;
@@ -99,7 +107,8 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
     private void beginTask(final User user) {
 
         Observable<Response<LoginResult>> login = request.login(user.getAndroidId(),user.getAccountNum(),user.getPassword(),user.getBlueMac(),user.getCpuModel(),user.getImei(),user.getWifiMac(),user.getBlackBox(),user.getVersion(),user.getStorageSize(),user.getMarkId(),user.getScreenSize(),user.getModel());
-        login.subscribeOn(Schedulers.io())
+                 login
+                .subscribeOn(Schedulers.io())
 
                 .flatMap(new Function<Response<LoginResult>, ObservableSource<Response<SignResult>>>() {
                     public ObservableSource<Response<SignResult>> apply(Response<LoginResult> response)  {
@@ -174,6 +183,11 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
                     @Override
                     public void onError(Throwable e) {
                         LogUtils.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:"+e.getCause().getMessage()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        try {
+                            Thread.sleep(1000*10);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
                         start();
                     }
 
@@ -226,7 +240,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
     public void onTimerRunning(int i, int i1, boolean b) {
         count++;
         if (loop && count >=total){
-            LogUtils.w(TAG,"新一轮的签到",true);
+            LogUtils.w(TAG,"新一轮的签到");
             count =0;
             start();
         }
