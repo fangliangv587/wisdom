@@ -1,5 +1,10 @@
 package com.xz.cenco.weed.coohua;
 
+import android.util.Log;
+
+import com.cenco.lib.common.DateUtil;
+import com.cenco.lib.common.SystemUtil;
+import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.xz.cenco.weed.coohua.bean.IncomeResult;
@@ -10,6 +15,8 @@ import com.xz.cenco.weed.coohua.bean.SignResult;
 import com.xz.cenco.weed.coohua.bean.User;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -30,27 +37,66 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * 4.首页新闻阅读，最多30次 ----> x
  */
 
-public class CoohuaHelper {
+public class CoohuaHelper implements TimerHelper.TimerListener{
 
     private CohuaApiService request;
+    private final int  total = 1*60;//30分钟
+    private int count = 0;//计时器计数
+    private boolean loop = false;
+    private List<User> users;
 
     private String TAG = "coohua";
 
     public CoohuaHelper() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://www.ybol.vip/") // 设置 网络请求 Url
+                .baseUrl("http://api.coohua.com:8888/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // 支持RxJava
                 .build();
         request = retrofit.create(CohuaApiService.class);
-        User user = Util.getUsers().get(2);
+        users = Util.getUsers();
+        count =0;
+
+    }
+
+    public void start(){
+
+        User user = getUser();
+        loop = false;
+        if (user==null){
+            init();
+            String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMDHMS);
+            LogUtils.w(TAG, dateString + "-任务完成");
+            loop = true;
+            return;
+        }
 
         beginTask(user);
+
+
+    }
+
+    private User getUser(){
+        for (User user:users){
+            if (!user.isFinish()){
+                return user;
+            }
+        }
+
+        return null;
+    }
+
+    private void init(){
+        for (User user:users){
+            user.setFinish(false);
+        }
+    }
+
+    public void stop(){
+
     }
 
     private void beginTask(final User user) {
-
-
 
         Observable<Response<LoginResult>> login = request.login(user.getAndroidId(),user.getAccountNum(),user.getPassword(),user.getBlueMac(),user.getCpuModel(),user.getImei(),user.getWifiMac(),user.getBlackBox(),user.getVersion(),user.getStorageSize(),user.getMarkId(),user.getScreenSize(),user.getModel());
         login.subscribeOn(Schedulers.io())
@@ -121,17 +167,21 @@ public class CoohuaHelper {
 
                     @Override
                     public void onNext(Response<IncomeResult> response) {
-                        printObj(response,"获取收入金额");
+                        IncomeResult.ResultBean result = response.body().getResult();
+                        LogUtils.i(TAG,"现金:"+result.getCurrentCredit()+"(1:100),金币:"+result.getCurrentGoldCoin()+"(1:2000)");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtils.e("onError:"+e.getCause().getMessage());
+                        LogUtils.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:"+e.getCause().getMessage()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        start();
                     }
 
                     @Override
                     public void onComplete() {
-                        LogUtils.d("onComplete");
+                        LogUtils.d(TAG,"----------------------------------onComplete----------------------------------");
+                        user.setFinish(true);
+                        start();
                     }
                 });
 
@@ -143,6 +193,9 @@ public class CoohuaHelper {
         String url = result.raw().request().toString();
         LogUtils.i(TAG, tag + ":" + url);
         T body = result.body();
+        if (body == null){
+            return;
+        }
         String string = body.toString();
         if (string.length()>200){
             string = string.substring(0, 199);
@@ -167,12 +220,15 @@ public class CoohuaHelper {
 
 
 
-    public void start(){
 
+
+    @Override
+    public void onTimerRunning(int i, int i1, boolean b) {
+        count++;
+        if (loop && count >=total){
+            LogUtils.w(TAG,"新一轮的签到",true);
+            count =0;
+            start();
+        }
     }
-
-    public void stop(){
-
-    }
-
 }

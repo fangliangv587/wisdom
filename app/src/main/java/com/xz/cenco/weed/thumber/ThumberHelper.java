@@ -257,12 +257,12 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                 .subscribe(new Observer<Response<ResponseBody>>() {
 
                     public void onError(Throwable e) {
-                        LogUtils.e(TAG, "--->onError:" + e.getMessage());
+                        LogUtils.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:" + e.getMessage()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         beginTask();
                     }
 
                     public void onComplete() {
-                        LogUtils.w(TAG, "--->onCompleted");
+                        LogUtils.w(TAG, "----------------------------------onCompleted----------------------------------");
                         beginTask();
                     }
 
@@ -322,4 +322,6 @@ public class ThumberHelper implements TimerHelper.TimerListener {
         }
     }
 
+    public void stop() {
+    }
 }

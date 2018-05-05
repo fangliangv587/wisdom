@@ -24,6 +24,7 @@ public class CoohuaActivity  extends Activity {
         setContentView(R.layout.activity_coohua);
 
         CoohuaHelper helper = new CoohuaHelper();
+        helper.start();
     }
 
     private void testt() {

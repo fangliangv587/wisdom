@@ -19,7 +19,9 @@ public class User {
     private String markId;
     private String screenSize;
     private String model;
+    private String comment;
 
+    private boolean isFinish;//一次操作是否完成
 
     private String baseKey;
     private int coohuaId;
@@ -38,6 +40,22 @@ public class User {
         this.markId = markId;
         this.screenSize = screenSize;
         this.model = model;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public boolean isFinish() {
+        return isFinish;
+    }
+
+    public void setFinish(boolean finish) {
+        isFinish = finish;
     }
 
     public String getAndroidId() {

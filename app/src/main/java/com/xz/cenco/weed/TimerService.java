@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
+import com.xz.cenco.weed.coohua.CoohuaHelper;
 import com.xz.cenco.weed.thumber.ThumberHelper;
 import com.xz.cenco.wisdom.service.WisdomHelper;
 import com.xz.cenco.wisdom.service.WisdomService;
@@ -22,6 +23,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
     private TimerHelper timerHelper;
     private WisdomHelper wisdomHelper;
     private ThumberHelper thumberHelper;
+    private CoohuaHelper coohuaHelper;
 
     private MyBinder binder = new MyBinder();
 
@@ -31,11 +33,17 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
     public void onCreate() {
         super.onCreate();
 
+        //智者提示
         wisdomHelper = new WisdomHelper(this);
         wisdomHelper.start();
 
+        //不倒翁
         thumberHelper = new ThumberHelper();
         thumberHelper.start();
+
+        //酷划
+        coohuaHelper = new CoohuaHelper();
+        coohuaHelper.start();
 
 
         timerHelper = new TimerHelper(this);
@@ -43,6 +51,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
+        timerHelper.addListener(coohuaHelper);
 
     }
 
@@ -57,6 +66,12 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         super.onDestroy();
         if (timerHelper!=null){
             timerHelper.stop();
+        }
+        if (coohuaHelper!=null){
+            coohuaHelper.stop();
+        }
+        if (thumberHelper!=null){
+            thumberHelper.stop();
         }
 
     }
