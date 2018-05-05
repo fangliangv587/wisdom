@@ -5,6 +5,7 @@ package com.xz.cenco.weed.coohua;
 import com.xz.cenco.weed.coohua.bean.IncomeResult;
 import com.xz.cenco.weed.coohua.bean.HomeResult;
 import com.xz.cenco.weed.coohua.bean.LoginResult;
+import com.xz.cenco.weed.coohua.bean.NewsReadResult;
 import com.xz.cenco.weed.coohua.bean.OpenBoxResult;
 import com.xz.cenco.weed.coohua.bean.SignResult;
 import com.xz.cenco.weed.coohua.bean.TaskResult;
@@ -60,6 +61,11 @@ public interface CohuaApiService {
     @POST("http://pocket.coohua.com/pocket/dailyShare/takeReward.do")
     Observable<Response<IncomeResult>> dailyShare(@Query("coohuaId") int coohuaId, @Query("baseKey") String baseKey);
 
+
+    //读新闻赚金币
+    @FormUrlEncoded
+    @POST("http://pocket.coohua.com/pocket/goldCoin/readAdd.do")
+    Observable<Response<NewsReadResult>> readNews(@Field("coohuaId") int coohuaId, @Field("baseKey") String baseKey);
 
 
 

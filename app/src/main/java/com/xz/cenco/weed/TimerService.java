@@ -33,6 +33,8 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
     public void onCreate() {
         super.onCreate();
 
+        LogUtils.w("计时器服务开启");
+
         //智者提示
         wisdomHelper = new WisdomHelper(this);
         wisdomHelper.start();
@@ -42,8 +44,8 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         thumberHelper.start();
 
         //酷划
-//        coohuaHelper = new CoohuaHelper(this);
-//        coohuaHelper.start();
+        coohuaHelper = new CoohuaHelper(this);
+        coohuaHelper.start();
 
 
         timerHelper = new TimerHelper(this);
@@ -51,7 +53,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
-//        timerHelper.addListener(coohuaHelper);
+        timerHelper.addListener(coohuaHelper);
 
     }
 

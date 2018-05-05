@@ -113,7 +113,7 @@ public class WisdomHelper implements TimerHelper.TimerListener {
             int red = Color.red(bgColor);
             int green = Color.green(bgColor);
             int blue = Color.blue(bgColor);
-            LogUtils.i("背景色：red:" + red + ",green:" + green + ",blue:" + blue);
+//            LogUtils.i("背景色：red:" + red + ",green:" + green + ",blue:" + blue);
             mFloatTv.setBackgroundColor(bgColor);
         } else {
             mFloatTv.setBackgroundColor(Color.TRANSPARENT);
@@ -124,7 +124,7 @@ public class WisdomHelper implements TimerHelper.TimerListener {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mFloatTv.getLayoutParams();
         int startX = SPUtil.getStartX(service);
         int stopX = SPUtil.getStopX(service);
-        LogUtils.i("startX=" + startX + ",stopX=" + stopX);
+//        LogUtils.i("startX=" + startX + ",stopX=" + stopX);
         params.rightMargin = screenWidth - stopX;
         params.leftMargin = startX;
         mFloatTv.setLayoutParams(params);
@@ -139,7 +139,7 @@ public class WisdomHelper implements TimerHelper.TimerListener {
             WisdomDao wisdomDao = app.getDaoSession().getWisdomDao();
             List<Wisdom> list = wisdomDao.queryBuilder().list();
             filterList = filter(list);
-            LogUtils.d("查询数据库");
+//            LogUtils.d("查询数据库");
         }
 
         if (filterList == null || filterList.size() == 0) {
@@ -189,7 +189,7 @@ public class WisdomHelper implements TimerHelper.TimerListener {
         int textTime = textLength * 2;
         int interval = SPUtil.getInterval(service);
         int max = textTime > interval ? textTime : interval;
-        LogUtils.d(wisdom + "----显示时间:" + max);
+//        LogUtils.d(wisdom + "----显示时间:" + max);
 
         total = max;
         tempTotal = total;

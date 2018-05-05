@@ -11,6 +11,7 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.xz.cenco.weed.coohua.bean.IncomeResult;
 import com.xz.cenco.weed.coohua.bean.HomeResult;
 import com.xz.cenco.weed.coohua.bean.LoginResult;
+import com.xz.cenco.weed.coohua.bean.NewsReadResult;
 import com.xz.cenco.weed.coohua.bean.OpenBoxResult;
 import com.xz.cenco.weed.coohua.bean.SignResult;
 import com.xz.cenco.weed.coohua.bean.User;
@@ -38,10 +39,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * 4.首页新闻阅读，最多30次 ----> x
  */
 
-public class CoohuaHelper implements TimerHelper.TimerListener{
+public class CoohuaHelper implements TimerHelper.TimerListener {
 
     private CohuaApiService request;
-    private final int  total = 30*60;//30分钟
+    private final int total = 30 * 60;//30分钟
     private int count = 0;//计时器计数
     private boolean loop = false;
     private List<User> users;
@@ -58,20 +59,20 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
                 .build();
         request = retrofit.create(CohuaApiService.class);
         users = Util.getUsers();
-        count =0;
+        count = 0;
 
     }
 
-    public void start(){
-        if (!com.xz.cenco.wisdom.util.Util.isNetworkAvailable(context)){
+    public void start() {
+        if (!com.xz.cenco.wisdom.util.Util.isNetworkAvailable(context)) {
             loop = true;
-            LogUtils.d(TAG,"无网");
+            LogUtils.d(TAG, "无网");
             return;
         }
 
         User user = getUser();
         loop = false;
-        if (user==null){
+        if (user == null) {
             init();
             String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMDHMS);
             LogUtils.w(TAG, dateString + "-任务完成");
@@ -84,9 +85,9 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
 
     }
 
-    private User getUser(){
-        for (User user:users){
-            if (!user.isFinish()){
+    private User getUser() {
+        for (User user : users) {
+            if (!user.isFinish()) {
                 return user;
             }
         }
@@ -94,29 +95,29 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
         return null;
     }
 
-    private void init(){
-        for (User user:users){
+    private void init() {
+        for (User user : users) {
             user.setFinish(false);
         }
     }
 
-    public void stop(){
+    public void stop() {
 
     }
 
     private void beginTask(final User user) {
 
-        Observable<Response<LoginResult>> login = request.login(user.getAndroidId(),user.getAccountNum(),user.getPassword(),user.getBlueMac(),user.getCpuModel(),user.getImei(),user.getWifiMac(),user.getBlackBox(),user.getVersion(),user.getStorageSize(),user.getMarkId(),user.getScreenSize(),user.getModel());
-                 login
+        Observable<Response<LoginResult>> login = request.login(user.getAndroidId(), user.getAccountNum(), user.getPassword(), user.getBlueMac(), user.getCpuModel(), user.getImei(), user.getWifiMac(), user.getBlackBox(), user.getVersion(), user.getStorageSize(), user.getMarkId(), user.getScreenSize(), user.getModel());
+        login
                 .subscribeOn(Schedulers.io())
 
                 .flatMap(new Function<Response<LoginResult>, ObservableSource<Response<SignResult>>>() {
-                    public ObservableSource<Response<SignResult>> apply(Response<LoginResult> response)  {
+                    public ObservableSource<Response<SignResult>> apply(Response<LoginResult> response) {
 
-                        printObj(response,"登录");
+                        printObj(response, "登录");
 
                         LoginResult.ResultBean result = response.body().getResult();
-                        if (result==null || result.getTicket()==null){
+                        if (result == null || result.getTicket() == null) {
                             return Observable.error(new Throwable("登录失败"));
                         }
 
@@ -126,17 +127,18 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
                         user.setCoohuaId(coohuaId);
                         user.setBaseKey(baseKey);
 
-                        LogUtils.w(TAG,"baseKey="+baseKey);
+                        LogUtils.v(TAG, "baseKey=" + baseKey);
+                        LogUtils.v(TAG, "coohuaId=" + coohuaId);
 
-                        Observable<Response<SignResult>> signIn = request.signIn(user.getCoohuaId(),user.getBaseKey(),Util.Constant.version);
+                        Observable<Response<SignResult>> signIn = request.signIn(user.getCoohuaId(), user.getBaseKey(), Util.Constant.version);
                         return signIn;
                     }
                 })
 
                 .flatMap(new Function<Response<SignResult>, ObservableSource<Response<OpenBoxResult>>>() {
-                    public ObservableSource<Response<OpenBoxResult>> apply(Response<SignResult> response)  {
+                    public ObservableSource<Response<OpenBoxResult>> apply(Response<SignResult> response) {
 
-                        printObj(response,"签到");
+                        printObj(response, "签到");
 
                         Observable<Response<OpenBoxResult>> openBox = request.openBox(user.getCoohuaId(), user.getBaseKey(), Util.Constant.version);
                         return openBox;
@@ -145,26 +147,35 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
 
 
                 .flatMap(new Function<Response<OpenBoxResult>, ObservableSource<Response<HomeResult>>>() {
-                    public ObservableSource<Response<HomeResult>> apply(Response<OpenBoxResult> response)  {
+                    public ObservableSource<Response<HomeResult>> apply(Response<OpenBoxResult> response) {
 
-                        printObj(response,"开宝箱");
+                        printObj(response, "开宝箱");
 
-                        Observable<Response<HomeResult>> home = request.home(user.getCoohuaId(),user.getBaseKey());
+                        Observable<Response<HomeResult>> home = request.home(user.getCoohuaId(), user.getBaseKey());
                         return home;
                     }
                 })
 
 
-                .flatMap(new Function<Response<HomeResult>, ObservableSource<Response<IncomeResult>>>() {
-                    public ObservableSource<Response<IncomeResult>> apply(Response<HomeResult> response)  {
+                .flatMap(new Function<Response<HomeResult>, ObservableSource<Response<NewsReadResult>>>() {
+                    public ObservableSource<Response<NewsReadResult>> apply(Response<HomeResult> response) {
 
-                        printObj(response,"打开首页");
+                        printObj(response, "打开首页");
 
-                        Observable<Response<IncomeResult>> income = request.income(user.getCoohuaId(),user.getBaseKey());
+                        Observable<Response<NewsReadResult>> income = request.readNews(user.getCoohuaId(), user.getBaseKey());
                         return income;
                     }
                 })
 
+                .flatMap(new Function<Response<NewsReadResult>, ObservableSource<Response<IncomeResult>>>() {
+                    public ObservableSource<Response<IncomeResult>> apply(Response<NewsReadResult> response) {
+
+                        printObj(response, "打开新闻阅读，增加金币");
+
+                        Observable<Response<IncomeResult>> income = request.income(user.getCoohuaId(), user.getBaseKey());
+                        return income;
+                    }
+                })
 
 
                 .subscribe(new Observer<Response<IncomeResult>>() {
@@ -177,15 +188,15 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
                     @Override
                     public void onNext(Response<IncomeResult> response) {
                         IncomeResult.ResultBean result = response.body().getResult();
-                        LogUtils.i(TAG,"现金:"+result.getCurrentCredit()+"(1:100),金币:"+result.getCurrentGoldCoin()+"(1:2000)");
+                        LogUtils.i(TAG, "现金:" + result.getCurrentCredit() + "(1:100),金币:" + result.getCurrentGoldCoin() + "(1:2000)");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtils.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:"+e.getCause().getMessage()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        LogUtils.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:" + e.getCause().getMessage() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                         try {
-                            Thread.sleep(1000*10);
+                            Thread.sleep(1000 * 10);
                         } catch (InterruptedException e1) {
                             e1.printStackTrace();
                         }
@@ -194,7 +205,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
 
                     @Override
                     public void onComplete() {
-                        LogUtils.d(TAG,"----------------------------------onComplete----------------------------------");
+                        LogUtils.d(TAG, "----------------------------------onComplete----------------------------------");
                         user.setFinish(true);
                         start();
                     }
@@ -208,11 +219,11 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
         String url = result.raw().request().toString();
         LogUtils.i(TAG, tag + ":" + url);
         T body = result.body();
-        if (body == null){
+        if (body == null) {
             return;
         }
         String string = body.toString();
-        if (string.length()>200){
+        if (string.length() > 200) {
             string = string.substring(0, 199);
         }
 
@@ -220,7 +231,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
 
     }
 
-    private  void printResponse(Response<ResponseBody> result, String tag) {
+    private void printResponse(Response<ResponseBody> result, String tag) {
         try {
             String url = result.raw().request().toString();
             LogUtils.i(TAG, tag + ":" + url);
@@ -233,16 +244,12 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
     }
 
 
-
-
-
-
     @Override
     public void onTimerRunning(int i, int i1, boolean b) {
         count++;
-        if (loop && count >=total){
-            LogUtils.w(TAG,"新一轮的签到");
-            count =0;
+        if (loop && count >= total) {
+            LogUtils.w(TAG, "新一轮的签到");
+            count = 0;
             start();
         }
     }
