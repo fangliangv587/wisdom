@@ -1,19 +1,15 @@
 package com.xz.cenco.weed.coohua;
 
-import com.cenco.lib.common.http.HttpUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.xz.cenco.weed.coohua.bean.DeblockResult;
+import com.xz.cenco.weed.coohua.bean.IncomeResult;
 import com.xz.cenco.weed.coohua.bean.HomeResult;
 import com.xz.cenco.weed.coohua.bean.LoginResult;
 import com.xz.cenco.weed.coohua.bean.OpenBoxResult;
 import com.xz.cenco.weed.coohua.bean.SignResult;
-import com.xz.cenco.weed.coohua.bean.TaskResult;
 import com.xz.cenco.weed.coohua.bean.User;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -47,23 +43,16 @@ public class CoohuaHelper {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // 支持RxJava
                 .build();
         request = retrofit.create(CohuaApiService.class);
-        User user = Util.getUsers().get(0);
+        User user = Util.getUsers().get(2);
 
         beginTask(user);
     }
 
     private void beginTask(final User user) {
 
-        String wifiMac = null;
-        String blueMac = null;
-        try {
-            wifiMac = URLDecoder.decode(user.getWifiMac(), "utf-8");
-            blueMac = URLDecoder.decode(user.getBlueMac(), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
-        Observable<Response<LoginResult>> login = request.login(user.getAndroidId(),user.getAccountNum(),user.getPassword(),blueMac,user.getCpuModel(),user.getImei(),wifiMac,user.getBlackBox(),user.getVersion(),user.getStorageSize(),user.getMarkId(),user.getScreenSize(),user.getModel());
+
+        Observable<Response<LoginResult>> login = request.login(user.getAndroidId(),user.getAccountNum(),user.getPassword(),user.getBlueMac(),user.getCpuModel(),user.getImei(),user.getWifiMac(),user.getBlackBox(),user.getVersion(),user.getStorageSize(),user.getMarkId(),user.getScreenSize(),user.getModel());
         login.subscribeOn(Schedulers.io())
 
                 .flatMap(new Function<Response<LoginResult>, ObservableSource<Response<SignResult>>>() {
@@ -81,7 +70,7 @@ public class CoohuaHelper {
                         String baseKey = Util.getBaseKey(coohuaId, ticket);
                         user.setCoohuaId(coohuaId);
                         user.setBaseKey(baseKey);
-                        
+
                         LogUtils.w(TAG,"baseKey="+baseKey);
 
                         Observable<Response<SignResult>> signIn = request.signIn(user.getCoohuaId(),user.getBaseKey(),Util.Constant.version);
@@ -111,19 +100,19 @@ public class CoohuaHelper {
                 })
 
 
-                .flatMap(new Function<Response<HomeResult>, ObservableSource<Response<DeblockResult>>>() {
-                    public ObservableSource<Response<DeblockResult>> apply(Response<HomeResult> response)  {
+                .flatMap(new Function<Response<HomeResult>, ObservableSource<Response<IncomeResult>>>() {
+                    public ObservableSource<Response<IncomeResult>> apply(Response<HomeResult> response)  {
 
                         printObj(response,"打开首页");
 
-                        Observable<Response<DeblockResult>> income = request.income(user.getCoohuaId(),user.getBaseKey());
+                        Observable<Response<IncomeResult>> income = request.income(user.getCoohuaId(),user.getBaseKey());
                         return income;
                     }
                 })
 
 
 
-                .subscribe(new Observer<Response<DeblockResult>>() {
+                .subscribe(new Observer<Response<IncomeResult>>() {
 
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -131,7 +120,7 @@ public class CoohuaHelper {
                     }
 
                     @Override
-                    public void onNext(Response<DeblockResult> response) {
+                    public void onNext(Response<IncomeResult> response) {
                         printObj(response,"获取收入金额");
                     }
 

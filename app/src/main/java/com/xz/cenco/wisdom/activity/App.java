@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.cenco.lib.common.http.HttpUtil;
+import com.cenco.lib.common.log.Level;
 import com.cenco.lib.common.log.LogUtils;
 import com.facebook.stetho.Stetho;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -46,7 +47,7 @@ public class App extends Application {
     }
 
     private void initLog() {
-        LogUtils.init("appwisdom",false, C.file.log_path);
+        LogUtils.init("appwisdom", Level.DEBUG, C.file.log_path);
         HttpUtil.init(this);
     }
 

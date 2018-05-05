@@ -4,7 +4,7 @@ package com.xz.cenco.weed.coohua.bean;
  * Created by Administrator on 2018/5/4.
  */
 
-public class DeblockResult {
+public class IncomeResult {
 
     /**
      * message : success

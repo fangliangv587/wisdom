@@ -2,7 +2,7 @@ package com.xz.cenco.weed.coohua;
 
 
 
-import com.xz.cenco.weed.coohua.bean.DeblockResult;
+import com.xz.cenco.weed.coohua.bean.IncomeResult;
 import com.xz.cenco.weed.coohua.bean.HomeResult;
 import com.xz.cenco.weed.coohua.bean.LoginResult;
 import com.xz.cenco.weed.coohua.bean.OpenBoxResult;
@@ -10,10 +10,7 @@ import com.xz.cenco.weed.coohua.bean.SignResult;
 import com.xz.cenco.weed.coohua.bean.TaskResult;
 
 import io.reactivex.Observable;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -51,7 +48,7 @@ public interface CohuaApiService {
 
     //获取收入
     @POST("http://api.coohua.com:8888/p/getIncome.do")
-    Observable<Response<DeblockResult>> income(@Query("coohuaId") int coohuaId, @Query("baseKey") String baseKey);
+    Observable<Response<IncomeResult>> income(@Query("coohuaId") int coohuaId, @Query("baseKey") String baseKey);
 
 
     //打开首页
@@ -61,7 +58,7 @@ public interface CohuaApiService {
 
     //分享
     @POST("http://pocket.coohua.com/pocket/dailyShare/takeReward.do")
-    Observable<Response<DeblockResult>> dailyShare(@Query("coohuaId") int coohuaId, @Query("baseKey") String baseKey);
+    Observable<Response<IncomeResult>> dailyShare(@Query("coohuaId") int coohuaId, @Query("baseKey") String baseKey);
 
 
 
