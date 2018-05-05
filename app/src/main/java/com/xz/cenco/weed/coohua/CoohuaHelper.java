@@ -41,7 +41,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CoohuaHelper implements TimerHelper.TimerListener{
 
     private CohuaApiService request;
-    private final int  total = 1*60;//30分钟
+    private final int  total = 30*60;//30分钟
     private int count = 0;//计时器计数
     private boolean loop = false;
     private List<User> users;
@@ -183,6 +183,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener{
                     @Override
                     public void onError(Throwable e) {
                         LogUtils.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:"+e.getCause().getMessage()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
                         try {
                             Thread.sleep(1000*10);
                         } catch (InterruptedException e1) {

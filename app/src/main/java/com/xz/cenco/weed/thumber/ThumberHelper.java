@@ -112,11 +112,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
     public void sign(final Account account) {
 
-        LogUtils.i(TAG, account.getUsername());
-
-
         Observable<Response<ResponseBody>> observable1 = request.init();
-
 
         observable1
                 .subscribeOn(Schedulers.io())
@@ -137,7 +133,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         coockie = sb.toString();
 
 
-                        LogUtils.d(TAG, "cookie------>" + coockie);
+                        LogUtils.d(TAG,  account.getUsername()+" , cookie------>" + coockie);
                     }
                 })
 
