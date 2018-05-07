@@ -75,7 +75,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
         if (user == null) {
             init();
             String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMDHMS);
-            LogUtils.w(TAG, dateString + "-任务完成");
+            LogUtils.w(TAG, dateString + "-任务完成\r\n\r\n\r\n\r\n");
             loop = true;
             return;
         }
