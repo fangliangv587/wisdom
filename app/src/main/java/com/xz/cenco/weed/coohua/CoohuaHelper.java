@@ -36,19 +36,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * 1.每天签到一次 ----> v
  * 2.每3个小时可开启宝箱 ----> v
  * 3.每小时打开首页 ----> v
- * 4.首页新闻阅读，最多30次 ----> x
+ * 4.首页新闻阅读，最多30次 ----> v
  */
 
 public class CoohuaHelper implements TimerHelper.TimerListener {
 
     private CohuaApiService request;
     private final int total = 30 * 60;//30分钟
-    private int count = 0;//计时器计数
     private boolean loop = false;
     private List<User> users;
 
     private String TAG = "coohua";
     private Context context;
+    private Date upDate;
+    private Date downDate;
+    private int count;
 
     public CoohuaHelper(Context context) {
         this.context = context;
@@ -59,7 +61,8 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
                 .build();
         request = retrofit.create(CohuaApiService.class);
         users = Util.getUsers();
-        count = 0;
+        upDate = DateUtil.createDate(2018,1,1,23,59,0);
+        downDate = DateUtil.createDate(2018,1,1,6,0,0);
 
     }
 
@@ -70,12 +73,14 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
             return;
         }
 
+
         User user = getUser();
         loop = false;
         if (user == null) {
+            count++;
             init();
             String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMDHMS);
-            LogUtils.w(TAG, dateString + "-任务完成\r\n\r\n\r\n\r\n");
+            LogUtils.w(TAG, dateString +"       第" +count+"个任务完成\r\n\r\n\r\n\r\n");
             loop = true;
             return;
         }
@@ -106,6 +111,8 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
     }
 
     private void beginTask(final User user) {
+
+        LogUtils.i(TAG,"开始第"+user.getIndex()+"个用户操作");
 
         Observable<Response<LoginResult>> login = request.login(user.getAndroidId(), user.getAccountNum(), user.getPassword(), user.getBlueMac(), user.getCpuModel(), user.getImei(), user.getWifiMac(), user.getBlackBox(), user.getVersion(), user.getStorageSize(), user.getMarkId(), user.getScreenSize(), user.getModel());
         login
@@ -246,11 +253,21 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
 
     @Override
     public void onTimerRunning(int i, int i1, boolean b) {
-        count++;
-        if (loop && count >= total) {
-            LogUtils.w(TAG, "新一轮的签到");
-            count = 0;
+
+        //条件1：计数器到点
+        //条件2：可以进行循环（单次任务是否完成）
+        //条件3：是否在有效时间内
+        if (i % total == 0  && loop && isValidTime() ){
+
             start();
+
         }
+
+    }
+
+    private boolean isValidTime(){
+        boolean valid = DateUtil.isInPeriodDate(new Date(), downDate, upDate, DateUtil.FORMAT_HMS);
+        LogUtils.i(TAG,"时间段检查："+valid);
+        return valid;
     }
 }

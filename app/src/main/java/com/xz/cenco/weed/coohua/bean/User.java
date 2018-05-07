@@ -22,6 +22,7 @@ public class User {
     private String comment;
 
     private boolean isFinish;//一次操作是否完成
+    private int index;
 
     private String baseKey;
     private int coohuaId;
@@ -40,6 +41,14 @@ public class User {
         this.markId = markId;
         this.screenSize = screenSize;
         this.model = model;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getComment() {
