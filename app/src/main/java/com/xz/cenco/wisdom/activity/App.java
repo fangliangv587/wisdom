@@ -47,7 +47,7 @@ public class App extends Application {
     }
 
     private void initLog() {
-        LogUtils.init("appwisdom", Level.DEBUG, C.file.log_path);
+        LogUtils.init("appwisdom", Level.VERBOSE, C.file.log_path);
         HttpUtil.init(this);
     }
 
