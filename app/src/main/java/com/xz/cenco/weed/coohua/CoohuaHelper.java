@@ -37,6 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * 2.每3个小时可开启宝箱 ----> v
  * 3.每小时打开首页 ----> v
  * 4.首页新闻阅读，最多30次 ----> v
+ * 5.收徒，最多5.5（徒弟3.5，徒孙2）
  */
 
 public class CoohuaHelper implements TimerHelper.TimerListener {

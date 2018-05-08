@@ -49,7 +49,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
 
 
         timerHelper = new TimerHelper(this);
-        timerHelper.setInterval(1);
+        timerHelper.setInterval(10);
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
