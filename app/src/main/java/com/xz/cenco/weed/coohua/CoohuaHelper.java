@@ -113,7 +113,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
 
     private void beginTask(final User user) {
 
-        LogUtils.i(TAG,"开始第"+user.getIndex()+"个用户操作");
+        LogUtils.w(TAG,"开始第"+user.getIndex()+"个用户操作");
 
         Observable<Response<LoginResult>> login = request.login(user.getAndroidId(), user.getAccountNum(), user.getPassword(), user.getBlueMac(), user.getCpuModel(), user.getImei(), user.getWifiMac(), user.getBlackBox(), user.getVersion(), user.getStorageSize(), user.getMarkId(), user.getScreenSize(), user.getModel());
         login
@@ -196,12 +196,12 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
                     @Override
                     public void onNext(Response<IncomeResult> response) {
                         IncomeResult.ResultBean result = response.body().getResult();
-                        LogUtils.i(TAG, "现金:" + result.getCurrentCredit() + "(1:100),金币:" + result.getCurrentGoldCoin() + "(1:2000)");
+                        LogUtils.w(TAG, user.getCoreInfo()+"-->现金:" + result.getCurrentCredit() + "(1:100),金币:" + result.getCurrentGoldCoin() + "(1:2000)");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtils.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:" + e.getCause().getMessage() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        LogUtils.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!onError:" + e.getCause().getMessage() + "!!!!!!!!!!!!!!!!!!!!!!!!");
 
                         try {
                             Thread.sleep(1000 * 10);
@@ -213,7 +213,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
 
                     @Override
                     public void onComplete() {
-                        LogUtils.d(TAG, "----------------------------------onComplete----------------------------------");
+                        LogUtils.d(TAG, "----------------------onComplete-----------------------");
                         user.setFinish(true);
                         start();
                     }
@@ -268,7 +268,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
 
     private boolean isValidTime(){
         boolean valid = DateUtil.isInPeriodDate(new Date(), downDate, upDate, DateUtil.FORMAT_HMS);
-        LogUtils.i(TAG,"时间段检查："+valid);
+        LogUtils.w(TAG,"时间段检查："+valid);
         return valid;
     }
 }

@@ -186,4 +186,8 @@ public class User {
     public void setCoohuaId(int coohuaId) {
         this.coohuaId = coohuaId;
     }
+
+    public String getCoreInfo(){
+        return "账号:"+accountNum+",密码:"+password+",baseKey="+baseKey+",coohuaid="+coohuaId;
+    }
 }

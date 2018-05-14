@@ -46,7 +46,6 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     private List<Account> users;
     private  ThumberApiService request;
     private final int  total = 30*60;//30分钟
-    private int count = 0;//计时器计数
     private boolean loop = false;
     private Context context;
 
@@ -60,7 +59,6 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
         request = retrofit.create(ThumberApiService.class);
         users = Util.getUsers();
-        count =0;
 
     }
 
@@ -325,10 +323,8 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
     @Override
     public void onTimerRunning(int current, int n, boolean b) {
-        count++;
-        if (loop && count >=total){
+        if (loop && current % total == 0){
             LogUtils.w(TAG,"新一轮的查询签到",true);
-            count =0;
             start();
         }
     }

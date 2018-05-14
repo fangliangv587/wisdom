@@ -1,6 +1,8 @@
 package com.xz.cenco.weed.coohua;
 
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
 import com.cenco.lib.common.json.GsonUtil;
@@ -62,12 +64,24 @@ public class Util {
         user6.setComment("验证码3 wangfa 测试机刷机");
         user6.setIndex(6);
 
+        //账号异常
+        User user7 = new User("38362c3026739cab", "13002621846", "qweasdzxc", "68:DF:DD:0A:36:04", "armeabi-v7a", "", "68:df:dd:12:9a:3e", "O57cll08GzN0PbJ9c2Gjy9ifkw_QgdcF1sLFSEBS6QX0_OeqaV_TdZDhrGkhvAnPsrU7gmYhmuBH5lxrgk-lKu0eUNDkTprmuGp_nPIMBF82CAedOUR3IYQoLe_Dq08E25IuXKoPHVOLPMWm20RzRnAnYac26flPsuvSct4Q1p4hZ9WA-TWunAcMjX59cxiPBbxm56h1uHFIotAL6mHPbRjUvGYSlshuJanbRuCCT-lFt8uT0dz5TTVSs6xtsNEVswdUTVfFYQg2J8eczlnmRnF28l0h0bfBDW6nibhGB4VJ00z91RgsamLD0YKfjPL4bxWDzcb-MMCh-MuSmOXAYQLgLlnd8tbvwD_pUMThFnyKLjZOc1l6jR0wmsE8xHwGYUHrRxc7lE6PCEWZxq6Vc7DIx5MJ0CH9kSx4HKvxzHw=", "5.2.3.0", "2114560000", "357619179677247", "720X1280", "2013023");
+        user7.setComment("验证码4 wangfa 测试机刷机");
+        user7.setIndex(7);
+
+        //账号异常
+        User user8 = new User("39eb68ef72270220", "17024471244", "wsxedcrfv", "", "armeabi-v7a", "866952036353667", "", "V5cl4DyrfxTfteiXqzYX3U9ZJvPWysFh_ZJkVk9zz1SwmRxxOZE3pwC16GvlGHvrqGZiBruAj3k_8up_8WiAFnZf4HtngRIp180MvR9AXw5LOUoJMFSisT4qn7d0Xw_A4jiQ-Q2QnnAtaMQIQRPACFYba7jyauldNuwJCE4lLHO5MP6HfWigQeZO38qRv7-EmyCRWS4vJtEf2OU6GsNJLTDOzT6TtZdMknLNFQfJ31dw0o6NP0ypAculF7VTZEv310r4hQxQp4FTmKqHdLs5ZZKLia3PkH-nCtfQxZOxWAUzuUDJxnLVozs5qrJmQmh5RN6OG5PhkbNBXnMdCbYaEdrSmg4Y3KGFGTSkx_qY6mF6eQW4MRaUyavqiNrNghqSHumDlRrZFDgO7kMt6WmKqa5lwCCNbnlh4kvmSLhAk6Y=", "5.2.4.0", "120584126464", "353515314688247", "1080X2160", "BKL-AL20");
+        user8.setComment("验证码4 wangfa 测试机刷机");
+        user8.setIndex(8);
+
         list.add(user1);
         list.add(user2);
         list.add(user3);
         list.add(user4);
         list.add(user5);
         list.add(user6);
+        list.add(user7);
+        list.add(user8);
         return list;
     }
 
@@ -83,6 +97,7 @@ public class Util {
      * @param ticket
      * @return
      */
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     public static String getBaseKey(int userid, String ticket) {
         byte[] commonKey = NativeJni.getCommonKey();
         LogUtils.d(commonKey.toString());

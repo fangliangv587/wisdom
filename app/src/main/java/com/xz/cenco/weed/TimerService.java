@@ -57,7 +57,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
 
 
         timerHelper = new TimerHelper(this);
-        timerHelper.setInterval(5);
+        timerHelper.setInterval(60);
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
