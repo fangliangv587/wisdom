@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startWisdom();
+//        startWisdom();
         trackStateTv.setText(isAccessibilitySettingsOn(this)? "已开启":"未开启");
     }
 
@@ -234,25 +234,14 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void stopWisdom(){
-        Intent intent = new Intent(MainActivity.this, TimerService.class);
-        stopService(intent);
-    }
+
 
     private void startWisdom() {
         Intent intent = new Intent(MainActivity.this, TimerService.class);
         startService(intent);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)){
-            startWisdom();
-        }else {
-            ToastUtil.show(this,"未开启悬浮窗权限");
-        }
-    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

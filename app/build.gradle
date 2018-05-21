@@ -16,8 +16,50 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("boolean", "openTimer", "true")
+
+            manifestPlaceholders = [appname: "智者"]
+        }
+
+        debug{
+            buildConfigField("boolean", "openTimer", "false")
+            applicationIdSuffix ".debug"
+
+            manifestPlaceholders = [appname: "智者测试版"]
+
         }
     }
+
+    flavorDimensions("test")
+    productFlavors{
+        yisheng{
+            buildConfigField("String", "adUrl", "\"www.yisheng.com\"")
+        }
+        guowei{
+            buildConfigField("String", "adUrl", "\"www.guowei.com\"")
+        }
+    }
+
+    signingConfigs {
+
+        def alias = 'sy'
+        def password = '123456'
+        def filePath = '../sy' // '../facesharp.jks'
+        debug {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(password)
+        }
+        release {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(password)
+        }
+    }
+
+
 
     sourceSets {
         main {
@@ -26,6 +68,19 @@ android {
         }
 
     }
+
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = outputFile.name.replace(".apk", "-${defaultConfig.versionName}.apk")
+                outputFileName = fileName
+            }
+        }
+    }
+
 }
 
 

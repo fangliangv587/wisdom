@@ -201,7 +201,11 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtils.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!onError:" + e.getCause().getMessage() + "!!!!!!!!!!!!!!!!!!!!!!!!");
+                        if(e==null || e.getCause() ==null){
+                            LogUtils.e(TAG, "发生异常");
+                        }else {
+                            LogUtils.e(TAG, "!!!!onError:" + e.getCause().getMessage() + "!!!!");
+                        }
 
                         try {
                             Thread.sleep(1000 * 10);
@@ -213,7 +217,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
 
                     @Override
                     public void onComplete() {
-                        LogUtils.d(TAG, "----------------------onComplete-----------------------");
+                        LogUtils.d(TAG, "-----onComplete----");
                         user.setFinish(true);
                         start();
                     }

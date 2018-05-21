@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xz.cenco.test.async.AsyncActivity;
 import com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity;
 import com.xz.cenco.weed.coohua.CoohuaActivity;
+import com.xz.cenco.wisdom.BuildConfig;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 
@@ -20,6 +22,8 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        TextView tv = findViewById(R.id.tv);
+        tv.setText(BuildConfig.adUrl);
     }
 
     public void baiduPoliceVertifyClick(View view) {
