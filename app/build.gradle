@@ -30,13 +30,27 @@ android {
         }
     }
 
+
+
+    lintOptions {
+        abortOnError false
+    }
+
+
+    //gradlew assembleRelease  assembleDebug  build
     flavorDimensions("test")
     productFlavors{
         yisheng{
             buildConfigField("String", "adUrl", "\"www.yisheng.com\"")
+
+            signingConfig signingConfigs.debug
+
         }
         guowei{
             buildConfigField("String", "adUrl", "\"www.guowei.com\"")
+
+            signingConfig signingConfigs.debug
+
         }
     }
 

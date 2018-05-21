@@ -4,10 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,32 +18,24 @@ import com.cenco.lib.common.PermissionManager;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
-import com.coohua.android.jni.NativeJni;
-import com.xz.cenco.assits.AssitActivity;
 import com.xz.cenco.assits.DayRecordListActivity;
 import com.xz.cenco.doctor.DoctorQueryActivity;
 import com.xz.cenco.test.TestActivity;
 import com.xz.cenco.weed.TimerService;
 import com.xz.cenco.weed.WeedListActivity;
-import com.xz.cenco.weed.thumber.ThumberHelper;
+import com.xz.cenco.wisdom.BuildConfig;
 import com.xz.cenco.wisdom.activity.BaseActivity;
-import com.xz.cenco.wisdom.activity.SettingActivity;
-import com.xz.cenco.wisdom.activity.TypeActivity;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.activity.WisdomActivity;
 import com.xz.cenco.wisdom.bean.Backups;
 import com.xz.cenco.wisdom.bean.Setting;
 import com.xz.cenco.wisdom.entity.Wisdom;
 import com.xz.cenco.wisdom.entity.WisdomDao;
-import com.xz.cenco.wisdom.entity.WisdomType;
-import com.xz.cenco.wisdom.entity.WisdomTypeDao;
-import com.xz.cenco.wisdom.service.WisdomService;
 import com.xz.cenco.wisdom.util.C;
 import com.xz.cenco.wisdom.util.SPUtil;
 import com.yanzhenjie.alertdialog.AlertDialog;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import ezy.assist.compat.SettingsCompat;
@@ -62,6 +51,7 @@ public class MainActivity extends BaseActivity {
         initView();
         commonPermission();
         actionReady();
+        startTimer();
     }
 
     private void actionReady() {
@@ -97,7 +87,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        startWisdom();
+//        startTimer();
         trackStateTv.setText(isAccessibilitySettingsOn(this)? "已开启":"未开启");
     }
 
@@ -236,9 +226,11 @@ public class MainActivity extends BaseActivity {
 
 
 
-    private void startWisdom() {
-        Intent intent = new Intent(MainActivity.this, TimerService.class);
-        startService(intent);
+    private void startTimer() {
+        if (BuildConfig.openTimer){
+            Intent intent = new Intent(MainActivity.this, TimerService.class);
+            startService(intent);
+        }
     }
 
 
