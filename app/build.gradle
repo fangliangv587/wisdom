@@ -89,7 +89,15 @@ android {
 
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                def fileName = outputFile.name.replace(".apk", "-${defaultConfig.versionName}.apk")
+                def fileName = outputFile.name;
+                if(fileName.contains("debug")){
+                    fileName = fileName.replace("debug", "测试版")
+                }
+
+                if(fileName.contains("release")){
+                    fileName = fileName.replace("release", "正式版")
+                }
+                fileName = fileName.replace(".apk", "-${defaultConfig.versionName}.apk")
                 outputFileName = fileName
             }
         }
