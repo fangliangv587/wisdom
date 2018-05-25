@@ -87,6 +87,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
 
+            String fn = getFlavorChineseName(variant)
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 def fileName = outputFile.name;
@@ -97,14 +98,36 @@ android {
                 if(fileName.contains("release")){
                     fileName = fileName.replace("release", "正式版")
                 }
+
+                fileName = fileName.replace(variant.flavorName, fn)
+
                 fileName = fileName.replace(".apk", "-${defaultConfig.versionName}.apk")
+
+                System.out.println(fileName)
+
                 outputFileName = fileName
             }
         }
+
     }
 
 }
 
+
+String getFlavorChineseName(variant){
+
+    def flavorName = variant.flavorName
+
+    switch (flavorName){
+        case "yisheng":
+            flavorName = "忆晟"
+            break;
+        case "guowei":
+            flavorName = "国威"
+            break;
+    }
+    return flavorName;
+}
 
 dependencies {
 
