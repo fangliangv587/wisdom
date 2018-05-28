@@ -49,6 +49,9 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     private boolean loop = false;
     private Context context;
 
+    private Date upDate;
+    private Date downDate;
+
     public ThumberHelper(Context context) {
         this.context =context;
         Retrofit retrofit = new Retrofit.Builder()
@@ -59,6 +62,9 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
         request = retrofit.create(ThumberApiService.class);
         users = Util.getUsers();
+
+        upDate = DateUtil.createDate(2018,1,1,23,59,0);
+        downDate = DateUtil.createDate(2018,1,1,6,0,0);
 
     }
 
@@ -72,6 +78,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
         if (!com.xz.cenco.wisdom.util.Util.isNetworkAvailable(context)){
             loop = true;
+            LogUtils.w(TAG, "无网");
             return;
         }
 
@@ -131,7 +138,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         coockie = sb.toString();
 
 
-                        LogUtils.d(TAG,  account.getUsername()+" , cookie------>" + coockie);
+                        LogUtils.d(TAG,  account.getUsername()+" , cookie>" + coockie);
                     }
                 })
 
@@ -261,7 +268,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                 .subscribe(new Observer<Response<ResponseBody>>() {
 
                     public void onError(Throwable e) {
-                        LogUtils.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onError:" + e.getMessage()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        LogUtils.e(TAG, "onError:" + e.getMessage());
                         try {
                             Thread.sleep(1000*10);
                         } catch (InterruptedException e1) {
@@ -271,7 +278,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                     }
 
                     public void onComplete() {
-                        LogUtils.w(TAG, "----------------------------------onCompleted----------------------------------");
+                        LogUtils.w(TAG, "onCompleted");
                         beginTask();
                     }
 
@@ -280,7 +287,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                     }
 
                     public void onNext(Response<ResponseBody> response) {
-                        LogUtils.d(TAG, "--->onNext");
+                        LogUtils.d(TAG, ">onNext");
                         printResponse(response, "获取账户余额请求成功");
 
                         try {
@@ -323,10 +330,16 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
     @Override
     public void onTimerRunning(int current, int n, boolean b) {
-        if (loop && current % total == 0){
-            LogUtils.w(TAG,"新一轮的查询签到",true);
+        if (loop && current % total == 0 && isValidTime() ){
+//            LogUtils.w(TAG,"新一轮的查询签到",true);
             start();
         }
+    }
+
+    private boolean isValidTime(){
+        boolean valid = DateUtil.isInPeriodDate(new Date(), downDate, upDate, DateUtil.FORMAT_HMS);
+        LogUtils.w(TAG,"时间段检查："+valid);
+        return valid;
     }
 
     public void stop() {

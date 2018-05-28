@@ -190,4 +190,7 @@ public class User {
     public String getCoreInfo(){
         return "账号:"+accountNum+",密码:"+password+",baseKey="+baseKey+",coohuaid="+coohuaId;
     }
+    public String getAccountInfo(){
+        return "账号:"+accountNum+",密码:"+password+" ";
+    }
 }

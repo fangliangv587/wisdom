@@ -70,7 +70,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
     public void start() {
         if (!com.xz.cenco.wisdom.util.Util.isNetworkAvailable(context)) {
             loop = true;
-            LogUtils.d(TAG, "无网");
+            LogUtils.w(TAG, "无网");
             return;
         }
 
@@ -196,7 +196,7 @@ public class CoohuaHelper implements TimerHelper.TimerListener {
                     @Override
                     public void onNext(Response<IncomeResult> response) {
                         IncomeResult.ResultBean result = response.body().getResult();
-                        LogUtils.w(TAG, user.getCoreInfo()+"-->现金:" + result.getCurrentCredit() + "(1:100),金币:" + result.getCurrentGoldCoin() + "(1:2000)");
+                        LogUtils.w(TAG, user.getAccountInfo()+"-->现金:" + result.getCurrentCredit() + "(1:100),金币:" + result.getCurrentGoldCoin() + "(1:2000)");
                     }
 
                     @Override
