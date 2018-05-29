@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.xz.cenco.weed.aiaixg.AiaixgHelper;
+import com.xz.cenco.weed.aiaixg.XmgrHelper;
 import com.xz.cenco.weed.coohua.CoohuaActivity;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class WeedListActivity extends ListActivity {
         }
 
         if (position==2){
-            AiaixgHelper main = new AiaixgHelper(this);
+            XmgrHelper main = new XmgrHelper(this);
             main.start();
             return;
         }

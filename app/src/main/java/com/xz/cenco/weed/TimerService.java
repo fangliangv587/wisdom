@@ -12,6 +12,7 @@ import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.weed.aiaixg.AiaixgHelper;
+import com.xz.cenco.weed.aiaixg.XmgrHelper;
 import com.xz.cenco.weed.coohua.CoohuaHelper;
 import com.xz.cenco.weed.thumber.ThumberHelper;
 import com.xz.cenco.wisdom.service.WisdomHelper;
@@ -28,6 +29,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
     private ThumberHelper thumberHelper;
     private CoohuaHelper coohuaHelper;
     private AiaixgHelper aiaixgHelper;
+    private XmgrHelper xmgrHelper;
     private PowerManager.WakeLock mWakeLock;
 
     private MyBinder binder = new MyBinder();
@@ -61,6 +63,10 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         aiaixgHelper = new AiaixgHelper(this);
         aiaixgHelper.start();
 
+        //鑫茂国荣---国证投资2
+        xmgrHelper = new XmgrHelper(this);
+        xmgrHelper.start();
+
 
         timerHelper = new TimerHelper(this);
         timerHelper.setInterval(60);
@@ -68,6 +74,8 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
         timerHelper.addListener(coohuaHelper);
+        timerHelper.addListener(aiaixgHelper);
+        timerHelper.addListener(xmgrHelper);
 
     }
 
