@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
+import com.xz.cenco.weed.aiaixg.AiaixgHelper;
 import com.xz.cenco.weed.coohua.CoohuaHelper;
 import com.xz.cenco.weed.thumber.ThumberHelper;
 import com.xz.cenco.wisdom.service.WisdomHelper;
@@ -26,6 +27,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
     private WisdomHelper wisdomHelper;
     private ThumberHelper thumberHelper;
     private CoohuaHelper coohuaHelper;
+    private AiaixgHelper aiaixgHelper;
     private PowerManager.WakeLock mWakeLock;
 
     private MyBinder binder = new MyBinder();
@@ -54,6 +56,10 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         //酷划
         coohuaHelper = new CoohuaHelper(this);
         coohuaHelper.start();
+
+        //国证投资
+        aiaixgHelper = new AiaixgHelper(this);
+        aiaixgHelper.start();
 
 
         timerHelper = new TimerHelper(this);

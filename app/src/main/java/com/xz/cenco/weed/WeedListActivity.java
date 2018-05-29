@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.xz.cenco.weed.aiaixg.AiaixgHelper;
+import com.xz.cenco.weed.coohua.CoohuaActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,8 @@ public class WeedListActivity extends ListActivity {
     private List<String> getData() {
         List<String> data = new ArrayList<String>();
         data.add("不倒翁");
+        data.add("酷划");
+        data.add("国证投资");
         return data;
     }
 
@@ -41,7 +45,21 @@ public class WeedListActivity extends ListActivity {
         Intent intent = null;
         if (position==0){
             intent =  new Intent(this, TumblerActivity.class);
+            startActivity(intent);
+            return;
         }
-        startActivity(intent);
+        if (position==1){
+            intent =  new Intent(this, CoohuaActivity.class);
+            startActivity(intent);
+            return;
+        }
+
+        if (position==2){
+            AiaixgHelper main = new AiaixgHelper(this);
+            main.start();
+            return;
+        }
+
+
     }
 }

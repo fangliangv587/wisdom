@@ -21,7 +21,7 @@ android {
             manifestPlaceholders = [appname: "智者"]
         }
 
-        debug{
+        debug {
             buildConfigField("boolean", "openTimer", "false")
             applicationIdSuffix ".debug"
 
@@ -36,17 +36,16 @@ android {
         abortOnError false
     }
 
-
     //gradlew assembleRelease  assembleDebug  build
     flavorDimensions("test")
-    productFlavors{
-        yisheng{
+    productFlavors {
+        yisheng {
             buildConfigField("String", "adUrl", "\"www.yisheng.com\"")
 
             signingConfig signingConfigs.debug
 
         }
-        guowei{
+        guowei {
             buildConfigField("String", "adUrl", "\"www.guowei.com\"")
 
             signingConfig signingConfigs.debug
@@ -91,11 +90,11 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 def fileName = outputFile.name;
-                if(fileName.contains("debug")){
+                if (fileName.contains("debug")) {
                     fileName = fileName.replace("debug", "测试版")
                 }
 
-                if(fileName.contains("release")){
+                if (fileName.contains("release")) {
                     fileName = fileName.replace("release", "正式版")
                 }
 
@@ -114,11 +113,11 @@ android {
 }
 
 
-String getFlavorChineseName(variant){
+String getFlavorChineseName(variant) {
 
     def flavorName = variant.flavorName
 
-    switch (flavorName){
+    switch (flavorName) {
         case "yisheng":
             flavorName = "忆晟"
             break;
@@ -159,14 +158,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
-
-
-
-
-
-
-
-
 
 
 }

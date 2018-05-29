@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".activity.App"
@@ -57,13 +57,14 @@
         <activity android:name="com.xz.cenco.assits.AppRecordActivity" />
         <activity android:name="com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity" />
         <activity android:name="com.xz.cenco.test.TestActivity" />
-        <activity android:name="com.xz.cenco.test.async.AsyncActivity"></activity>
-        <activity android:name="com.xz.cenco.weed.WeedListActivity"></activity>
-        <activity android:name="com.xz.cenco.weed.TumblerActivity"></activity>
-        <activity android:name="com.xz.cenco.weed.coohua.CoohuaActivity"></activity>
+        <activity android:name="com.xz.cenco.test.async.AsyncActivity" />
+        <activity android:name="com.xz.cenco.weed.WeedListActivity" />
+        <activity android:name="com.xz.cenco.weed.TumblerActivity" />
+        <activity android:name="com.xz.cenco.weed.coohua.CoohuaActivity" />
 
-        <service android:name="com.xz.cenco.weed.TimerService"/>
+        <service android:name="com.xz.cenco.weed.TimerService" />
 
+        <activity android:name="com.xz.cenco.weed.aiaixg.AiaixgActivity"></activity>
     </application>
 
 </manifest>
