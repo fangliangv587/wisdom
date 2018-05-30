@@ -164,14 +164,14 @@ public class XmgrHelper implements TimerHelper.TimerListener {
     public List<User> getUser(){
         List<User> list = new ArrayList<>();
         User user0 = new User("15588591960", "xin03531883");
-//        User user1 = new User("15665851629", "qwertyuiop");
-//        User user2 = new User("13047488791", "asdfghjkl");
-//        User user3 = new User("15764125171", "zxcvbnm");
+        User user1 = new User("15665851629", "qwertyuiop");
+        User user2 = new User("13047488791", "asdfghjkl");
+        User user3 = new User("15764125171", "zxcvbnm");
         User user4 = new User("13468006640", "lllqycyl0909");
         list.add(user0);
-//        list.add(user1);
-//        list.add(user2);
-//        list.add(user3);
+        list.add(user1);
+        list.add(user2);
+        list.add(user3);
         list.add(user4);
         return list;
     }
@@ -186,7 +186,7 @@ public class XmgrHelper implements TimerHelper.TimerListener {
             if (printInfo.length()>200){
                 printInfo = printInfo.substring(0,200)+"...";
             }
-            LogUtils.d("结果:" + printInfo);
+            LogUtils.i("结果:" + printInfo);
             return body;
         } catch (IOException e) {
             e.printStackTrace();
@@ -198,7 +198,7 @@ public class XmgrHelper implements TimerHelper.TimerListener {
         String url = result.raw().request().toString();
         LogUtils.d("网络请求成功:" + url);
         T body = result.body();
-        LogUtils.d("结果:" + body.toString());
+        LogUtils.i("结果:" + body.toString());
 
     }
 

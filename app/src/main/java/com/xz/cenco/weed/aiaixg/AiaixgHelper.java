@@ -187,7 +187,7 @@ public class AiaixgHelper implements TimerHelper.TimerListener {
             if (printInfo.length()>200){
                 printInfo = printInfo.substring(0,200)+"...";
             }
-            LogUtils.d("结果:" + printInfo);
+            LogUtils.i("结果:" + printInfo);
             return body;
         } catch (IOException e) {
             e.printStackTrace();
@@ -199,7 +199,7 @@ public class AiaixgHelper implements TimerHelper.TimerListener {
         String url = result.raw().request().toString();
         LogUtils.d("网络请求成功:" + url);
         T body = result.body();
-        LogUtils.d("结果:" + body.toString());
+        LogUtils.i("结果:" + body.toString());
 
     }
 
