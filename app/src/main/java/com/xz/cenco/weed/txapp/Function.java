@@ -1,8 +1,6 @@
 package com.xz.cenco.weed.txapp;
 
 
-import android.util.Base64;
-
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.log.LogUtils;
 
@@ -41,12 +39,12 @@ public class Function  {
 //        String password = getPassword("MTMyMTA0MTA1MzM=");
 //        log(password);
 
-        dbHelper = new DBHelper();
-        withDraw();
+//        dbHelper = new DBHelper();
+//        withDraw();
 
 //        accountFangliang();
 //        refreshLoginTimeWithFangliang();
-//        refreshMoneyWithFangliang();
+        refreshMoneyWithFangliang();
 //        registrUserTest();
     }
 
@@ -322,6 +320,7 @@ public class Function  {
         //Base64.encodeToString(("3|-|" + this.loadData.getId() + "|-|" + this.zhanghao).getBytes(), 0));
         log("刷新登录时间:" + user + "(" + id + ")");
         String str = Base64.encodeToString(("3|-|" + id + "|-|" + user).getBytes(), 0);
+        log(str);
         socket(str);
     }
 
@@ -378,6 +377,7 @@ public class Function  {
 
         } catch (IOException e) {
             e.printStackTrace();
+            LogUtils.e("txapp",e);
         }
 
         return null;
