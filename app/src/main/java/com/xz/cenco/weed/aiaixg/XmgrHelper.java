@@ -73,7 +73,7 @@ public class XmgrHelper implements TimerHelper.TimerListener {
         String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD);
         User account = getUser(dateString);
         if (account == null) {
-            LogUtils.w(TAG, dateString + "-任务完成",true);
+            LogUtils.w(TAG, dateString + "-任务完成");
             loop = true;
             return;
         }

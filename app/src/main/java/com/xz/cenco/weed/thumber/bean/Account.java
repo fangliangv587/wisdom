@@ -13,10 +13,19 @@ public class Account {
     private String password;
     private String bank;
     private String balance;
+    private String cookie;
     private int signDays;
     private Map<String,Boolean> result;
 
-    public Account(String username, String password,String bank) {
+    public String getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
+    }
+
+    public Account(String username, String password, String bank) {
         this.username = username;
         this.password = password;
         this.bank = bank;

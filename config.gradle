@@ -17,7 +17,7 @@ ext {
             "xcolorpicker"        : "com.github.wuzhendev:android-xcolorpicker:1.0.0",
             "constraint-layout"   : "com.android.support.constraint:constraint-layout:1.0.2",
             "greendao"            : "org.greenrobot:greendao:3.2.2",
-            "lib-common"          : "com.github.fangliangv587:lib-common:0.3.2",
+            "lib-common"          : "com.github.fangliangv587:lib-common:0.3.4",
             "bugly"               : "com.tencent.bugly:crashreport:latest.release",
 
     ]

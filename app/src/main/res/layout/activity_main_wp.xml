@@ -131,7 +131,7 @@
                 android:textSize="20sp"
                 android:layout_centerInParent="true"
                 android:textColor="@android:color/white"
-                android:text="自测"/>
+                android:text="定时器状态"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -139,6 +139,7 @@
             android:layout_height="match_parent"
             android:background="#67553E"
             android:onClick="weedClick"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1">
             <TextView
                 android:layout_width="wrap_content"
@@ -148,21 +149,7 @@
                 android:textColor="@android:color/white"
                 android:text="大雁"/>
         </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/holo_blue_bright"
-            android:onClick="testClick"
-            android:visibility="gone"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_centerInParent="true"
-                android:textColor="@android:color/white"
-                android:text="测试"/>
-        </RelativeLayout>
+
 
 
     </LinearLayout>

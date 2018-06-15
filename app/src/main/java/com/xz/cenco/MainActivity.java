@@ -24,6 +24,7 @@ import com.xz.cenco.test.TestActivity;
 import com.xz.cenco.weed.TimerService;
 import com.xz.cenco.weed.WeedListActivity;
 import com.xz.cenco.wisdom.BuildConfig;
+import com.xz.cenco.wisdom.activity.App;
 import com.xz.cenco.wisdom.activity.BaseActivity;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.activity.WisdomActivity;
@@ -230,6 +231,15 @@ public class MainActivity extends BaseActivity {
         if (BuildConfig.openTimer){
             Intent intent = new Intent(MainActivity.this, TimerService.class);
             startService(intent);
+            App.isTimer = true;
+        }
+    }
+
+    private void stopTimer(){
+        if (BuildConfig.openTimer){
+            Intent intent = new Intent(MainActivity.this, TimerService.class);
+            stopService(intent);
+            App.isTimer = false;
         }
     }
 
@@ -250,8 +260,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void testClick(View view) {
-        Intent intent = new Intent(this, TestActivity.class);
-        startActivity(intent);
+        if (App.isTimer){
+            stopTimer();
+        }else {
+            startTimer();
+        }
 
 
     }

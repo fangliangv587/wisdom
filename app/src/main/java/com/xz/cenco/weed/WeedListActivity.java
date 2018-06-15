@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.cenco.lib.common.ToastUtil;
 import com.xz.cenco.weed.aiaixg.AiaixgHelper;
 import com.xz.cenco.weed.aiaixg.XmgrHelper;
 import com.xz.cenco.weed.coohua.CoohuaActivity;
+import com.xz.cenco.wisdom.activity.App;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +35,8 @@ public class WeedListActivity extends ListActivity {
     private List<String> getData() {
         List<String> data = new ArrayList<String>();
         data.add("不倒翁");
-        data.add("酷划");
-        data.add("国证投资");
+        data.add("txapp");
+
         return data;
     }
 
@@ -43,23 +45,24 @@ public class WeedListActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
+
+        if (App.isTimer){
+            ToastUtil.show(this,"请关闭定时器");
+            return;
+        }
         Intent intent = null;
         if (position==0){
             intent =  new Intent(this, TumblerActivity.class);
             startActivity(intent);
             return;
         }
+
         if (position==1){
-            intent =  new Intent(this, CoohuaActivity.class);
+            intent =  new Intent(this, TxAppActivity.class);
             startActivity(intent);
             return;
         }
 
-        if (position==2){
-            XmgrHelper main = new XmgrHelper(this);
-            main.start();
-            return;
-        }
 
 
     }

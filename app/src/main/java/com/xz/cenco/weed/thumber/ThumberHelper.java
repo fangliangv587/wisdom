@@ -86,7 +86,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
         Account account = getAccount(dateString);
         loop = false;
         if (account == null) {
-            LogUtils.w(TAG, dateString + "-任务完成",true);
+            LogUtils.w(TAG, dateString + "-任务完成");
             loop = true;
             return;
         }
@@ -95,7 +95,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
     private void printUserInfo() {
         for (Account account : users) {
-            LogUtils.d(TAG,account.toString(),true);
+            LogUtils.d(TAG,account.toString());
         }
     }
 
@@ -253,7 +253,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         SignResult result = response.body();
                         if (result.isSuccess()) {
                             account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
-                            LogUtils.w(TAG, account.getUsername()+" 签到成功",true);
+                            LogUtils.w(TAG, account.getUsername()+" 签到成功");
                         } else {
                             account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), false);
                             return Observable.error(new Throwable("签到失败"));
@@ -293,7 +293,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         try {
                             String accountBalance = getAccountBalance(response.body().string());
                             account.setBalance(accountBalance);
-                            LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays(),true);
+                            LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
