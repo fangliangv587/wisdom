@@ -5,8 +5,11 @@ import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.log.LogUtils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -39,8 +42,8 @@ public class Function  {
 //        String password = getPassword("MTMyMTA0MTA1MzM=");
 //        log(password);
 
-//        dbHelper = new DBHelper();
-//        withDraw();
+        dbHelper = new DBHelper();
+        withDraw();
 
 //        accountFangliang();
 //        refreshLoginTimeWithFangliang();
@@ -348,30 +351,29 @@ public class Function  {
 
     public static String socket(String str, String proxyIP, int proxyPort) {
         try {
-            Socket socket = null;
-            if (proxyIP != null && proxyPort > -1) {
-                log("socket 代理:" + proxyIP + ":" + proxyPort);
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIP, proxyPort));
-                socket = new Socket(proxy);
-            } else {
-                socket = new Socket();
-            }
-            socket.connect(new InetSocketAddress(ip, port));
-            socket.setSoTimeout(3 * 60 * 1000);
-            PrintWriter write = new PrintWriter(socket.getOutputStream());
+            Socket socket =new Socket(ip, port);  ;
+
+//            PrintWriter write = new PrintWriter(socket.getOutputStream());
+            BufferedWriter write = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"));
             log("socket 写命令");
-            write.print(str);
+            write.write(str);
             write.flush();
+            log("socket 写入");
             socket.shutdownOutput();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String str2 = reader.readLine();
 
-            socket.shutdownInput();
-            socket.close();
+            InputStream is = socket.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
 
+            log("读取数据");
+            String str2 = br.readLine();
+            log("读取数据成功");
+
+//            socket.shutdownInput();
 
             log("客户端接收服务端发送信息：" + str2);
+            socket.close();
             return str2;
 
 
