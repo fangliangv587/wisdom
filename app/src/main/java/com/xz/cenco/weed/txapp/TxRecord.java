@@ -88,6 +88,6 @@ public class TxRecord {
 
     @Override
     public String toString() {
-        return "提现时间:"+txtime+",姓名:"+txxm+",入侵账户:"+user+",状态:"+txend;
+        return "提现时间:"+txtime+",姓名:"+txxm+",账户:"+user+",状态:"+txend;
     }
 }

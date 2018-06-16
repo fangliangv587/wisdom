@@ -11,6 +11,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
@@ -56,6 +57,7 @@ public class TxAppActivity extends Activity {
     private int validIndex;
     private String systemusername;
 
+    private CheckBox forceCB;
     private Button person1Btn;
     private Button person2Btn;
     private Button person3Btn;
@@ -119,7 +121,7 @@ public class TxAppActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                infoTv.setText(infoTv.getText().toString() + "\n" + str);
+                infoTv.setText(infoTv.getText().toString() + "\n " + str);
                 int offset = infoTv.getLineCount() * infoTv.getLineHeight();
                 if (offset > infoTv.getHeight()) {
                     infoTv.scrollTo(0, offset - infoTv.getHeight());
@@ -137,6 +139,7 @@ public class TxAppActivity extends Activity {
         infoTv = findViewById(R.id.infoTv);
         infoTv.setMovementMethod(ScrollingMovementMethod.getInstance());
 
+        forceCB = findViewById(R.id.forceCB);
        person1Btn = findViewById(R.id.person1Btn);
        person2Btn = findViewById(R.id.person2Btn);
        person3Btn = findViewById(R.id.person3Btn);
@@ -214,6 +217,8 @@ public class TxAppActivity extends Activity {
         }
         signMoney(payAccount);
     }
+
+
 
     private void signMoney(final AliPayAccount aliPayAccount) {
 
@@ -302,14 +307,31 @@ public class TxAppActivity extends Activity {
 
                 for (int i =0;i<filetUsers.size();i++){
                     User user = filetUsers.get(i);
-                    LogUtils.d(i+"==>"+user.user);
+                    addInfo(i+"==>"+user.user);
                 }
 
-                if (filetUsers.size()<=validIndex){
-                    addInfo("没有更多账户可用");
-                    return;
+
+                if (forceCB.isChecked()){
+                    if (!TextUtils.isEmpty(aliPayAccount.getUser())){
+                        boolean has = isContainForceUser(filetUsers,aliPayAccount.getUser());
+                        if (!has){
+                            addInfo("指定用户("+aliPayAccount.getUser()+")时间未到");
+                            systemusername = aliPayAccount.getUser();
+                            queryRecordClick(null);
+                            return;
+                        }
+                    }
                 }
-                User user = filetUsers.get(validIndex);
+
+
+
+
+
+
+                User user = getBestUser(filetUsers,aliPayAccount.getUser());
+                if (user==null){
+                    addInfo("没有更多账户可用");
+                }
                 systemusername = user.user;
 
                 final String mac = TextUtils.isEmpty(aliPayAccount.getMac()) ? Function.getMac() : aliPayAccount.getMac();
@@ -318,37 +340,40 @@ public class TxAppActivity extends Activity {
             }
 
 
+            public User getBestUser(List<User> list,String name){
+                for (int i =0;i<list.size();i++){
+                    User user = list.get(i);
+                    if (user.user.equalsIgnoreCase(name)){
+                        return user;
+                    }
+                }
+
+
+                if (list.size()<=validIndex){
+
+                    return null;
+                }
+                return list.get(validIndex);
+            }
+
+
+            private boolean isContainForceUser(List<User> list,String name){
+                for (int i =0;i<list.size();i++){
+                    User user = list.get(i);
+                    if (user.user.equalsIgnoreCase(name)){
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+
             private List<String> getBlackList(){
                 ArrayList<String> list = new ArrayList<>();
                 list.add("88888888");
 
-                //7 未知原因
-                list.add("77321289");
-                list.add("lf667788");
-                list.add("dy3232323");
-                list.add("2900145554");
-                list.add("801229");
-                list.add("77321289");
 
-                list.add("Llz823");
-                list.add("aaa123456");
-                list.add("08177219");
-                list.add("5952");
-                list.add("800912");
-                list.add("187007238");
-                list.add("7140");
-                list.add("108805");
-                list.add("1500501");
-                list.add("3045");
-                list.add("1518763387");
-                list.add("3111");
-                list.add("dm9897");
-                //33 体验期
-                list.add("1847");
-                list.add("1572515687");
-                list.add("19910217");
-                list.add("2024485532");
-                list.add("3187775106");
                 return list;
             }
 
@@ -465,6 +490,8 @@ public class TxAppActivity extends Activity {
 
 
     }
+
+
 
     private TxRecord getUser(List<TxRecord> validRecord, AliPayAccount aliPayAccount) {
         if (validRecord == null || validRecord.size() <= validIndex) {

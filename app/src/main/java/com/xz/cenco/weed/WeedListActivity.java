@@ -46,12 +46,15 @@ public class WeedListActivity extends ListActivity {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
 
-        if (App.isTimer){
-            ToastUtil.show(this,"请关闭定时器");
-            return;
-        }
+
         Intent intent = null;
         if (position==0){
+
+            if (App.isTimer){
+                ToastUtil.show(this,"请关闭定时器");
+                return;
+            }
+
             intent =  new Intent(this, TumblerActivity.class);
             startActivity(intent);
             return;

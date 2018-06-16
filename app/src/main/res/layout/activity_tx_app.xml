@@ -13,6 +13,13 @@
         android:layout_height="300dp"
         android:id="@+id/infoTv"/>
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/forceCB"
+        android:checked="true"
+        android:text="强制按指定用户进行"/>
+
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
