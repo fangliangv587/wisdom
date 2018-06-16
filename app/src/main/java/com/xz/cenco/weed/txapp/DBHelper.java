@@ -59,6 +59,15 @@ public class DBHelper {
         String sql = "select * from (select * from txjl WHERE vip = "+vip+" AND (txend=1 OR txend =2)order by txtime desc) t group by user";
         return getTxRecordList(sql);
     }
+
+    public List<TxRecord> getTxRecordListByAccountName(String accountName) {
+        String sql = "select * from txjl WHERE txxm = '"+accountName+"' order by txtime desc";
+        return getTxRecordList(sql);
+    }
+    public List<TxRecord> getTxRecordListByUser(String user) {
+        String sql = "select * from txjl WHERE user = '"+user+"' order by txtime desc";
+        return getTxRecordList(sql);
+    }
     public List<TxRecord> getTxRecordList(String sql) {
         log("获取体现记录:" + sql);
         try {
@@ -147,6 +156,8 @@ public class DBHelper {
         }
         return null;
     }
+
+
 
     /**
      * 获取最近的体现记录
@@ -253,6 +264,56 @@ public class DBHelper {
     public List<User> getUsers() {
         List<User> users = getUsers(null);
         return users;
+    }
+
+    public List<User> getUsersByVip(int vip){
+        String sql = "select * from userlist where vip = "+vip;
+        return  getUsersBySql(sql);
+    }
+
+    public List<User> getUsersBySql(String sql){
+        try {
+
+            List<User> list = new ArrayList<User>();
+
+            ResultSet rs = null;
+            rs = stmt.executeQuery(sql);
+
+            //从结果集中提取数据
+            while (rs.next()) {
+                User user = new User();
+                user.id = rs.getInt("id");
+                user.user = rs.getString("user");//varchar
+                user.password = rs.getString("password");//varchar
+                user.status = rs.getString("status");//varchar
+                user.tjr = rs.getString("tjr");//varchar
+                user.tjrjsstatus = rs.getString("tjrjsstatus");
+                user.jine = rs.getFloat("jine");//decimal
+                user.txjl = rs.getString("txjl");//varchar
+                user.txnumber = rs.getInt("txnumber");//int
+                user.vip = rs.getString("vip");//varchar
+                user.viptime = rs.getString("viptime");//varchar
+                user.tgjifen = rs.getInt("tgjifen");//int
+                user.tgip = rs.getString("tgip");//varchar
+                user.mac = rs.getString("mac");//varchar
+                user.regip = rs.getString("regip");//varchar
+                user.logintime = rs.getString("logintime");//varchar
+                user.regtime = rs.getString("regtime");//varchar
+                user.todayjine = rs.getString("todayjine");//varchar
+                user.dayendtime = rs.getString("dayendtime");//varchar
+                user.app = rs.getString("app");//varchar
+//                log(user.toString());
+                list.add(user);
+
+            }
+            log("查询到的用户数量:" + list.size());
+
+            return list;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public List<User> getUsers(String username) {

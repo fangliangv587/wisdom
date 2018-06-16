@@ -10,8 +10,98 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:id="@+id/infoTv"/>
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person1Btn"
+            android:onClick="signMoneyClcik"
+            android:text="彬"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person2Btn"
+            android:layout_toRightOf="@+id/person1Btn"
+            android:onClick="signMoneyClcik"
+            android:text="忠"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person3Btn"
+            android:layout_below="@+id/person1Btn"
+            android:onClick="signMoneyClcik"
+            android:text="财"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person4Btn"
+            android:layout_below="@+id/person1Btn"
+            android:layout_toRightOf="@+id/person1Btn"
+            android:onClick="signMoneyClcik"
+            android:text="菊"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person5Btn"
+            android:layout_below="@+id/person3Btn"
+            android:onClick="signMoneyClcik"
+            android:text="宁"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person6Btn"
+            android:layout_below="@+id/person3Btn"
+            android:layout_toRightOf="@+id/person1Btn"
+            android:onClick="signMoneyClcik"
+            android:text="琦"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person7Btn"
+            android:layout_below="@+id/person5Btn"
+            android:onClick="signMoneyClcik"
+            android:text="明"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_widthPercent="50%"
+            android:id="@+id/person8Btn"
+            android:layout_below="@+id/person5Btn"
+            android:layout_toRightOf="@+id/person1Btn"
+            android:onClick="signMoneyClcik"
+            android:text="伟"/>
+
+    </android.support.percent.PercentRelativeLayout>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="queryRecordClick"
+        android:text="查询当前侵入账户的提现记录"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="jumpNextClick"
+        android:visibility="invisible"
+        android:text="跳过此用户"/>
 
 
 </LinearLayout>

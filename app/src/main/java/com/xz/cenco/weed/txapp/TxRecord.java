@@ -85,4 +85,9 @@ public class TxRecord {
     public String txtime;
     public String endtime;
     public String app;
+
+    @Override
+    public String toString() {
+        return "提现时间:"+txtime+",姓名:"+txxm+",入侵账户:"+user+",状态:"+txend;
+    }
 }

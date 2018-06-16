@@ -142,6 +142,7 @@ dependencies {
     implementation rootProject.ext.dependencies["greendao"]
     implementation rootProject.ext.dependencies["lib-common"]
     implementation rootProject.ext.dependencies["bugly"]
+    implementation rootProject.ext.dependencies["percent"]
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jaredrummler:android-processes:1.1.1'
     compile 'com.facebook.stetho:stetho:1.5.0'
@@ -159,6 +160,7 @@ dependencies {
     compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
 
     compile 'mysql:mysql-connector-java:5.1.16'
+
 
 
 }

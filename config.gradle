@@ -14,6 +14,7 @@ ext {
             //android.support
             "appcompat-v7"        : "com.android.support:appcompat-v7:${android_support_version}",
             "recyclerview-v7"     : "com.android.support:recyclerview-v7:${android_support_version}",
+            "percent"             : "com.android.support:percent:${android_support_version}",
             "xcolorpicker"        : "com.github.wuzhendev:android-xcolorpicker:1.0.0",
             "constraint-layout"   : "com.android.support.constraint:constraint-layout:1.0.2",
             "greendao"            : "org.greenrobot:greendao:3.2.2",
