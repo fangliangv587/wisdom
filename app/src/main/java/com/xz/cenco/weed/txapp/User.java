@@ -1,6 +1,7 @@
 package com.xz.cenco.weed.txapp;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/6/9 0009.
@@ -33,11 +34,13 @@ public class User {
     public String vipCashTime;
     public String latestTxTime;
 
+    public List<TxRecord> recordList;
+
 
 
     @Override
     public String toString() {
-        return "账号:"+user+",密码:"+getPassword(password)+",mac:"+mac+",注册ip:"+regip;
+        return "账号:"+user+",密码:"+getPassword(password);
     }
 
     public static String getPassword(String pass) {
