@@ -95,6 +95,6 @@ public class TxRecord {
     }
 
     public String getInfo(){
-        return  "据上次的时间间隔:"+disminute+"("+standminute+")分钟,上次提现时间:"+txtime+",提现状态:"+txend;
+        return  "与上次的时间间隔:"+disminute+"("+standminute+")分钟,上次提现时间:"+txtime+",姓名:"+txxm+",提现状态:"+txend;
     }
 }

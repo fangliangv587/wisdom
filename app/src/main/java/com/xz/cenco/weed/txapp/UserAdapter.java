@@ -2,6 +2,7 @@ package com.xz.cenco.weed.txapp;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class UserAdapter extends BaseAdapter {
 
     private Context context;
     private List<User> data;
+    private UserAdapterListener listener;
 
     public UserAdapter(Context context) {
         this.context = context;
@@ -32,6 +34,10 @@ public class UserAdapter extends BaseAdapter {
             return data.size();
         }
         return 0;
+    }
+
+    public void setListener(UserAdapterListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -53,6 +59,7 @@ public class UserAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.adapter_user, null);
             holder.userTv = convertView.findViewById(R.id.userTv);
+            holder.itemLayout = convertView.findViewById(R.id.itemLayout);
             holder.infoTv = convertView.findViewById(R.id.userInfoTv);
             holder.txTv = convertView.findViewById(R.id.txRecordTv);
             holder.recordBtn = convertView.findViewById(R.id.recordBtn);
@@ -66,41 +73,32 @@ public class UserAdapter extends BaseAdapter {
         String str;
         if(user.txRecord==null){
             str="暂无体现成功记录";
+            holder.itemLayout.setBackgroundColor(Color.WHITE);
         }else {
             str=user.txRecord.getInfo();
+            if (user.txRecord.standminute>user.txRecord.disminute){
+                holder.itemLayout.setBackgroundColor(Color.GRAY);
+            }else {
+                holder.itemLayout.setBackgroundColor(Color.WHITE);
+            }
         }
+
+
+
         holder.txTv.setText(str);
         holder.recordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showRecords(user);
+                if (listener!=null){
+                    listener.onUserRecord(user);
+                }
             }
         });
 
         return convertView;
     }
 
-    private void showRecords(User user) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        TextView textView = new TextView(context);
-        textView.setPadding(20,20,20,20);
-        if (user==null){
-            textView.setText("用户为空");
-        }else if(user.recordList==null){
-            textView.setText("记录为空");
-        }else {
-            StringBuffer sb = new StringBuffer();
-            sb.append("\n\n");
-            for (int i =0;i<user.recordList.size();i++){
-                TxRecord record = user.recordList.get(i);
-                sb.append(record.toString()+"\n\n");
-            }
-            textView.setText(sb.toString());
-        }
-        builder.setTitle("提现记录");
-        builder.setView(textView);
-        builder.create().show();
-    }
+
 
     public void setData(List<User> data) {
         this.data = data;
@@ -108,10 +106,15 @@ public class UserAdapter extends BaseAdapter {
 
 
     public static class ViewHolder{
+        public View itemLayout;
         public TextView userTv;
         public TextView infoTv;
         public TextView txTv;
         public Button recordBtn;
 
+    }
+
+    public interface UserAdapterListener{
+        void onUserRecord(User user);
     }
 }

@@ -64,6 +64,10 @@ public class DBHelper {
         String sql = "select * from txjl WHERE txxm = '"+accountName+"' order by txtime desc";
         return getTxRecordList(sql);
     }
+    public List<TxRecord> getTxRecordListByAliAccountName(String name,String account) {
+        String sql = "select * FROM txjl WHERE txxm='"+name+"' AND txzh='"+Function.encode(account)+"'";
+        return getTxRecordList(sql);
+    }
     public List<TxRecord> getTxRecordListByUser(String user) {
         String sql = "select * from txjl WHERE user = '"+user+"' order by txtime desc";
         return getTxRecordList(sql);

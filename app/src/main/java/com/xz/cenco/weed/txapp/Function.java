@@ -10,9 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +36,7 @@ public class Function  {
 
     public static void main(String[] args) {
 
-//        String password = getPassword("MTMyMTA0MTA1MzM=");
+//        String password = decode("MTMyMTA0MTA1MzM=");
 //        log(password);
 
         dbHelper = new DBHelper();
@@ -51,11 +48,18 @@ public class Function  {
 //        registrUserTest();
     }
 
-    public static String getPassword(String pass) {
+    public static String decode(String pass) {
 
         byte[] decode = Base64.decode(pass, 0);
         String ds = new String(decode);
         return ds;
+    }
+
+    public static String encode(String str) {
+
+        String  s = Base64.encodeToString(str.getBytes(), 0);
+        LogUtils.d(s);
+        return s;
     }
 
 
@@ -102,11 +106,11 @@ public class Function  {
         if (validUser.size() > 0) {
 
 //            for (User user:validUser){
-//                log(user.latestTxTime + " -- "+user.user+" -- "+getPassword(user.password)+" -- "+user.mac);
+//                log(user.latestTxTime + " -- "+user.user+" -- "+decode(user.password)+" -- "+user.mac);
 //            }
 
             User user = validUser.get(0);
-            log(user.latestTxTime + " -- " + user.user + " -- " + getPassword(user.password) + " -- " + user.mac);
+            log(user.latestTxTime + " -- " + user.user + " -- " + decode(user.password) + " -- " + user.mac);
             account(aliPayAccount, user);
         }
     }

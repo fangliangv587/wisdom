@@ -35,6 +35,7 @@ public class User {
     public String latestTxTime;
 
     public List<TxRecord> recordList;
+    public Level level;
 
 
 
