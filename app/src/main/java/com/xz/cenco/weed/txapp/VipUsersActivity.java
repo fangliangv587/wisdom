@@ -410,7 +410,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
-                List<TxRecord> recordList = App.helper.getTxRecordListByAccountName(account.getName());
+                List<TxRecord> recordList = App.helper.getTxRecordListByAliAccountName(account.getName(),account.getAccount());
                 Message message = Message.obtain(handler, msg_record, recordList);
                 handler.sendMessage(message);
             }
