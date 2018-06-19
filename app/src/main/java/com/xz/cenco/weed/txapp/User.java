@@ -1,5 +1,7 @@
 package com.xz.cenco.weed.txapp;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2018/6/9 0009.
  */
@@ -14,6 +16,7 @@ public class User {
     public String txjl;//varchar
     public int txnumber;//int
     public String vip;//varchar
+    public TxRecord txRecord;
 
     public String viptime;//varchar
     public int tgjifen;//推广查看人数量
@@ -34,6 +37,13 @@ public class User {
 
     @Override
     public String toString() {
-        return "账号:"+user+",密码:"+password+",mac:"+mac+",注册ip:"+regip;
+        return "账号:"+user+",密码:"+getPassword(password)+",mac:"+mac+",注册ip:"+regip;
+    }
+
+    public static String getPassword(String pass) {
+
+        byte[] decode = Base64.decode(pass, 0);
+        String ds = new String(decode);
+        return ds;
     }
 }

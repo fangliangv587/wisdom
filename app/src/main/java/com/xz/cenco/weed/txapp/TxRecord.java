@@ -85,9 +85,16 @@ public class TxRecord {
     public String txtime;
     public String endtime;
     public String app;
+    public int disminute;
+    public int standminute;
+    public String standmoney;
 
     @Override
     public String toString() {
         return "提现时间:"+txtime+",姓名:"+txxm+",账户:"+user+",状态:"+txend;
+    }
+
+    public String getInfo(){
+        return  "据上次的时间间隔:"+disminute+"("+standminute+")分钟,上次提现时间:"+txtime+",提现状态:"+txend;
     }
 }

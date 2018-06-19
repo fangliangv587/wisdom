@@ -31,6 +31,7 @@ public class C {
         public static final String backup_data_path = backup_path + File.separator +"data.txt";
         public static final String card_path = root_path+File.separator+"card";
         public static final String identifycard_path = card_path+File.separator+"zp.bmp";
+        public static final String txapp_user = root_path+"/txapp/user.data";
     }
 
     /**

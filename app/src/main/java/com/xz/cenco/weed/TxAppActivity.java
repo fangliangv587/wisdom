@@ -3,6 +3,7 @@ package com.xz.cenco.weed;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,20 +13,27 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
+import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.ThreadManager;
 import com.cenco.lib.common.ToastUtil;
+import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.weed.txapp.AliPayAccount;
+import com.xz.cenco.weed.txapp.Constant;
 import com.xz.cenco.weed.txapp.DBHelper;
 import com.xz.cenco.weed.txapp.Function;
 import com.xz.cenco.weed.txapp.Level;
 import com.xz.cenco.weed.txapp.NormalUtils;
 import com.xz.cenco.weed.txapp.TxRecord;
 import com.xz.cenco.weed.txapp.User;
+import com.xz.cenco.weed.txapp.VipUsersActivity;
 import com.xz.cenco.wisdom.R;
+import com.xz.cenco.wisdom.activity.App;
+import com.xz.cenco.wisdom.util.C;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,8 +59,8 @@ public class TxAppActivity extends Activity {
     private static final int mes_db = 0x0001;
     private static final int mes_socket = 0x0002;
     private static final int mes_record = 0x0003;
+    private static final int mes_users = 0x0004;
     private int vip = 2;
-    public DBHelper helper;
     private int validIndex;
     private String systemusername;
 
@@ -66,6 +73,7 @@ public class TxAppActivity extends Activity {
     private Button person6Btn;
     private Button person7Btn;
     private Button person8Btn;
+    private EditText vipEt;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -74,6 +82,9 @@ public class TxAppActivity extends Activity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case mes_socket:
+                    break;
+                case mes_users:
+                    gotoUsers();
                     break;
                 case mes_db:
                     break;
@@ -84,6 +95,11 @@ public class TxAppActivity extends Activity {
             }
         }
     };
+
+    private void gotoUsers() {
+        Intent intent = new Intent(this, VipUsersActivity.class);
+        startActivity(intent);
+    }
 
     private void showRecordHistory(List<TxRecord> records) {
         if (records==null ||records.size()==0){
@@ -148,6 +164,7 @@ public class TxAppActivity extends Activity {
        person6Btn = findViewById(R.id.person6Btn);
        person7Btn = findViewById(R.id.person7Btn);
        person8Btn = findViewById(R.id.person8Btn);
+        vipEt = findViewById(R.id.vipEt);
 
         aliPayAccountList = getAlipayAccount();
 
@@ -162,7 +179,7 @@ public class TxAppActivity extends Activity {
             @Override
             public void run() {
 
-                helper = new DBHelper();
+                App.helper = new DBHelper();
                 addInfo("连接远程数据库成功");
 
             }
@@ -238,7 +255,7 @@ public class TxAppActivity extends Activity {
                 Date curDate = new Date();
 
                 //校验提现账户是否可以提现
-                List<TxRecord> txRecordList = helper.getTxRecordListByAccountName(aliPayAccount.getName());
+                List<TxRecord> txRecordList = App.helper.getTxRecordListByAccountName(aliPayAccount.getName());
                 for (int i=0;i<txRecordList.size();i++){
                     TxRecord record = txRecordList.get(i);
                     if (record.txend==1 || record.txend==2){
@@ -257,7 +274,7 @@ public class TxAppActivity extends Activity {
 
 
 
-                List<User> userList = helper.getUsersByVip(vip);
+                List<User> userList = App.helper.getUsersByVip(vip);
                 addInfo("等级"+vip+"的用户数量:"+userList.size());
 
                 List<User> filetUsers = new ArrayList<>();
@@ -270,7 +287,7 @@ public class TxAppActivity extends Activity {
                      LogUtils.d("黑名单用户:"+user.user);
                      continue;
                     }
-                    List<TxRecord> recordList = helper.getTxRecordListByUser(user.user);
+                    List<TxRecord> recordList = App.helper.getTxRecordListByUser(user.user);
                     if (recordList==null){
                         LogUtils.i("增加user:"+user.user);
                         filetUsers.add(user);
@@ -397,7 +414,7 @@ public class TxAppActivity extends Activity {
 
 
             private Level getLevel( int vip) {
-                List<Level> levels = helper.getLevels();
+                List<Level> levels = App.helper.getLevels();
                 for (Level level : levels) {
                     if (level.level.equals(vip + "")) {
                         return level;
@@ -514,7 +531,7 @@ public class TxAppActivity extends Activity {
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
-                List<TxRecord> records = helper.getTxRecordListByUser(systemusername);
+                List<TxRecord> records = App.helper.getTxRecordListByUser(systemusername);
                 Message message = Message.obtain();
                 message.what = mes_record;
                 message.obj = records;
@@ -525,5 +542,29 @@ public class TxAppActivity extends Activity {
 
     public void jumpNextClick(View view) {
         validIndex++;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (App.helper!=null){
+            App.helper.close();
+            App.helper=null;
+        }
+    }
+
+    public void queryCountClick(View view) {
+        final String vip = vipEt.getText().toString();
+        ThreadManager.getPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<User> userList = App.helper.getUsersByVip(Integer.parseInt(vip));
+                String json = GsonUtil.toJson(userList);
+                IOUtils.writeFileFromString(C.file.txapp_user,json);
+                Message message = Message.obtain(handler, mes_users);
+                handler.sendMessage(message);
+            }
+        });
     }
 }

@@ -11,6 +11,7 @@ import com.facebook.stetho.Stetho;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xz.cenco.assits.DaoMaster;
 import com.xz.cenco.assits.DaoSession;
+import com.xz.cenco.weed.txapp.DBHelper;
 import com.xz.cenco.wisdom.util.C;
 
 import org.greenrobot.greendao.database.Database;
@@ -28,6 +29,7 @@ public class App extends Application {
 
     public static boolean isTimer;
     private DaoSession daoSession;
+    public static DBHelper helper;
 
     @Override
     public void onCreate() {
