@@ -293,7 +293,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         try {
                             String accountBalance = getAccountBalance(response.body().string());
                             account.setBalance(accountBalance);
-                            LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
+                            LogUtils.w(TAG, account.getUsername()+"===>"+account.getBank()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
