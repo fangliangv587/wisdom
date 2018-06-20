@@ -189,17 +189,20 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         List<AliPayAccount> list = new ArrayList<AliPayAccount>();
 
 
-        list.add(new AliPayAccount("13047488791", "霍彬彬", "", ""));
-        list.add(new AliPayAccount("15588591960", "辛忠", "", ""));
-        list.add(new AliPayAccount("13153870185", "辛子财", "", ""));
-        list.add(new AliPayAccount("17864872607", "邱士菊", "", ""));
+        list.add(new AliPayAccount("13047488791", "霍彬彬", "", "a72af041a8b6be33"));
+        list.add(new AliPayAccount("15588591960", "辛忠", "", "a25b24b851b43890"));
+        list.add(new AliPayAccount("13153870185", "辛子财", "", "4782124a207df377"));
+        list.add(new AliPayAccount("17864872607", "邱士菊", "", "7f692ba2e3ae7aba"));
 
 
-        list.add(new AliPayAccount("18678380687", "霍宁宁", "", ""));
+        list.add(new AliPayAccount("18678380687", "霍宁宁", "", "a8b66bb0d0ef4227"));
 
-        list.add(new AliPayAccount("13468006640", "李琦", "", ""));
-        list.add(new AliPayAccount("13655381031", "张子明", "", ""));
-        list.add(new AliPayAccount("15665788385", "王洪伟", "", ""));
+        list.add(new AliPayAccount("13082761640", "霍合忠", "", "83be66aa093da9a3"));
+        list.add(new AliPayAccount("13181384566", "谈书云", "", "d03fd655bd01b3d8"));
+
+//        list.add(new AliPayAccount("13468006640", "李琦", "", ""));
+//        list.add(new AliPayAccount("13655381031", "张子明", "", ""));
+
         return list;
     }
 
@@ -387,7 +390,13 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提现记录");
-        builder.setMessage(sb.toString());
+        TextView textView = new TextView(this);
+        textView.setTextSize(12);
+        textView.setText(sb.toString());
+        textView.setPadding(20,20,20,20);
+        builder.setView(textView);
+//        builder.setMessage(sb.toString());
+
         builder.create().show();
     }
 

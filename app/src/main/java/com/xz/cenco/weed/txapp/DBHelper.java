@@ -75,7 +75,7 @@ public class DBHelper {
         return getTxRecordList(sql);
     }
     public List<TxRecord> getTxRecordList(String sql) {
-        log("获取体现记录:" + sql);
+        log("获取提现记录:" + sql);
         try {
             List<TxRecord> list = new ArrayList<TxRecord>();
 
