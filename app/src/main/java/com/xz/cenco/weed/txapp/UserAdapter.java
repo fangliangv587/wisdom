@@ -60,6 +60,7 @@ public class UserAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.adapter_user, null);
             holder.userTv = convertView.findViewById(R.id.userTv);
             holder.itemLayout = convertView.findViewById(R.id.itemLayout);
+            holder.firePersonTv = convertView.findViewById(R.id.firePersonTv);
             holder.infoTv = convertView.findViewById(R.id.userInfoTv);
             holder.txTv = convertView.findViewById(R.id.txRecordTv);
             holder.recordBtn = convertView.findViewById(R.id.recordBtn);
@@ -84,6 +85,19 @@ public class UserAdapter extends BaseAdapter {
         }
 
 
+        if (user.names.size()>0){
+            holder.firePersonTv.setTextColor(Color.DKGRAY);
+            holder.firePersonTv.setText("此账号提现成功过====>"+user.getName());
+
+            if (user.txRecord.standminute>user.txRecord.disminute){
+                holder.itemLayout.setBackgroundColor(Color.GRAY);
+            }else {
+                holder.itemLayout.setBackgroundColor(Color.parseColor("#DCA8F3"));
+            }
+
+        }else {
+            holder.firePersonTv.setText("");
+        }
 
         holder.txTv.setText(str);
         holder.recordBtn.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +122,7 @@ public class UserAdapter extends BaseAdapter {
     public static class ViewHolder{
         public View itemLayout;
         public TextView userTv;
+        public TextView firePersonTv;
         public TextView infoTv;
         public TextView txTv;
         public Button recordBtn;

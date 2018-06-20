@@ -132,16 +132,27 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                     for (int i = 0; i < recordList.size(); i++) {
                         TxRecord record = recordList.get(i);
 
-
-
                         if (record.txend == 1 || record.txend == 2) {
-                            Date date = DateUtil.getDate(record.txtime, DateUtil.FORMAT_YMDHMS);
-                            int disminute = (int) ((curDate.getTime() - date.getTime()) / 1000 / 60);
-                            record.disminute = disminute;
-                            record.standminute = minute;
-                            record.standmoney = money;
-                            user.txRecord = record;
-                            break;
+                            if (user.txRecord==null){
+                                Date date = DateUtil.getDate(record.txtime, DateUtil.FORMAT_YMDHMS);
+                                int disminute = (int) ((curDate.getTime() - date.getTime()) / 1000 / 60);
+                                record.disminute = disminute;
+                                record.standminute = minute;
+                                record.standmoney = money;
+                                user.txRecord = record;
+                            }
+                            if (record.txend == 2){
+                                String name =record.txxm;
+                                for (int k=0;k<alipayAccounts.size();k++){
+                                    AliPayAccount account = alipayAccounts.get(k);
+                                    String name1 = account.getName();
+                                    if (name.equals(name1)&& !user.names.contains(name)){
+                                        user.names.add(name);
+                                    }
+                                }
+                            }
+
+
                         }
                     }
                     String msg = (j+1)+"/"+orinalUsers.size();
@@ -155,17 +166,36 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                     @Override
                     public int compare(User user1, User user2) {
 
+                        if (user1==user2){
+                            return 0;
+                        }
                         if (user1.txRecord == null || user2.txRecord == null) {
-                            return -1;
+                            return 1;
                         }
 
                         TxRecord record1 = user1.txRecord;
                         TxRecord record2 = user2.txRecord;
 
                         if (record1.disminute < record2.disminute) {
-                            return -1;
+                            return 1;
                         }
-                        return 1;
+                        return -1;
+                    }
+                });
+
+                Collections.sort(orinalUsers, new Comparator<User>() {
+                    @Override
+                    public int compare(User user1, User user2) {
+                        if (user1==user2){
+                            return 0;
+                        }
+                        int size1 = user1.names.size();
+                        int size2 = user2.names.size();
+
+                        if (size1 < size2) {
+                            return 1;
+                        }
+                        return -1;
                     }
                 });
 

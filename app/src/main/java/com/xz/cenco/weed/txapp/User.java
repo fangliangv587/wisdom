@@ -1,6 +1,7 @@
 package com.xz.cenco.weed.txapp;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ public class User {
 
     public List<TxRecord> recordList;
     public Level level;
+    public List<String> names = new ArrayList<>();
 
 
 
@@ -49,5 +51,13 @@ public class User {
         byte[] decode = Base64.decode(pass, 0);
         String ds = new String(decode);
         return ds;
+    }
+
+    public String getName(){
+        StringBuffer sb = new StringBuffer();
+        for (String str :names){
+            sb.append(str).append("  ");
+        }
+        return sb.toString();
     }
 }
