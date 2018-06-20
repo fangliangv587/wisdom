@@ -72,8 +72,8 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
             super.handleMessage(msg);
             switch (msg.what) {
                 case msg_progress:
-                    int p = (int) msg.obj;
-                    infoTv.setText(p + "/100");
+                    String  p = (String) msg.obj;
+                    infoTv.setText(p);
                     break;
                 case msg_time_unreach:
                     List<TxRecord> recordList = (List<TxRecord>) msg.obj;
@@ -137,10 +137,11 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                             record.standminute = minute;
                             record.standmoney = money;
                             user.txRecord = record;
+                            break;
                         }
                     }
-                    int p = (int) ((j+1) * 1.0f / orinalUsers.size() * 100);
-                    Message message = Message.obtain(handler, msg_progress, p);
+                    String msg = (j+1)+"/"+orinalUsers.size();
+                    Message message = Message.obtain(handler, msg_progress, msg);
                     handler.sendMessage(message);
 
 
