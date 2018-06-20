@@ -15,6 +15,7 @@ import android.util.*;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -52,7 +53,9 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
     ListView listView;
     TextView infoTv;
+    EditText searcgEt;
     List<User> users;
+    List<User> orinalUsers;
     List<AliPayAccount> alipayAccounts;
     UserAdapter userAdapter;
     public static String ip = "120.27.20.92";
@@ -91,6 +94,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         setContentView(R.layout.activity_vip_users);
         listView = findViewById(R.id.listview);
         infoTv = findViewById(R.id.infoTv);
+        searcgEt = findViewById(R.id.searcgEt);
         infoTv.setMovementMethod(ScrollingMovementMethod.getInstance());
         listView.setOnItemClickListener(this);
 
@@ -105,21 +109,21 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
             public void run() {
 
                 String str = IOUtils.readFile2String(C.file.txapp_user);
-                users = GsonUtil.fromJson(str, new TypeToken<List<User>>() {
+                orinalUsers = GsonUtil.fromJson(str, new TypeToken<List<User>>() {
                 }.getType());
 
-                if (users == null || users.size() == 0) {
+                if (orinalUsers == null || orinalUsers.size() == 0) {
                     return;
                 }
 
-                Level level = getLevel(Integer.parseInt(users.get(0).vip));
+                Level level = getLevel(Integer.parseInt(orinalUsers.get(0).vip));
                 int minute = Integer.parseInt(level.txspantime);
                 String money = level.txje + ".0";
 
                 Date curDate = new Date();
 
-                for (int j = 0; j < users.size(); j++) {
-                    User user = users.get(j);
+                for (int j = 0; j < orinalUsers.size(); j++) {
+                    User user = orinalUsers.get(j);
                     List<TxRecord> recordList = App.helper.getTxRecordListByUser(user.user);
                     user.recordList = recordList;
                     user.level = level;
@@ -135,14 +139,14 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                             user.txRecord = record;
                         }
                     }
-                    int p = (int) ((j+1) * 1.0f / users.size() * 100);
+                    int p = (int) ((j+1) * 1.0f / orinalUsers.size() * 100);
                     Message message = Message.obtain(handler, msg_progress, p);
                     handler.sendMessage(message);
 
 
                 }
 
-                Collections.sort(users, new Comparator<User>() {
+                Collections.sort(orinalUsers, new Comparator<User>() {
                     @Override
                     public int compare(User user1, User user2) {
 
@@ -164,7 +168,8 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                     @Override
                     public void run() {
                         userAdapter = new UserAdapter(VipUsersActivity.this);
-                        userAdapter.setData(users);
+                        users = orinalUsers;
+                        userAdapter.setData(orinalUsers);
                         userAdapter.setListener(VipUsersActivity.this);
                         listView.setAdapter(userAdapter);
                     }
@@ -446,6 +451,49 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                 });
             }
         });
+
+    }
+
+    public void restoreClick(View view) {
+        users=orinalUsers;
+        userAdapter.setData(orinalUsers);
+        userAdapter.notifyDataSetChanged();
+    }
+
+    public void searchClick(View view) {
+        String search = searcgEt.getText().toString();
+        if (TextUtils.isEmpty(search)){
+            ToastUtil.show(this,"请输入搜索内容");
+            return;
+        }
+
+        if (orinalUsers==null){
+            ToastUtil.show(this,"无用户列表");
+            return;
+        }
+
+        if (userAdapter==null){
+            return;
+        }
+
+        List<User> list = new ArrayList<>();
+        for (int i=0;i<orinalUsers.size();i++){
+            User user = orinalUsers.get(i);
+            if (user.user.contains(search)){
+                list.add(user);
+                continue;
+            }
+
+            if (user.txRecord.txxm.contains(search)){
+                list.add(user);
+                continue;
+            }
+        }
+
+        users=list;
+        userAdapter.setData(list);
+        userAdapter.notifyDataSetChanged();
+
 
     }
 }

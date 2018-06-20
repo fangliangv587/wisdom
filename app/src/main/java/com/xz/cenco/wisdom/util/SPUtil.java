@@ -172,7 +172,7 @@ public class SPUtil {
 
     public static int getStartX(Context context){
         SharedPreferences sp = getSharedPreferences(context);
-        int positionXValue = sp.getInt(startX,0);
+        int positionXValue = sp.getInt(startX,158);
         return positionXValue;
     }
     public static void setStopX(Context context,int positionXValue){
@@ -182,7 +182,7 @@ public class SPUtil {
 
     public static int getStopX(Context context){
         SharedPreferences sp = getSharedPreferences(context);
-        int positionXValue = sp.getInt(stopX, ScreenUtil.getScreenWidth(context));
+        int positionXValue = sp.getInt(stopX, 662);
         return positionXValue;
     }
 

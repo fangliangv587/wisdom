@@ -8,6 +8,36 @@
         android:layout_height="150dp"
         android:id="@+id/infoTv"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="还原"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:id="@+id/restoreBtn"
+            android:onClick="restoreClick"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/restoreBtn"
+            android:layout_marginRight="10dp"
+            android:text="搜索"
+            android:id="@+id/searchBtn"
+            android:onClick="searchClick"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searcgEt"
+            android:layout_toLeftOf="@+id/searchBtn"
+            android:hint="查询信息"/>
+
+    </RelativeLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
