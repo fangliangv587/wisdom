@@ -484,6 +484,9 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                 continue;
             }
 
+            if(user.txRecord==null){
+                continue;
+            }
             if (user.txRecord.txxm.contains(search)){
                 list.add(user);
                 continue;
