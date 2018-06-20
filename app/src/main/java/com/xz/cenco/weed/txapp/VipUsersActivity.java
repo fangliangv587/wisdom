@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
@@ -232,8 +233,8 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         layout.setPadding(20, 20, 20, 20);
         for (int i = 0; i < alipayAccounts.size(); i++) {
             final AliPayAccount account = alipayAccounts.get(i);
-            LinearLayout layout1 = new LinearLayout(this);
-            layout1.setOrientation(LinearLayout.HORIZONTAL);
+            RelativeLayout layout1 = new RelativeLayout(this);
+
             TextView textView1 = new TextView(this);
             textView1.setText(account.getName());
             textView1.setTextSize(20);
@@ -256,6 +257,9 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                 }
             });
             textView2.setPadding(10, 10, 10, 10);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            textView2.setLayoutParams(params);
             layout1.addView(textView2);
 
             layout.addView(layout1);

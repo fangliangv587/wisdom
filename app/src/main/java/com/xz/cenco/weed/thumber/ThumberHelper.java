@@ -78,7 +78,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
         if (!com.xz.cenco.wisdom.util.Util.isNetworkAvailable(context)){
             loop = true;
-            LogUtils.w(TAG, "无网");
+            LogUtils.i(TAG, "无网");
             return;
         }
 
@@ -86,7 +86,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
         Account account = getAccount(dateString);
         loop = false;
         if (account == null) {
-            LogUtils.w(TAG, dateString + "-任务完成");
+            LogUtils.i(TAG, dateString + "-任务完成");
             loop = true;
             return;
         }
@@ -253,7 +253,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         SignResult result = response.body();
                         if (result.isSuccess()) {
                             account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
-                            LogUtils.w(TAG, account.getUsername()+" 签到成功");
+                            LogUtils.i(TAG, account.getUsername()+" 签到成功");
                         } else {
                             account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), false);
                             return Observable.error(new Throwable("签到失败"));
@@ -278,7 +278,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                     }
 
                     public void onComplete() {
-                        LogUtils.w(TAG, "onCompleted");
+                        LogUtils.i(TAG, "onCompleted");
                         beginTask();
                     }
 
@@ -338,7 +338,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
     private boolean isValidTime(){
         boolean valid = DateUtil.isInPeriodDate(new Date(), downDate, upDate, DateUtil.FORMAT_HMS);
-        LogUtils.w(TAG,"时间段检查："+valid);
+        LogUtils.i(TAG,"时间段检查："+valid);
         return valid;
     }
 

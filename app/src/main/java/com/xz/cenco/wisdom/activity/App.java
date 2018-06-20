@@ -12,6 +12,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xz.cenco.assits.DaoMaster;
 import com.xz.cenco.assits.DaoSession;
 import com.xz.cenco.weed.txapp.DBHelper;
+import com.xz.cenco.wisdom.BuildConfig;
 import com.xz.cenco.wisdom.util.C;
 
 import org.greenrobot.greendao.database.Database;
@@ -50,7 +51,11 @@ public class App extends Application {
     }
 
     private void initLog() {
-        LogUtils.init("appwisdom", Level.DEBUG, C.file.log_path);
+        int level = Level.DEBUG;
+        if (BuildConfig.DEBUG){
+            level = Level.WARN;
+        }
+        LogUtils.init("appwisdom", level, C.file.log_path);
         HttpUtil.init(this);
     }
 

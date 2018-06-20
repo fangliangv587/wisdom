@@ -34,6 +34,7 @@ public class Util {
         list.add(new Account("13468006640","lllqycyl0909","lq"));
         list.add(new Account("15665851629","binbin1629","bb工商"));
         list.add(new Account("13047488791","13047488791","mom支付宝"));
+        list.add(new Account("13221809346","qwertyuiop","xz支付宝"));
         return list;
     }
 
