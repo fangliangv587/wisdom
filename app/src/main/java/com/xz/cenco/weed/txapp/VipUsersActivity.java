@@ -131,6 +131,9 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
                     for (int i = 0; i < recordList.size(); i++) {
                         TxRecord record = recordList.get(i);
+
+
+
                         if (record.txend == 1 || record.txend == 2) {
                             Date date = DateUtil.getDate(record.txtime, DateUtil.FORMAT_YMDHMS);
                             int disminute = (int) ((curDate.getTime() - date.getTime()) / 1000 / 60);

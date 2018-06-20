@@ -52,7 +52,7 @@ public class App extends Application {
 
     private void initLog() {
         int level = Level.DEBUG;
-        if (BuildConfig.DEBUG){
+        if (!BuildConfig.DEBUG){
             level = Level.WARN;
         }
         LogUtils.init("appwisdom", level, C.file.log_path);
