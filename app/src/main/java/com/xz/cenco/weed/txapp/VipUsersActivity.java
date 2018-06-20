@@ -169,10 +169,17 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                         if (user1==user2){
                             return 0;
                         }
-                        if (user1.txRecord == null || user2.txRecord == null) {
+                        if (user1.txRecord == null && user2.txRecord == null) {
+                            return 0;
+                        }
+
+                        if (user1.txRecord == null ) {
                             return 1;
                         }
 
+                        if (user2.txRecord == null ) {
+                            return -1;
+                        }
                         TxRecord record1 = user1.txRecord;
                         TxRecord record2 = user2.txRecord;
 
@@ -186,14 +193,16 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                 Collections.sort(orinalUsers, new Comparator<User>() {
                     @Override
                     public int compare(User user1, User user2) {
-                        if (user1==user2){
-                            return 0;
-                        }
+
                         int size1 = user1.names.size();
                         int size2 = user2.names.size();
 
+
                         if (size1 < size2) {
                             return 1;
+                        }
+                        if (size1 == size2) {
+                            return 0;
                         }
                         return -1;
                     }
