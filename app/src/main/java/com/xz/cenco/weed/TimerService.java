@@ -55,17 +55,17 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         thumberHelper = new ThumberHelper(this);
         thumberHelper.start();
 
-        //酷划
-        coohuaHelper = new CoohuaHelper(this);
-        coohuaHelper.start();
-
-        //国证投资
-        aiaixgHelper = new AiaixgHelper(this);
-        aiaixgHelper.start();
-
-        //鑫茂国荣---国证投资2
-        xmgrHelper = new XmgrHelper(this);
-        xmgrHelper.start();
+//        //酷划
+//        coohuaHelper = new CoohuaHelper(this);
+//        coohuaHelper.start();
+//
+//        //国证投资
+//        aiaixgHelper = new AiaixgHelper(this);
+//        aiaixgHelper.start();
+//
+//        //鑫茂国荣---国证投资2
+//        xmgrHelper = new XmgrHelper(this);
+//        xmgrHelper.start();
 
 
         timerHelper = new TimerHelper(this);
@@ -73,9 +73,9 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
-        timerHelper.addListener(coohuaHelper);
-        timerHelper.addListener(aiaixgHelper);
-        timerHelper.addListener(xmgrHelper);
+//        timerHelper.addListener(coohuaHelper);
+//        timerHelper.addListener(aiaixgHelper);
+//        timerHelper.addListener(xmgrHelper);
 
     }
 

@@ -99,13 +99,16 @@ public class ThumberHelper implements TimerHelper.TimerListener {
         }
     }
 
-
+    private int index;
     public Account getAccount(String date) {
 
-        for (Account account : users) {
+        for (int i=0;i<users.size();i++) {
+            Account account = users.get(i);
+
             Map<String, Boolean> result = account.getResult();
             if (!result.containsKey(date) || !result.get(date)) {
                 account.putResult(date, false);
+                index = i+1;
                 return account;
             }
         }
@@ -118,6 +121,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     public void sign(final Account account) {
 
         Observable<Response<ResponseBody>> observable1 = request.init();
+        LogUtils.w(TAG,index+"/"+users.size()+"===>"+account.getUsername()+":"+account.getBank());
 
         observable1
                 .subscribeOn(Schedulers.io())
@@ -270,8 +274,9 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                     public void onError(Throwable e) {
                         LogUtils.e(TAG, "onError:" + e.getMessage());
                         try {
-                            Thread.sleep(1000*10);
+                            Thread.sleep(1000*2);
                         } catch (InterruptedException e1) {
+                            LogUtils.e(e);
                             e1.printStackTrace();
                         }
                         beginTask();
