@@ -91,7 +91,7 @@ public class TxRecord {
 
     @Override
     public String toString() {
-        return "提现时间:"+txtime+",支付宝姓名:"+txxm+",系统账户:"+user+",状态:"+txend;
+        return "提现时间:"+txtime+",支付宝:"+txxm+",用户:"+user+",金额:"+txje+",状态:"+txend;
     }
 
     public String getInfo(){

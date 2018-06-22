@@ -3,7 +3,9 @@ package com.xz.cenco.weed.txapp;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +14,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.*;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -264,47 +267,178 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
             return;
         }
 
-        selectAlipayUser(position,user);
+        queryAlipayRecord(position,user);
+    }
+    ProgressDialog progressDialog;
+    private void dismissProgressDialog(){
+        if (progressDialog!=null){
+            progressDialog.dismiss();
+            progressDialog=null;
+        }
+    }
+    private void queryAlipayRecord(final int position,final User user){
+        progressDialog = ProgressDialog.show(this, "", "请稍后...");
+        ThreadManager.getPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                List<BlackAccount> accounts = App.helper.getBlackAccounts();
+
+                double money =0;
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < alipayAccounts.size(); i++) {
+                    AliPayAccount aliPayAccount = alipayAccounts.get(i);
+                    aliPayAccount.setRecord(null);
+
+                    for (int j=0;j<accounts.size();j++){
+                        BlackAccount account = accounts.get(j);
+                        if (account.zh.equals(aliPayAccount.getAccount())){
+                            aliPayAccount.setBlack(true);
+                            break;
+                        }
+                    }
+
+
+                    List<TxRecord> records = App.helper.getTxRecordListByAliAccountName(aliPayAccount.getName(), aliPayAccount.getAccount());
+                    double usermoney=0;
+                    for (int j=0;j<records.size();j++){
+                        TxRecord record = records.get(j);
+                        if(record.txend==2){
+                            double sigleMoney = Double.parseDouble(record.txje);
+                            usermoney+=sigleMoney;
+                        }
+
+                        if (aliPayAccount.getRecord()==null &&(record.txend==1 || record.txend == 2)){
+                            aliPayAccount.setRecord(record);
+                        }
+                    }
+                    sb.append(aliPayAccount.getName()+":"+usermoney+"元  ");
+                    money+=usermoney;
+                }
+
+
+                Collections.sort(alipayAccounts, new Comparator<AliPayAccount>() {
+                    @Override
+                    public int compare(AliPayAccount o1, AliPayAccount o2) {
+                        if (o1.isBlack()==o2.isBlack()){
+                            return 0;
+                        }
+
+                        if (o1.isBlack()!=o2.isBlack()  && o1.isBlack()){
+                            return 1;
+                        }
+
+                        if (o1.isBlack()!=o2.isBlack()  && o2.isBlack()){
+                            return -1;
+                        }
+
+                        return 0;
+
+                    }
+                });
+
+                sb.append("总:"+money);
+                final String str = sb.toString();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissProgressDialog();
+                        selectAlipayUser(position,user,str);
+                    }
+                });
+            }
+        });
     }
 
 
-    public void selectAlipayUser(int position,final User user) {
+    public void selectAlipayUser(int position,final User user,final String info) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(20, 20, 20, 20);
+
+
+        TextView textView = new TextView(this);
+        textView.setText(info);
+        textView.setTextSize(10);
+        layout.addView(textView);
+
+        Date curDate = new Date();
         for (int i = 0; i < alipayAccounts.size(); i++) {
             final AliPayAccount account = alipayAccounts.get(i);
-            RelativeLayout layout1 = new RelativeLayout(this);
 
-            TextView textView1 = new TextView(this);
-            textView1.setText(account.getName());
-            textView1.setTextSize(20);
-            textView1.setOnClickListener(new View.OnClickListener() {
+            View view = LayoutInflater.from(this).inflate(R.layout.item_view_alipayuser, null);
+            TextView userNameTv = view.findViewById(R.id.userNameTv);
+            TextView infoTv = view.findViewById(R.id.infoTv);
+            TextView recordTv = view.findViewById(R.id.recordTv);
+            View layoutView = view.findViewById(R.id.layout);
+
+            userNameTv.setText(account.getName());
+            infoTv.setText(account.getRecord()==null?"无成功记录":account.getRecord().toString());
+
+            if (account.isBlack()){
+                userNameTv.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                infoTv.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+
+
+            boolean isOk = false;
+            int minute = Integer.parseInt(user.level.txspantime);
+            StringBuffer sb = new StringBuffer();
+            if(user.txRecord!=null){
+
+                Date date = DateUtil.getDate(user.txRecord.txtime, DateUtil.FORMAT_YMDHMS);
+                int disminute = (int) ((curDate.getTime() - date.getTime()) / 1000 / 60);
+                sb.append("用户最近的提现间隔:"+disminute+"("+minute+")   ");
+
+                if (account.getRecord()!=null){
+
+                    Date date1 = DateUtil.getDate(account.getRecord().txtime, DateUtil.FORMAT_YMDHMS);
+                    int disminute1 = (int) ((curDate.getTime() - date1.getTime()) / 1000 / 60);
+                    sb.append("支付宝用户最近的提现间隔:"+disminute1+"("+minute+")");
+                    isOk = disminute>minute && disminute1>minute;
+
+                }else {
+                    sb.append("支付宝用户无最近提现记录");
+                    isOk = disminute>minute;
+                }
+
+            }else {
+                sb.append("用户无最近提现记录    ");
+                if (account.getRecord()!=null){
+
+                    Date date1 = DateUtil.getDate(account.getRecord().txtime, DateUtil.FORMAT_YMDHMS);
+                    int disminute1 = (int) ((curDate.getTime() - date1.getTime()) / 1000 / 60);
+                    sb.append("支付宝用户最近的提现间隔:"+disminute1+"("+minute+")");
+                    isOk = disminute1>minute;
+
+                }else {
+                    sb.append("支付宝用户无最近提现记录");
+                    isOk = true;
+                }
+            }
+
+            account.setTimeOk(isOk);
+            infoTv.setText(infoTv.getText()+"\n"+sb.toString());
+            if (!isOk){
+                layoutView.setBackgroundColor(Color.GRAY);
+            }
+
+            layoutView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     withdraw(account, user);
                 }
             });
-            textView1.setPadding(10, 10, 10, 10);
-            layout1.addView(textView1);
 
-            TextView textView2 = new TextView(this);
-            textView2.setText("记录");
-            textView2.setTextSize(20);
-            textView2.setOnClickListener(new View.OnClickListener() {
+            recordTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     recordByAccount(account);
                 }
             });
-            textView2.setPadding(10, 10, 10, 10);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            textView2.setLayoutParams(params);
-            layout1.addView(textView2);
 
-            layout.addView(layout1);
+            layout.addView(view);
         }
         builder.setTitle("选择提现用户("+(position+1)+"==>"+user.user+")");
         builder.setView(layout);
@@ -312,6 +446,17 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
     }
 
     private void withdraw(final AliPayAccount aliPayAccount, final User user) {
+
+        if (aliPayAccount.isBlack()){
+            ToastUtil.show(this,"支付宝账户被拉黑名单！");
+            return;
+        }
+
+        if (!aliPayAccount.isTimeOk()){
+            ToastUtil.show(this,"时间限制");
+            return;
+        }
+
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {

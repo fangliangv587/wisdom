@@ -64,6 +64,29 @@ public class DBHelper {
         String sql = "select * from txjl WHERE txxm = '"+accountName+"' order by txtime desc";
         return getTxRecordList(sql);
     }
+    public List<BlackAccount> getBlackAccounts(){
+        String sql = "SELECT * from blacklist";
+        try {
+            List<BlackAccount> list = new ArrayList<BlackAccount>();
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            //从结果集中提取数据
+            while (rs.next()) {
+                BlackAccount record = new BlackAccount();
+                record.id = rs.getInt("id");
+                record.zh = rs.getString("zh");
+                list.add(record);
+            }
+            return list;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public List<TxRecord> getTxRecordListByAliAccountName(String name,String account) {
         String sql = "select * FROM txjl WHERE txxm='"+name+"' AND txzh='"+Function.encode(account)+"' ORDER BY txtime DESC";
 //        String sql = "select * FROM txjl WHERE txxm='"+name+"' AND txzh='"+Function.encode(account)+"'";

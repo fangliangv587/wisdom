@@ -8,12 +8,39 @@ public class AliPayAccount {
     private String account;
     private String name;
     private String user;
+    private TxRecord record;
+    private boolean isBlack;
+    private boolean isTimeOk;
 
     public AliPayAccount(String account, String name,String user,String mac) {
         this.account = account;
         this.name = name;
         this.user = user;
         this.mac = mac;
+    }
+
+    public boolean isTimeOk() {
+        return isTimeOk;
+    }
+
+    public void setTimeOk(boolean timeOk) {
+        isTimeOk = timeOk;
+    }
+
+    public boolean isBlack() {
+        return isBlack;
+    }
+
+    public void setBlack(boolean black) {
+        isBlack = black;
+    }
+
+    public TxRecord getRecord() {
+        return record;
+    }
+
+    public void setRecord(TxRecord record) {
+        this.record = record;
     }
 
     public String getMac() {
