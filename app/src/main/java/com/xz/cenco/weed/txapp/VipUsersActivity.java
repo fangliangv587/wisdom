@@ -691,4 +691,5 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
 
     }
+
 }

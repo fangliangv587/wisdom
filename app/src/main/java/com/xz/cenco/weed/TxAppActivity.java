@@ -524,20 +524,10 @@ public class TxAppActivity extends Activity {
         return validRecord.get(validIndex);
     }
 
+    int position=0;
     public void queryRecordClick(View view) {
-        if (systemusername == null) {
-            return;
-        }
-        ThreadManager.getPoolProxy().execute(new Runnable() {
-            @Override
-            public void run() {
-                List<TxRecord> records = App.helper.getTxRecordListByUser(systemusername);
-                Message message = Message.obtain();
-                message.what = mes_record;
-                message.obj = records;
-                handler.sendMessage(message);
-            }
-        });
+        position++;
+        addInfo(position+"click");
     }
 
     public void jumpNextClick(View view) {

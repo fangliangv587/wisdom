@@ -36,6 +36,7 @@ public class WeedListActivity extends ListActivity {
         List<String> data = new ArrayList<String>();
         data.add("不倒翁");
         data.add("txapp");
+        data.add("測試");
 
         return data;
     }
@@ -65,6 +66,11 @@ public class WeedListActivity extends ListActivity {
 
         if (position==1){
             intent =  new Intent(this, TxAppActivity.class);
+            startActivity(intent);
+            return;
+        }
+        if (position==2){
+            intent =  new Intent(this, TestMessageActivity.class);
             startActivity(intent);
             return;
         }

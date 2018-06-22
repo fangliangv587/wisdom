@@ -122,7 +122,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="queryRecordClick"
-        android:text="查询当前侵入账户的提现记录"/>
+        android:text="查询"/>
 
     <Button
         android:layout_width="match_parent"
