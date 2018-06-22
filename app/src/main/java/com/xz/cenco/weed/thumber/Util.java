@@ -30,18 +30,22 @@ public class Util {
 
     public static List<Account> getUsers(){
         List<Account> list = new ArrayList<Account>();
-        list.add(new Account("13468006640","lllqycyl0909","lq","支付宝",""));
-        list.add(new Account("13237522180","13237522180li","lq","建行","13237522180@126.com"));
-        list.add(new Account("15588591960","xin03531883","xz","招商",""));
-        list.add(new Account("13221809346","qwertyuiop","xz","支付宝","468531247@qq.com"));
-        list.add(new Account("15665851629","binbin1629","bb","工商",""));
-        list.add(new Account("15764125171","asdfghjkl","bb","支付宝","15764125171@qq.com"));
-        list.add(new Account("13047488791","13047488791","mom","支付宝",""));
-        list.add(new Account("18579013870","18579013870xin","father","支付宝","18579013870@126.com"));
-        list.add(new Account("18679326052","18679326052","hnn","支付宝","18679326052@126.com"));
-        list.add(new Account("17024474404","17024474404","hfather","支付宝","17024474404@126.com"));
-        list.add(new Account("18507045703","18507045703","hmother","支付宝","18507045703@126.com"));
-        list.add(new Account("17024474405","17024474405a","whw","支付宝","17024474405@126.com"));
+        list.add(new Account("13468006640","lllqycyl0909","李琦","支付宝","",true));
+        list.add(new Account("13237522180","13237522180li","李琦","建行","13237522180@126.com",false));
+        list.add(new Account("15588591960","xin03531883","辛忠","招商","",false));
+        list.add(new Account("13221809346","qwertyuiop","辛忠","支付宝","468531247@qq.com",false));
+        list.add(new Account("15665851629","binbin1629","霍彬彬","工商","",false));
+        list.add(new Account("15764125171","asdfghjkl","霍彬彬","支付宝","15764125171@qq.com",false));
+        list.add(new Account("13047488791","13047488791","邱士菊","支付宝","",false));
+        list.add(new Account("18579013870","18579013870xin","辛子财","支付宝","18579013870@126.com",false));
+        list.add(new Account("18679326052","18679326052","霍宁宁","支付宝","18679326052@126.com",false));
+        list.add(new Account("17024474404","17024474404","霍合忠","支付宝","17024474404@126.com",false));
+
+        list.add(new Account("18507045703","18507045703","谈书云","支付宝","18507045703@126.com",false));
+        list.add(new Account("17024474405","17024474405a","王洪伟","支付宝","17024474405@126.com",false));
+        list.add(new Account("17024474105","17024474105zh","张顺","支付宝","17024474105@126.com",false));
+        list.add(new Account("17024474106","zhangshun123","张顺","农行","17024474106@126.com",false));
+//        list.add(new Account("17024474685","wanghongwei","王洪伟","银行未定","17024474685@126.com",false));
         return list;
     }
 

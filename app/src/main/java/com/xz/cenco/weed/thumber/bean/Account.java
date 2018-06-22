@@ -21,6 +21,7 @@ public class Account {
     private int signDays;
     private Map<String,Boolean> result;
     private CheckBox checkBox;
+    private boolean isDesposited;
 
     public CheckBox getCheckBox() {
         return checkBox;
@@ -38,13 +39,24 @@ public class Account {
         this.cookie = cookie;
     }
 
-    public Account(String username, String password, String peopleName,String bank,String email) {
+
+
+    public Account(String username, String password, String peopleName,String bank,String email,boolean isDesposited) {
         this.username = username;
         this.password = password;
         this.bank = bank;
         this.email = email;
         this.peopleName=peopleName;
+        this.isDesposited = isDesposited;
         result = new HashMap<String, Boolean>();
+    }
+
+    public boolean isDesposited() {
+        return isDesposited;
+    }
+
+    public void setDesposited(boolean desposited) {
+        isDesposited = desposited;
     }
 
     public String getPeopleName() {
