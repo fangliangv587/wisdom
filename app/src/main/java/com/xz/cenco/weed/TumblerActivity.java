@@ -1,15 +1,24 @@
 package com.xz.cenco.weed;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.ImageUtil;
 import com.cenco.lib.common.ThreadManager;
+import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.http.HttpUtil;
 import com.cenco.lib.common.http.SimpleCallback;
 import com.cenco.lib.common.log.LogUtils;
@@ -19,15 +28,18 @@ import com.xz.cenco.weed.thumber.ThumberApiService;
 import com.xz.cenco.weed.thumber.ThumberHelper;
 import com.xz.cenco.weed.thumber.Util;
 import com.xz.cenco.weed.thumber.bean.Account;
+import com.xz.cenco.weed.thumber.bean.BetResult;
 import com.xz.cenco.weed.thumber.bean.CarNumberBody;
 import com.xz.cenco.weed.thumber.bean.LoginResult;
 import com.xz.cenco.weed.thumber.bean.OrcResult;
+import com.xz.cenco.weed.thumber.bean.RecordNumResult;
 import com.xz.cenco.weed.thumber.bean.SignResult;
 import com.xz.cenco.weed.thumber.bean.SignUserResult;
 import com.xz.cenco.weed.thumber.sign.Base64Util;
 import com.xz.cenco.wisdom.R;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,9 +65,9 @@ public class TumblerActivity extends Activity  {
 
     private ThumberApiService request;
     private List<Account> users;
-    public String coockie = null;
     private String TAG = "Thumbler";
     TextView textTv;
+    LinearLayout layout;
 
 
     @Override
@@ -68,10 +80,18 @@ public class TumblerActivity extends Activity  {
 
     }
 
+    ProgressDialog dialog;
 
+    private void dismissProgressDialog(){
+        if (dialog!=null){
+            dialog.dismiss();
+            dialog=null;
+        }
+    }
     public void init() {
 
         textTv = findViewById(R.id.textTv);
+        layout = findViewById(R.id.layout);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.ybol.vip/") // 设置 网络请求 Url
@@ -82,6 +102,7 @@ public class TumblerActivity extends Activity  {
         request = retrofit.create(ThumberApiService.class);
         users = Util.getUsers();
 
+         dialog=ProgressDialog.show(this,"","请稍后...");
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
@@ -94,16 +115,25 @@ public class TumblerActivity extends Activity  {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        for (int i=0;i<users.size();i++){
-                            Account account = users.get(i);
-                            textTv.setText(textTv.getText()+account.getUsername()+"==>"+account.getBalance()+"\n");
-                        }
+                        dismissProgressDialog();
+                        showUserInfo();
                     }
                 });
             }
         });
     }
 
+    private void showUserInfo() {
+        for (int i=0;i<users.size();i++){
+            Account account = users.get(i);
+            View view = LayoutInflater.from(this).inflate(R.layout.item_thumber, null);
+            TextView infoTv = view.findViewById(R.id.infoTv);
+            CheckBox checkbox = view.findViewById(R.id.checkbox);
+            account.setCheckBox(checkbox);
+            infoTv.setText(i+1+"-"+account.getUsername()+"("+account.getPeopleName()+")==>"+account.getBalance());
+            layout.addView(view);
+        }
+    }
 
 
     public void sign(final Account account) {
@@ -126,7 +156,8 @@ public class TumblerActivity extends Activity  {
                         sb.append(key2).append("=").append(value2).append("; ");
                         sb.append(key3).append("=").append(value3);
 
-                        coockie = sb.toString();
+                        String coockie = sb.toString();
+                        account.setCookie(coockie);
 
 
                         LogUtils.d(TAG,  account.getUsername()+" , cookie>" + coockie);
@@ -138,7 +169,7 @@ public class TumblerActivity extends Activity  {
 
                         printResponse(response, "初始化获取session请求成功");
 
-                        Observable<Response<ResponseBody>> code = request.code(coockie);
+                        Observable<Response<ResponseBody>> code = request.code(account.getCookie());
                         return code;
                     }
                 })
@@ -182,7 +213,7 @@ public class TumblerActivity extends Activity  {
 
                         String username = account.getUsername();
                         String password = account.getPassword();
-                        Observable<Response<LoginResult>> login = request.login(coockie, username, password, format);
+                        Observable<Response<LoginResult>> login = request.login(account.getCookie(), username, password, format);
                         return login;
                     }
                 })
@@ -209,7 +240,7 @@ public class TumblerActivity extends Activity  {
                         LogUtils.i(TAG, "登录结果:" + result.getSuccess());
 
 
-                        Observable<Response<ResponseBody>> personInfo = request.personInfo(coockie);
+                        Observable<Response<ResponseBody>> personInfo = request.personInfo(account.getCookie());
                         return personInfo;
                     }
                 })
@@ -220,11 +251,7 @@ public class TumblerActivity extends Activity  {
 
                     public void onError(Throwable e) {
                         LogUtils.e(TAG, "onError:" + e.getMessage());
-                        try {
-                            Thread.sleep(1000*10);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
+
 
                     }
 
@@ -277,4 +304,254 @@ public class TumblerActivity extends Activity  {
         return "未获取到";
     }
 
+    public void actionClick(View view) {
+        List<Account> list = new ArrayList<>();
+        for (int i=0;i<users.size();i++){
+            Account account = users.get(i);
+            boolean checked = account.getCheckBox().isChecked();
+            if (checked){
+                list.add(account);
+            }
+        }
+
+
+
+        if (list.size()!=2){
+            ToastUtil.show(this,"不能选择"+list.size()+"个账户");
+            return;
+        }
+
+        Account account1 = list.get(0);
+        Account account2 = list.get(1);
+        showMoneyDialog(account1,account2);
+
+    }
+
+    public void showMoneyDialog(final Account account1, final Account account2){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EditText editText = new EditText(this);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        editText.setText("1");
+        builder.setView(editText);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String money = editText.getText().toString();
+                int m = Integer.parseInt(money);
+                bet(account1,account2,m);
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create().show();;
+
+    }
+
+    private void bet(final Account account1, final Account account2, final int money) {
+
+        if (account1==null || account2==null || account1.getCookie()==null || account2.getCookie()==null){
+            return;
+        }
+
+        if (Double.parseDouble(account1.getBalance())<money){
+            ToastUtil.show(this,account1.getPeopleName()+"金额不足"+money);
+            return;
+        }
+        if (Double.parseDouble(account2.getBalance())<money){
+            ToastUtil.show(this,account2.getPeopleName()+"金额不足"+money);
+            return;
+        }
+
+        ThreadManager.getPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                Observable<Response<ResponseBody>> code = request.getLastNum(account1.getCookie(), false);
+
+                code.subscribe(new Observer<Response<ResponseBody>>() {
+
+                    public void onError(Throwable e) {
+                        LogUtils.d("--->onError:" + e.getMessage());
+                    }
+
+                    public void onComplete() {
+                        LogUtils.d("--->onCompleted");
+                    }
+
+                    public void onSubscribe(Disposable disposable) {
+
+                    }
+
+                    public void onNext(Response<ResponseBody> response) {
+                        LogUtils.d("--->onNext");
+                        printResponse(response,"");
+
+                        try {
+                            String str = response.body().string();
+                            Gson gson = new Gson();
+                            RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
+                            RecordNumResult.ListBean bean = result.getList().get(0);
+                            LogUtils.w("投注期号:"+bean.getIssuenum());
+
+
+                            Observable<Response<ResponseBody>> bet1 = getBetRequest(request,account1.getCookie(),bean.getIssuenum(),true,money);
+                            Observable<Response<ResponseBody>> bet2 = getBetRequest(request,account2.getCookie(),bean.getIssuenum(),false,money);
+                            bet1. subscribeOn(Schedulers.io())
+                                    .subscribe(new Observer<Response<ResponseBody>>() {
+
+                                        public void onError(Throwable e) {
+                                            LogUtils.d("--->onError:" + e.getMessage());
+                                        }
+
+                                        public void onComplete() {
+                                            LogUtils.d("--->onCompleted");
+                                        }
+
+                                        public void onSubscribe(Disposable disposable) {
+
+                                        }
+
+                                        public void onNext(Response<ResponseBody> response) {
+                                            LogUtils.d("--->onNext");
+                                            printResponse(response,"");
+
+                                            try {
+                                                String str = response.body().string();
+                                                Gson gson = new Gson();
+                                                BetResult result = gson.fromJson(str, BetResult.class);
+                                                LogUtils.i(account1.getPeopleName()+account1.getBank()+"(正):"+result.getMsg());
+
+                                            } catch (IOException e) {
+                                                LogUtils.e(e);
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    });
+
+                            bet2. subscribeOn(Schedulers.io())
+                                    .subscribe(new Observer<Response<ResponseBody>>() {
+
+                                        public void onError(Throwable e) {
+                                            LogUtils.d("--->onError:" + e.getMessage());
+                                        }
+
+                                        public void onComplete() {
+                                            LogUtils.d("--->onCompleted");
+                                        }
+
+                                        public void onSubscribe(Disposable disposable) {
+
+                                        }
+
+                                        public void onNext(Response<ResponseBody> response) {
+                                            LogUtils.d("--->onNext");
+                                            printResponse(response,"");
+
+                                            try {
+                                                String str = response.body().string();
+                                                Gson gson = new Gson();
+                                                BetResult result = gson.fromJson(str, BetResult.class);
+                                                LogUtils.i(account2.getPeopleName()+account2.getBank()+"(反):"+result.getMsg());
+
+                                            } catch (IOException e) {
+                                                LogUtils.e(e);
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    });
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+
+//                code  .flatMap(new Function<Response<ResponseBody>, ObservableSource<Response<ResponseBody>>>() { // 作变换，即作嵌套网络请求
+//                    public ObservableSource<Response<ResponseBody>> apply(Response<ResponseBody> response) throws Exception {
+//
+//                        printResponse(response,"");
+//
+//
+//                        try {
+//                            String str = response.body().string();
+//                            Gson gson = new Gson();
+//                            RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
+//                            RecordNumResult.ListBean bean = result.getList().get(0);
+//                            System.out.println("投注期号:"+bean.getIssuenum());
+//                            //issueNum=201806150855&hongtl=1 & DFW=0  &huitl=0&myy=0 zheng 1
+//                            //issueNum=201806150922&hongtl=0 & DFW=1  &huitl=0&myy=0 fan 1
+//                            //issueNum=201806150925&hongtl=5 & DFW=0  &huitl=0&myy=0  zheng 5
+//                            //issueNum=201806150926&hongtl=0 & DFW=5  &huitl=0&myy=0 fan 5
+////                            Observable<Response<ResponseBody>> code = request.SubmitBet(coockie, bean.getIssuenum(), "1", "0", "0", "0");
+//                            Observable<Response<ResponseBody>> code1 = getBetRequest(request,account1.getCookie(),bean.getIssuenum(),false,2);
+//                            return code1;
+//
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        return Observable.error(new Throwable("发生异常"));
+//
+//                    }
+//                })
+//
+//                        .subscribe(new Observer<Response<ResponseBody>>() {
+//
+//                            public void onError(Throwable e) {
+//                                LogUtils.d("--->onError:" + e.getMessage());
+////                        beginTask();
+//                            }
+//
+//                            public void onComplete() {
+//                                LogUtils.d("--->onCompleted");
+////                        beginTask();
+//                            }
+//
+//                            public void onSubscribe(Disposable disposable) {
+//
+//                            }
+//
+//                            public void onNext(Response<ResponseBody> response) {
+//                                LogUtils.d("--->onNext");
+//                                printResponse(response,"");
+//
+//                                try {
+//                                    String str = response.body().string();
+//                                    Gson gson = new Gson();
+//                                    BetResult result = gson.fromJson(str, BetResult.class);
+//                                    System.out.println(result.getMsg());
+//
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }
+//                        });
+            }
+        });
+    }
+
+
+    private static Observable<Response<ResponseBody>> getBetRequest(ThumberApiService request,String coockie,String issuenum,boolean positive,int money){
+        //issueNum=201806150855&hongtl=1 & DFW=0  &huitl=0&myy=0 zheng 1
+        //issueNum=201806150922&hongtl=0 & DFW=1  &huitl=0&myy=0 fan 1
+        //issueNum=201806150925&hongtl=5 & DFW=0  &huitl=0&myy=0  zheng 5
+        //issueNum=201806150926&hongtl=0 & DFW=5  &huitl=0&myy=0 fan 5
+        System.out.println(positive?"正":"反");
+        String param1 = money+"";
+        String param2 = "0";
+        if (!positive){
+            param1 = "0";
+            param2 = money+"";
+        }
+        Observable<Response<ResponseBody>> code = request.SubmitBet(coockie,issuenum, param1, param2, "0", "0");
+        return code;
+    }
 }

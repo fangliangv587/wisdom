@@ -109,6 +109,13 @@ public interface ThumberApiService {
     Observable<Response<OrcResult>> ocrText(@Header("Authorization") String authorization, @Body RequestBody info);
 
 
+    @FormUrlEncoded
+    @POST("/Uc/GetLastNum")
+    Observable<Response<ResponseBody>> getLastNum(@Header("Cookie") String cookie, @Field("isinit") boolean isinit);
+
+    @FormUrlEncoded
+    @POST("/Uc/SubmitBet")
+    Observable<Response<ResponseBody>> SubmitBet(@Header("Cookie") String cookie, @Field("issueNum") String issueNum,@Field("hongtl") String hongtl,@Field("DFW") String DFW,@Field("huitl") String huitl,@Field("myy") String myy);
 
 
 }

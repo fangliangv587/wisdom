@@ -81,8 +81,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void commonPermission() {
-        PermissionManager manager = new PermissionManager(this);
-        manager.requestPermission(null, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
+//        PermissionManager manager = new PermissionManager(this);
+//        manager.requestPermission(null, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
     }
 
     @Override

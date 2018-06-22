@@ -1,5 +1,7 @@
 package com.xz.cenco.weed.thumber.bean;
 
+import android.widget.CheckBox;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,8 +17,18 @@ public class Account {
     private String email;
     private String balance;
     private String cookie;
+    private String peopleName;
     private int signDays;
     private Map<String,Boolean> result;
+    private CheckBox checkBox;
+
+    public CheckBox getCheckBox() {
+        return checkBox;
+    }
+
+    public void setCheckBox(CheckBox checkBox) {
+        this.checkBox = checkBox;
+    }
 
     public String getCookie() {
         return cookie;
@@ -26,12 +38,21 @@ public class Account {
         this.cookie = cookie;
     }
 
-    public Account(String username, String password, String bank,String email) {
+    public Account(String username, String password, String peopleName,String bank,String email) {
         this.username = username;
         this.password = password;
         this.bank = bank;
         this.email = email;
+        this.peopleName=peopleName;
         result = new HashMap<String, Boolean>();
+    }
+
+    public String getPeopleName() {
+        return peopleName;
+    }
+
+    public void setPeopleName(String peopleName) {
+        this.peopleName = peopleName;
     }
 
     public String getEmail() {
