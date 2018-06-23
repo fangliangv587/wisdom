@@ -242,8 +242,8 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         List<AliPayAccount> list = new ArrayList<AliPayAccount>();
 
 
-        list.add(new AliPayAccount("13047488791", "霍彬彬1", "", "a72af041a8b6be33"));
-        list.add(new AliPayAccount("15665851629", "霍彬彬2", "", "6d89828bd6001ddb"));
+        list.add(new AliPayAccount("13047488791", "霍彬彬", "", "a72af041a8b6be33"));
+        list.add(new AliPayAccount("15665851629", "霍彬彬", "", "6d89828bd6001ddb"));
         list.add(new AliPayAccount("15588591960", "辛忠", "", "a25b24b851b43890"));
         list.add(new AliPayAccount("13153870185", "辛子财", "", "4782124a207df377"));
         list.add(new AliPayAccount("17864872607", "邱士菊", "", "7f692ba2e3ae7aba"));
@@ -386,7 +386,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
             TextView recordTv = view.findViewById(R.id.recordTv);
             View layoutView = view.findViewById(R.id.layout);
 
-            userNameTv.setText(account.getName());
+            userNameTv.setText(account.getName()+" ("+account.getAccount()+")");
             infoTv.setText(account.getRecord()==null?"无成功记录":account.getRecord().toString());
 
             if (account.isBlack()){
