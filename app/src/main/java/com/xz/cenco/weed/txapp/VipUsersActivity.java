@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
@@ -241,8 +242,8 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         List<AliPayAccount> list = new ArrayList<AliPayAccount>();
 
 
-        list.add(new AliPayAccount("13047488791", "霍彬彬", "", "a72af041a8b6be33"));
-        list.add(new AliPayAccount("15665851629", "霍彬彬", "", "6d89828bd6001ddb"));
+        list.add(new AliPayAccount("13047488791", "霍彬彬1", "", "a72af041a8b6be33"));
+        list.add(new AliPayAccount("15665851629", "霍彬彬2", "", "6d89828bd6001ddb"));
         list.add(new AliPayAccount("15588591960", "辛忠", "", "a25b24b851b43890"));
         list.add(new AliPayAccount("13153870185", "辛子财", "", "4782124a207df377"));
         list.add(new AliPayAccount("17864872607", "邱士菊", "", "7f692ba2e3ae7aba"));
@@ -354,10 +355,17 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
     public void selectAlipayUser(int position,final User user,final String info) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        ScrollView scrollView = new ScrollView(this);
+        linearLayout.addView(scrollView);
+
+
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(20, 20, 20, 20);
-
+        scrollView.addView(layout);
 
         TextView textView = new TextView(this);
         textView.setText(info);
@@ -443,7 +451,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
         textView.setText(textView.getText()+"\n\n"+userinfo);
         builder.setTitle("选择提现用户("+(position+1)+"==>"+user.user+")");
-        builder.setView(layout);
+        builder.setView(linearLayout);
         builder.create().show();
     }
 
