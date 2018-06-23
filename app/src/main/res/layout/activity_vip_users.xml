@@ -37,6 +37,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/searcgEt"
             android:layout_toLeftOf="@+id/searchBtn"
+            android:textColorHint="#6666"
             android:hint="查询信息"/>
 
     </RelativeLayout>

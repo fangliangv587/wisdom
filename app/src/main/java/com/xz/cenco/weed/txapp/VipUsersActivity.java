@@ -144,7 +144,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                                 record.standmoney = money;
                                 user.txRecord = record;
                             }
-                            if (record.txend == 2){
+                            if (record.txend == 2 || record.txend==1){
                                 String name =record.txxm;
                                 for (int k=0;k<alipayAccounts.size();k++){
                                     AliPayAccount account = alipayAccounts.get(k);
@@ -242,6 +242,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
 
         list.add(new AliPayAccount("13047488791", "霍彬彬", "", "a72af041a8b6be33"));
+        list.add(new AliPayAccount("15665851629", "霍彬彬", "", "6d89828bd6001ddb"));
         list.add(new AliPayAccount("15588591960", "辛忠", "", "a25b24b851b43890"));
         list.add(new AliPayAccount("13153870185", "辛子财", "", "4782124a207df377"));
         list.add(new AliPayAccount("17864872607", "邱士菊", "", "7f692ba2e3ae7aba"));
@@ -252,8 +253,8 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         list.add(new AliPayAccount("13082761640", "霍合忠", "", "83be66aa093da9a3"));
         list.add(new AliPayAccount("13181384566", "谈书云", "", "d03fd655bd01b3d8"));
 
-//        list.add(new AliPayAccount("13468006640", "李琦", "", ""));
-//        list.add(new AliPayAccount("13655381031", "张子明", "", ""));
+//        list.add(new AliPayAccount("13468006640", "李琦", "", "68f691e12a5a6827"));
+//        list.add(new AliPayAccount("13655381031", "张子明", "", "3bab4473e93d0962"));
 
         return list;
     }
@@ -277,7 +278,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         }
     }
     private void queryAlipayRecord(final int position,final User user){
-        progressDialog = ProgressDialog.show(this, "", "请稍后...");
+        progressDialog = ProgressDialog.show(this, "请稍后...", "");
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
@@ -364,8 +365,12 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         layout.addView(textView);
 
         Date curDate = new Date();
+
+        String userinfo="";
+
         for (int i = 0; i < alipayAccounts.size(); i++) {
             final AliPayAccount account = alipayAccounts.get(i);
+
 
             View view = LayoutInflater.from(this).inflate(R.layout.item_view_alipayuser, null);
             TextView userNameTv = view.findViewById(R.id.userNameTv);
@@ -382,44 +387,39 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
             }
 
 
-            boolean isOk = false;
+            boolean userState = false;
             int minute = Integer.parseInt(user.level.txspantime);
-            StringBuffer sb = new StringBuffer();
-            if(user.txRecord!=null){
 
+            if(user.txRecord!=null){
                 Date date = DateUtil.getDate(user.txRecord.txtime, DateUtil.FORMAT_YMDHMS);
                 int disminute = (int) ((curDate.getTime() - date.getTime()) / 1000 / 60);
-                sb.append("用户最近的提现间隔:"+disminute+"("+minute+")   ");
 
-                if (account.getRecord()!=null){
-
-                    Date date1 = DateUtil.getDate(account.getRecord().txtime, DateUtil.FORMAT_YMDHMS);
-                    int disminute1 = (int) ((curDate.getTime() - date1.getTime()) / 1000 / 60);
-                    sb.append("支付宝用户最近的提现间隔:"+disminute1+"("+minute+")");
-                    isOk = disminute>minute && disminute1>minute;
-
-                }else {
-                    sb.append("支付宝用户无最近提现记录");
-                    isOk = disminute>minute;
-                }
-
+                userinfo ="系统用户最近的提现间隔:"+disminute+"("+minute+")   \n下次提现时间:"+DateUtil.getDateString(getDate(date,minute),DateUtil.FORMAT_YMDHMS)+"\n\n";
+                userState = disminute>minute;
             }else {
-                sb.append("用户无最近提现记录    ");
-                if (account.getRecord()!=null){
-
-                    Date date1 = DateUtil.getDate(account.getRecord().txtime, DateUtil.FORMAT_YMDHMS);
-                    int disminute1 = (int) ((curDate.getTime() - date1.getTime()) / 1000 / 60);
-                    sb.append("支付宝用户最近的提现间隔:"+disminute1+"("+minute+")");
-                    isOk = disminute1>minute;
-
-                }else {
-                    sb.append("支付宝用户无最近提现记录");
-                    isOk = true;
-                }
+                userinfo = "用户无最近提现记录    \n\n";
+                userState = true;
             }
 
+            boolean aliState = false;
+            StringBuffer aliSb = new StringBuffer();
+            if (account.getRecord()!=null){
+
+                Date date1 = DateUtil.getDate(account.getRecord().txtime, DateUtil.FORMAT_YMDHMS);
+                int disminute1 = (int) ((curDate.getTime() - date1.getTime()) / 1000 / 60);
+                aliSb.append("最近的提现间隔:"+disminute1+"("+minute+")   \n下次提现时间:"+DateUtil.getDateString(getDate(date1,minute),DateUtil.FORMAT_YMDHMS));
+                aliState = disminute1>minute;
+
+            }else {
+                aliSb.append("无最近提现记录");
+                aliState = true;
+            }
+
+
+            boolean isOk = userState && aliState;
             account.setTimeOk(isOk);
-            infoTv.setText(infoTv.getText()+"\n"+sb.toString());
+            infoTv.setText(infoTv.getText()+"\n"+aliSb.toString());
+
             if (!isOk){
                 layoutView.setBackgroundColor(Color.GRAY);
             }
@@ -440,9 +440,19 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
             layout.addView(view);
         }
+
+        textView.setText(textView.getText()+"\n\n"+userinfo);
         builder.setTitle("选择提现用户("+(position+1)+"==>"+user.user+")");
         builder.setView(layout);
         builder.create().show();
+    }
+
+    private Date getDate(Date date,int minute){
+
+        long time = date.getTime()+minute*60*1000;
+        Date date1 = new Date();
+        date1.setTime(time);
+        return date1;
     }
 
     private void withdraw(final AliPayAccount aliPayAccount, final User user) {
@@ -691,5 +701,4 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
 
 
     }
-
 }
