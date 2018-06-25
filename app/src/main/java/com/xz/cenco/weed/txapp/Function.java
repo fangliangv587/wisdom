@@ -68,17 +68,17 @@ public class Function  {
 //        list.add(new AliPayAccount("18250518896", "李剑飞", "lf667788", "11670f970d9c25a0"));
 
 
-        list.add(new AliPayAccount("13047488791", "霍彬彬", "1396464186", "D5883F51982CD813"));
-        list.add(new AliPayAccount("13153870185", "辛子财", "19910217", "d57be4ef31095beb"));
-        list.add(new AliPayAccount("17864872607", "邱士菊", "1572515687", "7f692ba2e3ae7aba"));
-        list.add(new AliPayAccount("15588591960", "辛忠", "36865", "e534f347bb1a2a09"));
-
-
-        list.add(new AliPayAccount("18678380687", "霍宁宁", "", ""));
-
-        list.add(new AliPayAccount("13468006640", "李琦", "", ""));
-        list.add(new AliPayAccount("15665788385", "王洪伟", "", ""));
-        list.add(new AliPayAccount("13655381031", "张子明", "", ""));
+//        list.add(new AliPayAccount("13047488791", "霍彬彬", "1396464186", "D5883F51982CD813"));
+//        list.add(new AliPayAccount("13153870185", "辛子财", "19910217", "d57be4ef31095beb"));
+//        list.add(new AliPayAccount("17864872607", "邱士菊", "1572515687", "7f692ba2e3ae7aba"));
+//        list.add(new AliPayAccount("15588591960", "辛忠", "36865", "e534f347bb1a2a09"));
+//
+//
+//        list.add(new AliPayAccount("18678380687", "霍宁宁", "", ""));
+//
+//        list.add(new AliPayAccount("13468006640", "李琦", "", ""));
+//        list.add(new AliPayAccount("15665788385", "王洪伟", "", ""));
+//        list.add(new AliPayAccount("13655381031", "张子明", "", ""));
         return list;
     }
 
