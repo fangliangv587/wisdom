@@ -11,10 +11,12 @@ public class AliPayAccount {
     private TxRecord record;
     private boolean isBlack;
     private boolean isTimeOk;
+    private String comment;
 
-    public AliPayAccount(String account, String name,String user,String mac) {
+    public AliPayAccount(String account, String name,String comment,String user,String mac) {
         this.account = account;
         this.name = name;
+        this.comment= comment;
         this.user = user;
         this.mac = mac;
     }
