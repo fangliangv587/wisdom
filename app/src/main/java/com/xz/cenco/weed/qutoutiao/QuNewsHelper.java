@@ -23,6 +23,8 @@ public class QuNewsHelper {
 
     List<QuUser> userList;
 
+    boolean isRunning;
+
     int index;
 
     public void start(){
@@ -30,12 +32,17 @@ public class QuNewsHelper {
         action();
     }
 
+    public void stop(){
+        isRunning=false;
+    }
+
     private void action() {
+        isRunning = true;
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
 
-                while (true){
+                while (isRunning){
                     index++;
                     LogUtils.w(TAG,"第"+index+"次=====>");
                     for (int i=0;i<userList.size();i++){
@@ -65,8 +72,8 @@ public class QuNewsHelper {
 
             private int getIntervalSecond(){
                 Random random = new Random();
-                int i = random.nextInt(5);
-                return 30+i;
+                int i = random.nextInt(2);
+                return 10+i;
             }
 
         });
@@ -81,7 +88,7 @@ public class QuNewsHelper {
                     Result result = GsonUtil.fromJson(s, Result.class);
                     if (result.getData()!=null && result.getData().getCurr_task()!=null){
                         int amount = result.getData().getCurr_task().getAmount();
-                        LogUtils.i(TAG,"增加的数量:"+amount);
+                        LogUtils.w(TAG,"增加的数量:"+amount);
                     }
                 } catch (JsonIOException e) {
                     LogUtils.e(TAG,e);

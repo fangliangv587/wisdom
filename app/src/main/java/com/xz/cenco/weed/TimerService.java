@@ -14,6 +14,7 @@ import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.weed.aiaixg.AiaixgHelper;
 import com.xz.cenco.weed.aiaixg.XmgrHelper;
 import com.xz.cenco.weed.coohua.CoohuaHelper;
+import com.xz.cenco.weed.qutoutiao.QuNewsHelper;
 import com.xz.cenco.weed.thumber.ThumberHelper;
 import com.xz.cenco.wisdom.service.WisdomHelper;
 import com.xz.cenco.wisdom.service.WisdomService;
@@ -27,6 +28,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
     private TimerHelper timerHelper;
     private WisdomHelper wisdomHelper;
     private ThumberHelper thumberHelper;
+    private QuNewsHelper quNewsHelper;
     private CoohuaHelper coohuaHelper;
     private AiaixgHelper aiaixgHelper;
     private XmgrHelper xmgrHelper;
@@ -55,6 +57,8 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         thumberHelper = new ThumberHelper(this);
         thumberHelper.start();
 
+
+
 //        //酷划
 //        coohuaHelper = new CoohuaHelper(this);
 //        coohuaHelper.start();
@@ -77,6 +81,11 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
 //        timerHelper.addListener(aiaixgHelper);
 //        timerHelper.addListener(xmgrHelper);
 
+
+        //趣头条
+        quNewsHelper = new QuNewsHelper();
+        quNewsHelper.start();
+
     }
 
     @Nullable
@@ -93,6 +102,9 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
             mWakeLock.release();
         }
 
+        if (quNewsHelper!=null){
+            quNewsHelper.stop();
+        }
         if (timerHelper!=null){
             timerHelper.stop();
         }
