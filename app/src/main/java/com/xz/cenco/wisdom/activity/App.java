@@ -37,7 +37,7 @@ public class App extends Application {
         super.onCreate();
 
         initBugly();
-        initLog();
+        initCommonLib();
         initAlive();
         initStetho();
     }
@@ -50,7 +50,7 @@ public class App extends Application {
 
     }
 
-    private void initLog() {
+    private void initCommonLib() {
         int level = Level.DEBUG;
         if (!BuildConfig.DEBUG){
             level = Level.WARN;
