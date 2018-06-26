@@ -27,7 +27,10 @@ public class QuNewsHelper {
 
     int index;
 
+    final int count = 10;
+
     public void start(){
+        LogUtils.w(TAG,"start");
         userList = QuUser.getUserList();
         action();
     }
@@ -44,18 +47,15 @@ public class QuNewsHelper {
 
                 while (isRunning){
                     index++;
-                    LogUtils.w(TAG,"第"+index+"次=====>");
-                    for (int i=0;i<userList.size();i++){
-                        LogUtils.i(TAG,"第"+i+"个用户=====>");
-                        QuUser user = userList.get(i);
-                        List<String> data = user.getData();
-                        for (int j=0;j<data.size();j++){
-                            LogUtils.d(TAG,"进度:"+(j+1)+"/"+data.size());
-                            waitInterval();
-                            String token = data.get(j);
-                            request(token);
+                    for (int j=0;j<count;j++){
+                        waitInterval();
+                        for (int i=0;i<userList.size();i++){
+                            QuUser user = userList.get(i);
+                            String token = user.getData().get(j);
+                            request(user,token);
                         }
                     }
+
                 }
 
             }
@@ -73,13 +73,13 @@ public class QuNewsHelper {
             private int getIntervalSecond(){
                 Random random = new Random();
                 int i = random.nextInt(2);
-                return 10+i;
+                return 32+i;
             }
 
         });
     }
 
-    private void request(String data){
+    private void request(final QuUser user , String data){
         String url = "https://api.1sapp.com/readtimer/report?qdata="+data;
         HttpUtil.get(url, new SimpleCallback<String>() {
             @Override
@@ -88,7 +88,10 @@ public class QuNewsHelper {
                     Result result = GsonUtil.fromJson(s, Result.class);
                     if (result.getData()!=null && result.getData().getCurr_task()!=null){
                         int amount = result.getData().getCurr_task().getAmount();
-                        LogUtils.w(TAG,"增加的数量:"+amount);
+                        user.setCount(user.getCount()+amount);
+                        LogUtils.w(TAG,user.getPhone()+"增加的数量:"+amount+",总增加量:"+user.getCount());
+                    }else {
+                        LogUtils.d(TAG,s);
                     }
                 } catch (JsonIOException e) {
                     LogUtils.e(TAG,e);
