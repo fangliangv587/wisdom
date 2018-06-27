@@ -489,7 +489,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
                 Level level = user.level;
                 int minute = Integer.parseInt(level.txspantime);
                 Date curDate = new Date();
-                List<TxRecord> recordList = App.helper.getTxRecordListByAccountName(aliPayAccount.getName());
+                List<TxRecord> recordList = App.helper.getTxRecordListByAliAccountName(aliPayAccount.getName(),aliPayAccount.getAccount());
                 for (int i = 0; i < recordList.size(); i++) {
                     TxRecord record = recordList.get(i);
                     if (record.txend == 1 || record.txend == 2) {

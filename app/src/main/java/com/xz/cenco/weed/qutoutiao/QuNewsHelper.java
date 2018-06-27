@@ -89,7 +89,7 @@ public class QuNewsHelper {
                     if (result.getData()!=null && result.getData().getCurr_task()!=null){
                         int amount = result.getData().getCurr_task().getAmount();
                         user.setCount(user.getCount()+amount);
-                        LogUtils.w(TAG,user.getPhone()+"增加的数量:"+amount+",总增加量:"+user.getCount());
+                        LogUtils.w(TAG,user.getPhone()+"==>增加的数量:"+amount+",总增加量:"+user.getCount());
                     }else {
                         LogUtils.d(TAG,s);
                     }
