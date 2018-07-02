@@ -122,7 +122,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="queryRecordClick"
-        android:text="查询"/>
+        android:text="记录"/>
 
     <Button
         android:layout_width="match_parent"

@@ -1,9 +1,11 @@
 package com.xz.cenco.weed.txapp;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2018/6/11.
  */
-public class AliPayAccount {
+public class AliPayAccount implements Serializable {
     private String mac;
     private String account;
     private String name;
@@ -75,5 +77,9 @@ public class AliPayAccount {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIdentify(){
+        return name+"_"+account;
     }
 }

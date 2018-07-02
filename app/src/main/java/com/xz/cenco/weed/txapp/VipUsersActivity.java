@@ -31,6 +31,7 @@ import com.cenco.lib.common.ThreadManager;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xz.cenco.wisdom.R;
 import com.xz.cenco.wisdom.activity.App;
@@ -38,6 +39,7 @@ import com.xz.cenco.wisdom.util.C;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -103,7 +105,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         infoTv.setMovementMethod(ScrollingMovementMethod.getInstance());
         listView.setOnItemClickListener(this);
 
-        alipayAccounts = getAlipayAccount();
+        alipayAccounts = Utils.getAlipayAccount();
         init();
 
     }
@@ -238,35 +240,7 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
     }
 
 
-    public List<AliPayAccount> getAlipayAccount() {
-        List<AliPayAccount> list = new ArrayList<AliPayAccount>();
 
-
-        list.add(new AliPayAccount("13047488791", "霍彬彬", "1", "", "a72af041a8b6be33"));
-        list.add(new AliPayAccount("15665851629", "霍彬彬",  "2","", "6d89828bd6001ddb"));
-        list.add(new AliPayAccount("15588591960", "辛忠",  "1","", "a25b24b851b43890"));
-        list.add(new AliPayAccount("13153870185", "辛子财",  "1","", "4782124a207df377"));
-        list.add(new AliPayAccount("17864872607", "邱士菊",  "1","", "7f692ba2e3ae7aba"));
-
-
-        list.add(new AliPayAccount("18678380687", "霍宁宁",  "1","", "a8b66bb0d0ef4227"));
-
-        list.add(new AliPayAccount("13082761640", "霍合忠",  "1","", "83be66aa093da9a3"));
-        list.add(new AliPayAccount("13181384566", "谈书云",  "1","", "d03fd655bd01b3d8"));
-
-        list.add(new AliPayAccount("13468006640", "李琦", "1", "", "68f691e12a5a6827"));
-        list.add(new AliPayAccount("13655388344", "李琦",  "2","", "e8053a1ed93f3b07"));
-        list.add(new AliPayAccount("13655381031", "张子明", "1", "", "3bab4473e93d0962"));
-        list.add(new AliPayAccount("15665788385", "王洪伟", "1", "", "a9db7d35d575761e"));
-        list.add(new AliPayAccount("15908924431", "张顺", "1", "", "bb294f67360579bd"));
-
-//        list.add(new AliPayAccount("", "", "1", "", "8296711a96ab253a"));
-//        list.add(new AliPayAccount("", "", "1", "", "319f0a0da7e15522"));
-//        list.add(new AliPayAccount("", "", "1", "", "b6e35d77348ffa46"));
-
-
-        return list;
-    }
 
 
     @Override
@@ -461,7 +435,60 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
         builder.setTitle("选择提现用户("+(position+1)+"==>"+user.user+")");
         builder.setView(linearLayout);
         builder.create().show();
+
+        writeData();
+
     }
+
+    private void writeData() {
+
+        ThreadManager.getPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < alipayAccounts.size(); i++) {
+                     AliPayAccount account = alipayAccounts.get(i);
+                     String path = Utils.getAliDataPath(account);
+                    File file = new File(path);
+                    if (!file.getParentFile().exists()){
+                        file.getParentFile().mkdirs();
+                    }
+                    String string = IOUtils.readFile2String(path);
+                    List<AliRecord> list = GsonUtil.fromJson(string,new TypeToken<List<AliRecord>>(){}.getType());
+                    if (list==null){
+                        list = new ArrayList();
+                    }
+
+                    TxRecord record = account.getRecord();
+                    if (record==null||record.txend!=2){
+                        continue;
+                    }
+                    String date = record.txtime.split(" ")[0];
+
+                    boolean contain= false;
+                    for (AliRecord ar : list){
+                        if(ar.getDate().equals(date)){
+                            contain = true;
+                        }
+                    }
+
+                    if (!contain){
+                        AliRecord aliRecord = new AliRecord();
+                        aliRecord.setDate(date);
+                        aliRecord.setMoney(Double.parseDouble(record.txje));
+                        aliRecord.setTxtime(record.txtime);
+                        aliRecord.setUser(record.user);
+                        list.add(aliRecord);
+
+                        String json = GsonUtil.toJson(list);
+                        IOUtils.writeFileFromString(file,json);
+
+                    }
+
+                }
+            }
+        });
+    }
+
 
     private Date getDate(Date date,int minute){
 
@@ -515,13 +542,13 @@ public class VipUsersActivity extends Activity implements AdapterView.OnItemClic
              */
             public void withdraw(String name, String account, String user, String androidId, String money, String vipLevel) {
 
-
-                addInfo("=>系统用户:" + user + "(vip:" + vipLevel + ")," + "提现:" + account + "(" + name + "),$:" + money);
-                LogUtils.d("系统用户:" + user + "(vip:" + vipLevel + ")," + "提现账户:" + account + "(" + name + "),提现金额:" + money + ",mac:" + androidId);
+                double moneyDouble = Double.parseDouble(money);
+                addInfo("=>系统用户:" + user + "(vip:" + vipLevel + ")," + "提现:" + account + "(" + name + "),$:" + moneyDouble);
+                LogUtils.d("系统用户:" + user + "(vip:" + vipLevel + ")," + "提现账户:" + account + "(" + name + "),提现金额:" + moneyDouble + ",mac:" + androidId);
 
                 //提现前需做时间校验
 
-                String commond = android.util.Base64.encodeToString(("5|-|" + user + "|-|" + androidId + "|-|" + android.util.Base64.encodeToString(account.getBytes(), 0) + "|-|" + money + "|-|" + NormalUtils.getUTF8XMLString(name) + "|-|" + vipLevel + "|-|app|-|").getBytes(), 0);
+                String commond = android.util.Base64.encodeToString(("5|-|" + user + "|-|" + androidId + "|-|" + android.util.Base64.encodeToString(account.getBytes(), 0) + "|-|" + moneyDouble + "|-|" + NormalUtils.getUTF8XMLString(name) + "|-|" + vipLevel + "|-|app|-|").getBytes(), 0);
 
                 String result = socket(commond);
                 if (result.equals("31")) {

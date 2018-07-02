@@ -23,6 +23,7 @@ import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.weed.txapp.AliPayAccount;
+import com.xz.cenco.weed.txapp.AliUsersActivity;
 import com.xz.cenco.weed.txapp.Constant;
 import com.xz.cenco.weed.txapp.DBHelper;
 import com.xz.cenco.weed.txapp.Function;
@@ -526,8 +527,8 @@ public class TxAppActivity extends Activity {
 
     int position=0;
     public void queryRecordClick(View view) {
-        position++;
-        addInfo(position+"click");
+        Intent intent = new Intent(this, AliUsersActivity.class);
+        startActivity(intent);
     }
 
     public void jumpNextClick(View view) {

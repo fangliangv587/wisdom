@@ -67,6 +67,8 @@
         <activity android:name="com.xz.cenco.weed.TxAppActivity"></activity>
         <activity android:name="com.xz.cenco.weed.txapp.VipUsersActivity"></activity>
         <activity android:name="com.xz.cenco.weed.TestMessageActivity"></activity>
+        <activity android:name="com.xz.cenco.weed.txapp.AliUsersActivity"></activity>
+        <activity android:name="com.xz.cenco.weed.txapp.AliUserDetailActivity"></activity>
     </application>
 
 </manifest>
