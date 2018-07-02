@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cenco.lib.common.DateUtil;
+
 /**
  * Created by Administrator on 2018/6/22.
  */
@@ -72,7 +74,7 @@ public class LogInfoActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                messageTv.setText(messageTv.getText().toString() + "\n " + message);
+                messageTv.setText(messageTv.getText().toString() + "\n " + DateUtil.getDateString()+"  " +message);
                 int offset = messageTv.getLineCount() * messageTv.getLineHeight();
                 if (offset > messageTv.getHeight()) {
                     messageTv.scrollTo(0, offset - messageTv.getHeight());

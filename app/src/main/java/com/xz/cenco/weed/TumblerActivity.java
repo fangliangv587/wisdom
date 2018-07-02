@@ -61,7 +61,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Administrator on 2018/4/25.
  */
 
-public class TumblerActivity extends Activity  {
+public class TumblerActivity extends LogInfoActivity  {
 
     private ThumberApiService request;
     private List<Account> users;
@@ -90,8 +90,8 @@ public class TumblerActivity extends Activity  {
     }
     public void init() {
 
-        textTv = findViewById(R.id.textTv);
-        layout = findViewById(R.id.layout);
+        textTv = (TextView)findViewById(R.id.textTv);
+        layout = (LinearLayout)findViewById(R.id.layout);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.ybol.vip/") // 设置 网络请求 Url
@@ -272,6 +272,7 @@ public class TumblerActivity extends Activity  {
                             String accountBalance = getAccountBalance(response.body().string());
                             account.setBalance(accountBalance);
                             LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
+                            showMessage(account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -396,6 +397,7 @@ public class TumblerActivity extends Activity  {
                             RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
                             RecordNumResult.ListBean bean = result.getList().get(0);
                             LogUtils.w("投注期号:"+bean.getIssuenum());
+                            showMessage("投注期号:"+bean.getIssuenum());
 
 
                             Observable<Response<ResponseBody>> bet1 = getBetRequest(request,account1.getCookie(),bean.getIssuenum(),true,money);
@@ -424,7 +426,7 @@ public class TumblerActivity extends Activity  {
                                                 Gson gson = new Gson();
                                                 BetResult result = gson.fromJson(str, BetResult.class);
                                                 LogUtils.i(account1.getPeopleName()+account1.getBank()+"(正):"+result.getMsg());
-
+                                                showMessage(account1.getPeopleName()+account1.getBank()+"(正):"+result.getMsg());
                                             } catch (IOException e) {
                                                 LogUtils.e(e);
                                                 e.printStackTrace();
@@ -457,6 +459,7 @@ public class TumblerActivity extends Activity  {
                                                 Gson gson = new Gson();
                                                 BetResult result = gson.fromJson(str, BetResult.class);
                                                 LogUtils.i(account2.getPeopleName()+account2.getBank()+"(反):"+result.getMsg());
+                                                showMessage(account2.getPeopleName()+account2.getBank()+"(反):"+result.getMsg());
 
                                             } catch (IOException e) {
                                                 LogUtils.e(e);
