@@ -8,12 +8,16 @@
     android:layout_height="wrap_content"
     android:id="@+id/textTv"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_below="@+id/textTv"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_above="@+id/action"
-        android:id="@+id/layout"></LinearLayout>
+        android:id="@+id/layout"></LinearLayout></ScrollView>
 
     <Button
         android:layout_width="match_parent"

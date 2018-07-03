@@ -56,7 +56,7 @@ public class LogInfoActivity extends Activity {
     }
 
     protected int getMessageHeight(){
-        return 100;
+        return 300;
     }
 
 

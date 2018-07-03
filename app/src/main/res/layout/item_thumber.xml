@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:padding="10dp"
-    android:layout_height="match_parent">
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+
+    android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/checkbox"
+        android:layout_centerVertical="true"
+        android:text="a"
         android:id="@+id/infoTv"/>
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@+id/updateBtn"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
         android:id="@+id/checkbox"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/updateBtn"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:text="更新"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/updateBtn"
+        android:background="#DDDDDD"/>
 
 </RelativeLayout>

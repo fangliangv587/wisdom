@@ -124,6 +124,9 @@ public class Account {
     }
 
 
+    public String getIndentify(){
+        return username+"_"+peopleName;
+    }
     @Override
     public String toString() {
 

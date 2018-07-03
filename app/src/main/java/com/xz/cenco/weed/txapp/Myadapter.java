@@ -104,12 +104,15 @@ public class Myadapter extends BaseExpandableListAdapter {
             view = (TextView) convertView;
         } else {
             view = new TextView(context);
+            view.setTextColor(Color.WHITE);
+            view.setTextSize(18);
+            view.setPadding(10,10,10,10);
+            view.setBackgroundColor(Color.DKGRAY);
         }
 
         double groupMoney = getGroupMoney(groupPosition);
         view.setText(getGroup(groupPosition)+"==>"+groupMoney+"元");
-        view.setTextColor(Color.WHITE);
-        view.setBackgroundColor(Color.DKGRAY);
+
         return view;
     }
 
@@ -123,6 +126,8 @@ public class Myadapter extends BaseExpandableListAdapter {
             view = (TextView) convertView;
         } else {
             view = new TextView(context);
+            view.setTextSize(18);
+            view.setPadding(10,10,10,10);
         }
         AliRecord record = getChild(groupPosition, childPosition);
         view.setText(record.getDate() + "  " + record.getMoney());

@@ -47,6 +47,7 @@ public class Util {
         list.add(new Account("17024474106","zhangshun123","张顺","农行","17024474106@126.com",false));
         list.add(new Account("17024474083","17024474083","张子明","支付宝","17024474083@126.com",false));
         list.add(new Account("17024474084","17024474084","张子明","工行","17024474084@126.com",false));
+        list.add(new Account("17024472824","17024472824","梁翠莲(李琦妈妈)","支付宝","17024472824@126.com",false));
 //        list.add(new Account("17024474685","wanghongwei","王洪伟","银行未定","17024474685@126.com",false));
         return list;
     }

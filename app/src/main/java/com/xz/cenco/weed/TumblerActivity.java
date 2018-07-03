@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.ImageUtil;
 import com.cenco.lib.common.ThreadManager;
+import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.http.HttpUtil;
 import com.cenco.lib.common.http.SimpleCallback;
@@ -61,13 +62,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Administrator on 2018/4/25.
  */
 
-public class TumblerActivity extends LogInfoActivity  {
+public class TumblerActivity extends LogInfoActivity implements TimerHelper.TimerListener {
 
     private ThumberApiService request;
     private List<Account> users;
     private String TAG = "Thumbler";
     TextView textTv;
     LinearLayout layout;
+    TimerHelper timerHelper;
 
 
     @Override
@@ -92,6 +94,9 @@ public class TumblerActivity extends LogInfoActivity  {
 
         textTv = (TextView)findViewById(R.id.textTv);
         layout = (LinearLayout)findViewById(R.id.layout);
+
+        timerHelper = new TimerHelper(this);
+        timerHelper.start();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.ybol.vip/") // 设置 网络请求 Url
@@ -125,14 +130,79 @@ public class TumblerActivity extends LogInfoActivity  {
 
     private void showUserInfo() {
         for (int i=0;i<users.size();i++){
-            Account account = users.get(i);
+            final Account account = users.get(i);
             View view = LayoutInflater.from(this).inflate(R.layout.item_thumber, null);
-            TextView infoTv = view.findViewById(R.id.infoTv);
+            final TextView infoTv = view.findViewById(R.id.infoTv);
             CheckBox checkbox = view.findViewById(R.id.checkbox);
+            View  updateBtn= view.findViewById(R.id.updateBtn);
+            final int index = i;
+            updateBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateUserInfo(index,account,infoTv);
+                }
+            });
             account.setCheckBox(checkbox);
             infoTv.setText(i+1+"-"+account.getUsername()+"("+account.getPeopleName()+")==>"+account.getBalance());
             layout.addView(view);
         }
+    }
+
+    private void updateUserInfo(final int index, final Account account, final TextView infoTv) {
+
+        dialog = ProgressDialog.show(this,"请稍后...","");
+        ThreadManager.getPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (account.getCookie()==null){
+                    showMessage("cookie为空");
+                    return;
+                }
+                Observable<Response<ResponseBody>> personInfo = request.personInfo(account.getCookie());
+
+
+                personInfo .subscribe(new Observer<Response<ResponseBody>>() {
+
+                    public void onError(Throwable e) {
+                        LogUtils.e(TAG, "onError:" + e.getMessage());
+
+
+                    }
+
+                    public void onComplete() {
+                        LogUtils.w(TAG, "onCompleted");
+
+                    }
+
+                    public void onSubscribe(Disposable disposable) {
+
+                    }
+
+                    public void onNext(Response<ResponseBody> response) {
+                        LogUtils.d(TAG, ">onNext");
+                        printResponse(response, "获取账户余额请求成功");
+
+                        try {
+                            String accountBalance = getAccountBalance(response.body().string());
+                            account.setBalance(accountBalance);
+                            LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
+                            showMessage(account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    infoTv.setText(index+1+"-"+account.getUsername()+"("+account.getPeopleName()+")==>"+account.getBalance());
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+            }
+        });
     }
 
 
@@ -271,8 +341,8 @@ public class TumblerActivity extends LogInfoActivity  {
                         try {
                             String accountBalance = getAccountBalance(response.body().string());
                             account.setBalance(accountBalance);
-                            LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
-                            showMessage(account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
+                            LogUtils.w(TAG, account.getIndentify()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
+                            showMessage(account.getIndentify()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -329,10 +399,15 @@ public class TumblerActivity extends LogInfoActivity  {
     }
 
     public void showMoneyDialog(final Account account1, final Account account2){
+
+        int money1 = (int)Double.parseDouble(account1.getBalance());
+        int money2 = (int)Double.parseDouble(account2.getBalance());
+        int m = money1<money2?money1:money2;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final EditText editText = new EditText(this);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        editText.setText("1");
+        editText.setText(m+"");
         builder.setView(editText);
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
@@ -348,7 +423,7 @@ public class TumblerActivity extends LogInfoActivity  {
 
             }
         });
-        builder.create().show();;
+        builder.create().show();
 
     }
 
@@ -425,8 +500,8 @@ public class TumblerActivity extends LogInfoActivity  {
                                                 String str = response.body().string();
                                                 Gson gson = new Gson();
                                                 BetResult result = gson.fromJson(str, BetResult.class);
-                                                LogUtils.i(account1.getPeopleName()+account1.getBank()+"(正):"+result.getMsg());
-                                                showMessage(account1.getPeopleName()+account1.getBank()+"(正):"+result.getMsg());
+                                                LogUtils.i(account1.getIndentify()+"(正):"+result.getMsg());
+                                                showMessage(account1.getIndentify()+"(正):"+result.getMsg());
                                             } catch (IOException e) {
                                                 LogUtils.e(e);
                                                 e.printStackTrace();
@@ -458,8 +533,8 @@ public class TumblerActivity extends LogInfoActivity  {
                                                 String str = response.body().string();
                                                 Gson gson = new Gson();
                                                 BetResult result = gson.fromJson(str, BetResult.class);
-                                                LogUtils.i(account2.getPeopleName()+account2.getBank()+"(反):"+result.getMsg());
-                                                showMessage(account2.getPeopleName()+account2.getBank()+"(反):"+result.getMsg());
+                                                LogUtils.i(account2.getIndentify()+"(反):"+result.getMsg());
+                                                showMessage(account2.getIndentify()+"(反):"+result.getMsg());
 
                                             } catch (IOException e) {
                                                 LogUtils.e(e);
@@ -477,66 +552,6 @@ public class TumblerActivity extends LogInfoActivity  {
                 });
 
 
-//                code  .flatMap(new Function<Response<ResponseBody>, ObservableSource<Response<ResponseBody>>>() { // 作变换，即作嵌套网络请求
-//                    public ObservableSource<Response<ResponseBody>> apply(Response<ResponseBody> response) throws Exception {
-//
-//                        printResponse(response,"");
-//
-//
-//                        try {
-//                            String str = response.body().string();
-//                            Gson gson = new Gson();
-//                            RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
-//                            RecordNumResult.ListBean bean = result.getList().get(0);
-//                            System.out.println("投注期号:"+bean.getIssuenum());
-//                            //issueNum=201806150855&hongtl=1 & DFW=0  &huitl=0&myy=0 zheng 1
-//                            //issueNum=201806150922&hongtl=0 & DFW=1  &huitl=0&myy=0 fan 1
-//                            //issueNum=201806150925&hongtl=5 & DFW=0  &huitl=0&myy=0  zheng 5
-//                            //issueNum=201806150926&hongtl=0 & DFW=5  &huitl=0&myy=0 fan 5
-////                            Observable<Response<ResponseBody>> code = request.SubmitBet(coockie, bean.getIssuenum(), "1", "0", "0", "0");
-//                            Observable<Response<ResponseBody>> code1 = getBetRequest(request,account1.getCookie(),bean.getIssuenum(),false,2);
-//                            return code1;
-//
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                        return Observable.error(new Throwable("发生异常"));
-//
-//                    }
-//                })
-//
-//                        .subscribe(new Observer<Response<ResponseBody>>() {
-//
-//                            public void onError(Throwable e) {
-//                                LogUtils.d("--->onError:" + e.getMessage());
-////                        beginTask();
-//                            }
-//
-//                            public void onComplete() {
-//                                LogUtils.d("--->onCompleted");
-////                        beginTask();
-//                            }
-//
-//                            public void onSubscribe(Disposable disposable) {
-//
-//                            }
-//
-//                            public void onNext(Response<ResponseBody> response) {
-//                                LogUtils.d("--->onNext");
-//                                printResponse(response,"");
-//
-//                                try {
-//                                    String str = response.body().string();
-//                                    Gson gson = new Gson();
-//                                    BetResult result = gson.fromJson(str, BetResult.class);
-//                                    System.out.println(result.getMsg());
-//
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                            }
-//                        });
             }
         });
     }
@@ -556,5 +571,19 @@ public class TumblerActivity extends LogInfoActivity  {
         }
         Observable<Response<ResponseBody>> code = request.SubmitBet(coockie,issuenum, param1, param2, "0", "0");
         return code;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (timerHelper!=null){
+            timerHelper.stop();
+        }
+    }
+
+    @Override
+    public void onTimerRunning(int i, int i1, boolean b) {
+       textTv.setText("时间:"+ DateUtil.getDateString());
     }
 }

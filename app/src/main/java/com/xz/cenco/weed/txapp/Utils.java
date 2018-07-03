@@ -36,8 +36,8 @@ public class Utils {
         list.add(new AliPayAccount("13655381031", "张子明", "1", "", "3bab4473e93d0962"));
         list.add(new AliPayAccount("15665788385", "王洪伟", "1", "", "a9db7d35d575761e"));
         list.add(new AliPayAccount("15908924431", "张顺", "1", "", "bb294f67360579bd"));
+        list.add(new AliPayAccount("13953835879", "梁翠莲", "1", "", "8296711a96ab253a"));
 
-//        list.add(new AliPayAccount("", "", "1", "", "8296711a96ab253a"));
 //        list.add(new AliPayAccount("", "", "1", "", "319f0a0da7e15522"));
 //        list.add(new AliPayAccount("", "", "1", "", "b6e35d77348ffa46"));
 
