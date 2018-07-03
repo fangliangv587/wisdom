@@ -130,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:layout_centerInParent="true"
+                android:id="@+id/timerStateTv"
                 android:textColor="@android:color/white"
                 android:text="定时器状态"/>
         </RelativeLayout>

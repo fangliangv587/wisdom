@@ -44,6 +44,7 @@ import ezy.assist.compat.SettingsCompat;
 public class MainActivity extends BaseActivity {
 
     private TextView trackStateTv;
+    private TextView timerStateTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,7 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         trackStateTv = findViewById(R.id.track_state);
+        timerStateTv = findViewById(R.id.timerStateTv);
     }
 
 
@@ -232,6 +234,9 @@ public class MainActivity extends BaseActivity {
             Intent intent = new Intent(MainActivity.this, TimerService.class);
             startService(intent);
             App.isTimer = true;
+            timerStateTv.setText("定时器状态:开");
+        }else {
+            timerStateTv.setText("定时器状态:关");
         }
     }
 
@@ -240,6 +245,7 @@ public class MainActivity extends BaseActivity {
             Intent intent = new Intent(MainActivity.this, TimerService.class);
             stopService(intent);
             App.isTimer = false;
+            timerStateTv.setText("定时器状态:关");
         }
     }
 
@@ -270,6 +276,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void weedClick(View view) {
+
+        if (App.isTimer){
+            stopTimer();
+        }
+
         Intent intent = new Intent(this, WeedListActivity.class);
         startActivity(intent);
     }
