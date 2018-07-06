@@ -35,6 +35,7 @@ import java.util.List;
 import cenco.xz.fangliang.wisdom.weed.thumber.ThumberApiService;
 import cenco.xz.fangliang.wisdom.weed.thumber.Util;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.Account;
+import cenco.xz.fangliang.wisdom.weed.thumber.bean.BetAccount;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.BetResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.CarNumberBody;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.LoginResult;
@@ -125,7 +126,9 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         });
     }
 
+    private List<BetAccount>  betAccountList;
     private void showUserInfo() {
+        betAccountList = new ArrayList<>();
         for (int i=0;i<users.size();i++){
             final Account account = users.get(i);
             View view = LayoutInflater.from(this).inflate(R.layout.item_thumber, null);
@@ -139,9 +142,15 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                     updateUserInfo(index,account,infoTv);
                 }
             });
-            account.setCheckBox(checkbox);
+//            account.setCheckBox(checkbox);
             infoTv.setText(i+1+"-"+account.getUsername()+"("+account.getPeopleName()+")==>"+account.getBalance());
             layout.addView(view);
+
+            BetAccount betAccount = new BetAccount();
+            betAccount.setAccount(account);
+            betAccount.setCheckBox(checkbox);
+            betAccountList.add(betAccount);
+
         }
     }
 
@@ -373,12 +382,13 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     }
 
     public void actionClick(View view) {
+
         List<Account> list = new ArrayList<>();
-        for (int i=0;i<users.size();i++){
-            Account account = users.get(i);
+        for (int i=0;i<betAccountList.size();i++){
+            BetAccount account = betAccountList.get(i);
             boolean checked = account.getCheckBox().isChecked();
             if (checked){
-                list.add(account);
+                list.add(account.getAccount());
             }
         }
 
