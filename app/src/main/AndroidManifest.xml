@@ -16,13 +16,13 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".activity.App"
+        android:name="cenco.xz.fangliang.wisdom.App"
         android:allowBackup="true"
         android:icon="@mipmap/heart"
         android:label="${appname}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.xz.cenco.MainActivity">
+        <activity android:name="cenco.xz.fangliang.wisdom.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,9 +30,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.WisdomService" />
+        <service android:name="cenco.xz.fangliang.wisdom.core.WisdomService" />
 
-        <activity android:name=".activity.SettingActivity" />
+        <activity android:name="cenco.xz.fangliang.wisdom.core.SettingActivity" />
         <activity android:name=".activity.TypeActivity" />
         <activity android:name=".activity.WisdomActivity" />
         <activity android:name=".activity.ColorActivity" />
@@ -58,17 +58,17 @@
         <activity android:name="com.xz.cenco.test.baidu_police_vertify.PoliceVertifyActivity" />
         <activity android:name="com.xz.cenco.test.TestActivity" />
         <activity android:name="com.xz.cenco.test.async.AsyncActivity" />
-        <activity android:name="com.xz.cenco.weed.WeedListActivity" />
-        <activity android:name="com.xz.cenco.weed.TumblerActivity" />
-        <activity android:name="com.xz.cenco.weed.coohua.CoohuaActivity" />
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.WeedListActivity" />
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.TumblerActivity" />
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.coohua.CoohuaActivity" />
 
-        <service android:name="com.xz.cenco.weed.TimerService" />
+        <service android:name="cenco.xz.fangliang.wisdom.weed.TimerService" />
 
-        <activity android:name="com.xz.cenco.weed.TxAppActivity"></activity>
-        <activity android:name="com.xz.cenco.weed.txapp.VipUsersActivity"></activity>
-        <activity android:name="com.xz.cenco.weed.TestMessageActivity"></activity>
-        <activity android:name="com.xz.cenco.weed.txapp.AliUsersActivity"></activity>
-        <activity android:name="com.xz.cenco.weed.txapp.AliUserDetailActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.TxAppActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp.VipUsersActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.TestMessageActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp.AliUsersActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp.AliUserDetailActivity"></activity>
     </application>
 
 </manifest>
