@@ -64,11 +64,11 @@ public class Thumbler {
     public static Account getAccount(String date) {
 
         for (Account account : users) {
-            Map<String, Boolean> result = account.getResult();
-            if (!result.containsKey(date) || !result.get(date)) {
-                account.putResult(date, false);
-                return account;
-            }
+//            Map<String, Boolean> result = account.getResult();
+//            if (!result.containsKey(date) || !result.get(date)) {
+//                account.putResult(date, false);
+//                return account;
+//            }
         }
         return null;
     }
@@ -206,7 +206,7 @@ public class Thumbler {
 
                         int isNo = result.getObj().getIsNo();
                         if (isNo == 1) {
-                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
+//                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
                             return Observable.error(new Throwable(result.getMsg()));
                         }
 
@@ -220,9 +220,9 @@ public class Thumbler {
                         printResponse(response);
                         SignResult result = response.body();
                         if (result.isSuccess()) {
-                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
+//                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
                         } else {
-                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), false);
+//                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), false);
                             return Observable.error(new Throwable("签到失败"));
                         }
 

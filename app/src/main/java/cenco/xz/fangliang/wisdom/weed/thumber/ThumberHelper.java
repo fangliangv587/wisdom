@@ -3,16 +3,21 @@ package cenco.xz.fangliang.wisdom.weed.thumber;
 import android.content.Context;
 
 import com.cenco.lib.common.DateUtil;
+import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.TimerHelper;
+import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import cenco.xz.fangliang.wisdom.core.C;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.Account;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.CarNumberBody;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.LoginResult;
@@ -42,10 +47,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ThumberHelper implements TimerHelper.TimerListener {
 
-    private String TAG = "Thumbler";
+    private String TAG = ThumberHelper.class.getSimpleName();
     private List<Account> users;
     private ThumberApiService request;
-    private final int  total = 30*60;//30分钟
+    private final int  total = 30 * 60;//30分钟
     private boolean loop = false;
     private Context context;
 
@@ -74,8 +79,9 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     }
 
 
-    private void beginTask() {
 
+
+    private void beginTask() {
 
 
         String dateString = DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD);
@@ -84,6 +90,17 @@ public class ThumberHelper implements TimerHelper.TimerListener {
         if (account == null) {
             LogUtils.i(TAG, dateString + "-任务完成");
             loop = true;
+
+            File file = new File(Util.getPath());
+            if (!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
+            if (!file.exists()){
+                LogUtils.d(TAG,"保存操作记录");
+                String s = GsonUtil.toJson(users);
+                IOUtils.writeFileFromString(file,s);
+            }
+
             return;
         }
         sign(account);
@@ -100,13 +117,11 @@ public class ThumberHelper implements TimerHelper.TimerListener {
 
         for (int i=0;i<users.size();i++) {
             Account account = users.get(i);
-
-            Map<String, Boolean> result = account.getResult();
-            if (!result.containsKey(date) || !result.get(date)) {
-                account.putResult(date, false);
-                index = i+1;
+            String signDate = account.getSignDate();
+            if (!date.equals(signDate)){
                 return account;
             }
+
         }
         return null;
     }
@@ -136,7 +151,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         sb.append(key3).append("=").append(value3);
 
                         coockie = sb.toString();
-
+                        account.setCookie(coockie);
 
                         LogUtils.d(TAG,  account.getUsername()+" , cookie>" + coockie);
                     }
@@ -238,7 +253,7 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         account.setSignDays(result.getObj().getUser_CheckNum());
                         if (isNo == 1) {
 
-                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
+                            account.setSignDate(DateUtil.getDateString(DateUtil.FORMAT_YMD));
                             return Observable.error(new Throwable(result.getMsg()));
                         }
 
@@ -252,10 +267,9 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                         printResponse(response, "签到请求成功");
                         SignResult result = response.body();
                         if (result.isSuccess()) {
-                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), true);
+                            account.setSignDate(DateUtil.getDateString(DateUtil.FORMAT_YMD));
                             LogUtils.i(TAG, account.getUsername()+" 签到成功");
                         } else {
-                            account.putResult(DateUtil.getDateString(new Date(), DateUtil.FORMAT_YMD), false);
                             return Observable.error(new Throwable("签到失败"));
                         }
 

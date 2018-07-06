@@ -59,7 +59,7 @@
         <activity android:name="com.xz.cenco.test.TestActivity" />
         <activity android:name="com.xz.cenco.test.async.AsyncActivity" />
         <activity android:name="cenco.xz.fangliang.wisdom.weed.WeedListActivity" />
-        <activity android:name="cenco.xz.fangliang.wisdom.weed.TumblerActivity" />
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.thumber.TumblerActivity" />
         <activity android:name="cenco.xz.fangliang.wisdom.weed.coohua.CoohuaActivity" />
 
         <service android:name="cenco.xz.fangliang.wisdom.weed.TimerService" />

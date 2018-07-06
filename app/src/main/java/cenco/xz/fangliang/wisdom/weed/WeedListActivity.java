@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.cenco.lib.common.ToastUtil;
 
 import cenco.xz.fangliang.wisdom.App;
+import cenco.xz.fangliang.wisdom.weed.thumber.TumblerActivity;
 
 import java.util.ArrayList;
 import java.util.List;

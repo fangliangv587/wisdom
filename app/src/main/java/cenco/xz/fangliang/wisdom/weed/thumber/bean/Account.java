@@ -19,16 +19,15 @@ public class Account {
     private String cookie;
     private String peopleName;
     private int signDays;
-    private Map<String,Boolean> result;
-    private CheckBox checkBox;
     private boolean isDesposited;
+    private String signDate;
 
-    public CheckBox getCheckBox() {
-        return checkBox;
+    public String getSignDate() {
+        return signDate;
     }
 
-    public void setCheckBox(CheckBox checkBox) {
-        this.checkBox = checkBox;
+    public void setSignDate(String signDate) {
+        this.signDate = signDate;
     }
 
     public String getCookie() {
@@ -48,7 +47,6 @@ public class Account {
         this.email = email;
         this.peopleName=peopleName;
         this.isDesposited = isDesposited;
-        result = new HashMap<String, Boolean>();
     }
 
     public boolean isDesposited() {
@@ -107,9 +105,6 @@ public class Account {
         this.password = password;
     }
 
-    public Map<String, Boolean> getResult() {
-        return result;
-    }
 
     public int getSignDays() {
         return signDays;
@@ -119,9 +114,6 @@ public class Account {
         this.signDays = signDays;
     }
 
-    public void putResult(String date, boolean isok){
-        result.put(date,isok);
-    }
 
 
     public String getIndentify(){
@@ -132,17 +124,8 @@ public class Account {
 
         String mes =username+":"+balance;
 
-        Iterator<String> iterator = result.keySet().iterator();
-        StringBuffer sb =  new StringBuffer();
-        sb.append("-----------------"+mes+"--------------------");
-        while (iterator.hasNext()){
-            String key = iterator.next();
-            boolean value = result.get(key);
-            sb.append("\r\n");
-            sb.append("日期:"+key+",是否签到:"+value);
-        }
 
 
-        return sb.toString();
+        return mes.toString();
     }
 }

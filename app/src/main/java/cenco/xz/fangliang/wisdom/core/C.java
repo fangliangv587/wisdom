@@ -32,6 +32,7 @@ public class C {
         public static final String identifycard_path = card_path+File.separator+"zp.bmp";
         public static final String txapp_user = root_path+"/txapp/user.data";
         public static final String txapp_aliaccount = root_path+"/txapp/alipay/";
+        public static final String thumber_sign = root_path+"/thumber/sign/";
     }
 
     /**

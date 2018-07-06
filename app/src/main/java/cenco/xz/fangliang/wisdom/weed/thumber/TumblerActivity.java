@@ -1,4 +1,4 @@
-package cenco.xz.fangliang.wisdom.weed;
+package cenco.xz.fangliang.wisdom.weed.thumber;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cenco.xz.fangliang.wisdom.weed.LogInfoActivity;
 import cenco.xz.fangliang.wisdom.weed.thumber.ThumberApiService;
 import cenco.xz.fangliang.wisdom.weed.thumber.Util;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.Account;
@@ -68,6 +69,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     TextView textTv;
     LinearLayout layout;
     TimerHelper timerHelper;
+    CheckBox forceNetCB;
 
 
     @Override
@@ -92,6 +94,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
 
         textTv = (TextView)findViewById(R.id.textTv);
         layout = (LinearLayout)findViewById(R.id.layout);
+        forceNetCB = (CheckBox)findViewById(R.id.forceNetCB);
 
         timerHelper = new TimerHelper(this);
         timerHelper.start();
@@ -105,13 +108,19 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         request = retrofit.create(ThumberApiService.class);
         users = Util.getUsers();
 
-         dialog=ProgressDialog.show(this,"","请稍后...");
+        action();
+    }
+
+    private void action() {
+        dialog= ProgressDialog.show(this,"","请稍后...");
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
-                for (int i=0;i<users.size();i++){
-                    Account account = users.get(i);
-                    sign(account);
+                if (forceNetCB.isChecked()){
+                    for (int i=0;i<users.size();i++){
+                        Account account = users.get(i);
+                        sign(account);
+                    }
                 }
                 LogUtils.w(TAG,"所有账户登录成功");
 
@@ -125,6 +134,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
             }
         });
     }
+
 
     private List<BetAccount>  betAccountList;
     private void showUserInfo() {
@@ -592,5 +602,10 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     @Override
     public void onTimerRunning(int i, int i1, boolean b) {
        textTv.setText("时间:"+ DateUtil.getDateString());
+    }
+
+    public void refreshClick(View view) {
+        layout.removeAllViews();
+        action();
     }
 }
