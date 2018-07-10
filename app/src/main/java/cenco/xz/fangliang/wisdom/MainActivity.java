@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.cenco.lib.common.AssetUtil;
 import com.cenco.lib.common.PermissionManager;
 import com.xz.cenco.wisdom.BuildConfig;
+
 import cenco.xz.fangliang.wisdom.core.BaseActivity;
+
 import com.xz.cenco.wisdom.R;
 import com.yanzhenjie.alertdialog.AlertDialog;
 
@@ -37,15 +39,17 @@ public class MainActivity extends BaseActivity {
         initView();
         commonPermission();
         actionReady();
+
+
         startTimer();
     }
 
     private void actionReady() {
-        AssetUtil.copyFiles(this,"card", C.file.card_path);
+        AssetUtil.copyFiles(this, "card", C.file.card_path);
     }
 
     // 此方法用来判断当前应用的辅助功能服务是否开启
-    public  boolean isAccessibilitySettingsOn(Context context) {
+    public boolean isAccessibilitySettingsOn(Context context) {
         int accessibilityEnabled = 0;
         try {
             accessibilityEnabled = Settings.Secure.getInt(context.getContentResolver(),
@@ -73,8 +77,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        startTimer();
-        trackStateTv.setText(isAccessibilitySettingsOn(this)? "已开启":"未开启");
+        trackStateTv.setText(isAccessibilitySettingsOn(this) ? "已开启" : "未开启");
     }
 
     private void initView() {
@@ -83,10 +86,9 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    public void recordClick(View view) {
 
-    public void recordClick(View view){
-
-        if(!isAccessibilitySettingsOn(this)){
+        if (!isAccessibilitySettingsOn(this)) {
             AlertDialog.newBuilder(this).setCancelable(false).setTitle(com.cenco.lib.common.R.string.title_dialog).setMessage("需要开启辅助权限才能使用此功能，您要开启此功能吗？").setPositiveButton(com.cenco.lib.common.R.string.resume, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
@@ -99,13 +101,11 @@ public class MainActivity extends BaseActivity {
             }).show();
             return;
         }
-
-//        Intent intent = new Intent(this, DayRecordListActivity.class);
-//        startActivity(intent);
     }
-    public void contentClick(View view){
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)){
+    public void contentClick(View view) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
             AlertDialog.newBuilder(this).setCancelable(false).setTitle(com.cenco.lib.common.R.string.title_dialog).setMessage("需要开启悬浮框权限才能使用此功能，您要开启此功能吗？").setPositiveButton(com.cenco.lib.common.R.string.resume, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     SettingsCompat.manageDrawOverlays(mContext);
@@ -123,36 +123,34 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    public void backupClick(View view){}
-    public void restoreClick(View view){}
+    public void backupClick(View view) {
+    }
+
+    public void restoreClick(View view) {
+    }
 
     public void doctorClick(View view) {
     }
 
 
-
-
     private void startTimer() {
+        if (BuildConfig.DEBUG) {
+            return;
+        }
         Intent intent = new Intent(MainActivity.this, TimerService.class);
         startService(intent);
 
-//        WisdomHelper wisdomHelper = new WisdomHelper(this);
-//        wisdomHelper.start();
-
     }
-
-
-
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == C.request.permission_dialog){
+        if (requestCode == C.request.permission_dialog) {
             contentClick(null);
             return;
         }
-        if (requestCode == C.request.permission_assist){
+        if (requestCode == C.request.permission_assist) {
             recordClick(null);
             return;
         }
@@ -160,7 +158,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public void testClick(View view) {
-
 
 
     }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 
+import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.log.LogUtils;
 import com.coohua.android.jni.NativeJni;
 import com.xz.cenco.wisdom.R;
@@ -23,12 +24,10 @@ public class CoohuaActivity  extends Activity {
 
         setContentView(R.layout.activity_coohua);
 
+//        CoohuaHelper helper = new CoohuaHelper(this);
+//        helper.start();
 
     }
 
-    private void testt() {
 
-
-
-    }
 }

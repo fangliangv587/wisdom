@@ -11,7 +11,9 @@ import android.widget.ListView;
 import com.cenco.lib.common.ToastUtil;
 
 import cenco.xz.fangliang.wisdom.App;
+import cenco.xz.fangliang.wisdom.weed.coohua.CoohuaActivity;
 import cenco.xz.fangliang.wisdom.weed.thumber.TumblerActivity;
+import cenco.xz.fangliang.wisdom.weed.txapp2.RegisterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class WeedListActivity extends ListActivity {
     private List<String> getData() {
         List<String> data = new ArrayList<String>();
         data.add("不倒翁");
-        data.add("txapp");
+        data.add("0.5");
         data.add("測試");
 
         return data;
@@ -64,7 +66,7 @@ public class WeedListActivity extends ListActivity {
         }
 
         if (position==1){
-            intent =  new Intent(this, TxAppActivity.class);
+            intent =  new Intent(this, RegisterActivity.class);
             startActivity(intent);
             return;
         }
