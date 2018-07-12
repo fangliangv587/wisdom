@@ -41,9 +41,6 @@ public class App extends Application {
 
     private void initCommonLib() {
         int level = Level.DEBUG;
-        if (!BuildConfig.DEBUG){
-            level = Level.WARN;
-        }
         LogUtils.init("appwisdom", level, C.file.log_path);
         HttpUtil.init(this);
     }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.ThreadManager;
+import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
@@ -31,7 +32,7 @@ import cenco.xz.fangliang.wisdom.weed.txapp2.bean.WithdrawResult;
  * Created by Administrator on 2018/7/11.
  */
 
-public class TxAppActivity extends Activity {
+public class TxAppActivity extends Activity implements TimerHelper.TimerListener {
 
     List<Account> userlist;
 
@@ -227,5 +228,18 @@ public class TxAppActivity extends Activity {
 
             }
         });
+    }
+
+    public void timerClick(View view) {
+
+        TimerHelper helper = new TimerHelper(this);
+        TxMoneyHelper moneyHelper = new TxMoneyHelper();
+        helper.addListener(moneyHelper);
+        helper.start();
+    }
+
+    @Override
+    public void onTimerRunning(int i, int i1, boolean b) {
+
     }
 }

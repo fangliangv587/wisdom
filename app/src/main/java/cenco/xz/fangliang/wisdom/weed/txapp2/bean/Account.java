@@ -21,6 +21,7 @@ public class Account implements Serializable{
     private String token;
     private String withdrawStatus;
     private String txmoney;
+    private String txtime;
 
     public Account(String phone, String phoneName,String pass, String mac,String sex,String aliPhone,String aliName,boolean isRegister) {
         this.phone = phone;
@@ -39,6 +40,14 @@ public class Account implements Serializable{
 
     public void setTxmoney(String txmoney) {
         this.txmoney = txmoney;
+    }
+
+    public String getTxtime() {
+        return txtime;
+    }
+
+    public void setTxtime(String txtime) {
+        this.txtime = txtime;
     }
 
     public String getWithdrawStatus() {

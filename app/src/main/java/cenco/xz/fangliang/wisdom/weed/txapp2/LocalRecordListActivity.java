@@ -45,6 +45,9 @@ public class LocalRecordListActivity extends ListActivity {
                 if(f1.getName().contains(indentify)){
                     String str = IOUtils.readFile2String(f1);
                     Account account1 = GsonUtil.fromJson(str, Account.class);
+                    if (account1.getTxtime()!=null){
+                        date = account1.getTxtime();
+                    }
                     list.add(date+"    金额:"+account1.getTxmoney()+"     状态:"+account1.getWithdrawStatus());
                 }
             }
