@@ -1,4 +1,4 @@
-package cenco.xz.fangliang.wisdom.weed;
+package cenco.xz.fangliang.wisdom.weed.txapp;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

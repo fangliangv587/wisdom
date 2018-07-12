@@ -41,12 +41,16 @@
 
         <service android:name="cenco.xz.fangliang.wisdom.weed.TimerService" />
 
-        <activity android:name="cenco.xz.fangliang.wisdom.weed.TxAppActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp.TxAppActivity"></activity>
         <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp.VipUsersActivity"></activity>
         <activity android:name="cenco.xz.fangliang.wisdom.weed.TestMessageActivity"></activity>
         <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp.AliUsersActivity"></activity>
         <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp.AliUserDetailActivity"></activity>
         <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp2.RegisterActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp2.TxAppActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp2.TxActionActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp2.RecordListActivity"></activity>
+        <activity android:name="cenco.xz.fangliang.wisdom.weed.txapp2.LocalRecordListActivity"></activity>
 
 
     </application>

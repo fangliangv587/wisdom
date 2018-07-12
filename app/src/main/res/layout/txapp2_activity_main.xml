@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="cenco.xz.fangliang.wisdom.weed.txapp2.TxAppActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerBtn"
+        android:text="注册"
+        android:onClick="registerClick"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/registerBtn"
+        android:id="@+id/loginBtn"
+        android:text="登录"
+        android:onClick="loginClick"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/loginBtn"
+        android:id="@+id/initBtn"
+        android:text="所有账户增加余额"
+        android:onClick="addMoneyClick"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/initBtn"
+        android:id="@+id/actionBtn"
+        android:text="所有账户进行提现"
+        android:onClick="actionClick"
+        />
+
+</android.support.constraint.ConstraintLayout>
