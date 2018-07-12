@@ -23,6 +23,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import cenco.xz.fangliang.wisdom.weed.LogInfoActivity;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.Account;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.IncomeResult;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.LoginResult;
@@ -32,7 +33,7 @@ import cenco.xz.fangliang.wisdom.weed.txapp2.bean.WithdrawResult;
  * Created by Administrator on 2018/7/11.
  */
 
-public class TxAppActivity extends Activity implements TimerHelper.TimerListener {
+public class TxAppActivity extends LogInfoActivity implements TimerHelper.TimerListener {
 
     List<Account> userlist;
 
@@ -47,7 +48,7 @@ public class TxAppActivity extends Activity implements TimerHelper.TimerListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.txapp2_activity_main);
 
-        addMoneyBtn = findViewById(R.id.initBtn);
+        addMoneyBtn = (Button)findViewById(R.id.initBtn);
         userlist = getUsers();
 
     }
@@ -85,6 +86,7 @@ public class TxAppActivity extends Activity implements TimerHelper.TimerListener
             if (type == type_register){
                 if (account.isRegister()){
                     ToastUtil.show(TxAppActivity.this,"该用户已经注册");
+                    showMessage("该用户已经注册");
                     return;
                 }
                 Intent intent = new Intent(TxAppActivity.this, RegisterActivity.class);
@@ -93,6 +95,7 @@ public class TxAppActivity extends Activity implements TimerHelper.TimerListener
             }else if (type==type_login){
                 if (!account.isRegister()){
                     ToastUtil.show(TxAppActivity.this,"该用户未注册");
+                    showMessage("该用户未注册");
                     return;
                 }
                 Intent intent = new Intent(TxAppActivity.this, TxActionActivity.class);
@@ -152,14 +155,14 @@ public class TxAppActivity extends Activity implements TimerHelper.TimerListener
                         DecimalFormat df = new DecimalFormat("0.00");
                         String format = df.format(random);
 
-                        LogUtils.v("随机数:"+format);
+                        showMessage("随机数:"+format);
 
                         String s1 = ApiService.syncIncome(id, token, format);
                         IncomeResult result1 = GsonUtil.fromJson(s1, IncomeResult.class);
-                        LogUtils.d(result1.getSuccessMessage());
+                        showMessage(result1.getSuccessMessage());
                         String s2 = ApiService.syncReward(id, token, format);
                         IncomeResult result2 = GsonUtil.fromJson(s2, IncomeResult.class);
-                        LogUtils.i(result2.getSuccessMessage());
+                        showMessage(result2.getSuccessMessage());
 
                         try {
                             Thread.sleep(2 * 1000);
@@ -184,7 +187,7 @@ public class TxAppActivity extends Activity implements TimerHelper.TimerListener
                     String path = Utils.getFilePath(account);
                     File file = new File(path);
                     if (file.exists()){
-                        LogUtils.w(account.getIndentify()+" 已经提现过了！");
+                        showMessage(account.getIndentify()+" 已经提现过了！");
                         continue;
                     }
 
@@ -210,7 +213,7 @@ public class TxAppActivity extends Activity implements TimerHelper.TimerListener
                     account.setWithdrawStatus(result1.getState());
                     account.setTxmoney(money);
 
-                    LogUtils.w(account.getIndentify()+message);
+                    showMessage(account.getIndentify()+message);
 
 
                     if (!file.getParentFile().exists()){

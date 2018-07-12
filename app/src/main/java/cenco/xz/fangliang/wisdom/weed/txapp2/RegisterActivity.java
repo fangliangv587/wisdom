@@ -11,6 +11,7 @@ import com.cenco.lib.common.http.SimpleCallback;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.R;
 
+import cenco.xz.fangliang.wisdom.weed.LogInfoActivity;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.Account;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.CodeResult;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.RegisterResult;
@@ -19,7 +20,7 @@ import cenco.xz.fangliang.wisdom.weed.txapp2.bean.RegisterResult;
  * Created by Administrator on 2018/7/10.
  */
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends LogInfoActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
 
@@ -38,12 +39,12 @@ public class RegisterActivity extends Activity {
 
         Account account = (Account) getIntent().getSerializableExtra("account");
 
-        realnameEt = findViewById(R.id.realnameEt);
-        phoneEt = findViewById(R.id.phoneEt);
-        passEt = findViewById(R.id.passEt);
-        macEt = findViewById(R.id.macEt);
-        codeResultEt = findViewById(R.id.codeResultEt);
-        codeEt = findViewById(R.id.codeEt);
+        realnameEt = (EditText)findViewById(R.id.realnameEt);
+        phoneEt = (EditText)findViewById(R.id.phoneEt);
+        passEt = (EditText)findViewById(R.id.passEt);
+        macEt =(EditText) findViewById(R.id.macEt);
+        codeResultEt = (EditText)findViewById(R.id.codeResultEt);
+        codeEt =(EditText) findViewById(R.id.codeEt);
 
         realnameEt.setText(account.getAliName());
         phoneEt.setText(account.getPhone());
@@ -58,7 +59,7 @@ public class RegisterActivity extends Activity {
         ApiService.getCode(phone,new SimpleCallback<CodeResult>(){
             @Override
             public void onSuccess(CodeResult s) {
-                LogUtils.d(TAG,"onSuccess:"+s);
+                showMessage("onSuccess:"+s);
                 codeResultEt.setText(s.getTelCode());
             }
 

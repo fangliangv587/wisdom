@@ -18,6 +18,7 @@ import com.xz.cenco.wisdom.R;
 import java.text.DecimalFormat;
 import java.util.Random;
 
+import cenco.xz.fangliang.wisdom.weed.LogInfoActivity;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.Account;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.IdentifyResult;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.IncomeResult;
@@ -29,7 +30,7 @@ import cenco.xz.fangliang.wisdom.weed.txapp2.bean.WithdrawResult;
  * Created by Administrator on 2018/7/11.
  */
 
-public class TxActionActivity  extends Activity {
+public class TxActionActivity  extends LogInfoActivity {
 
     TextView realnameEt;
     TextView phoneEt;
@@ -49,14 +50,14 @@ public class TxActionActivity  extends Activity {
 
         account = (Account) getIntent().getSerializableExtra("account");
 
-        realnameEt = findViewById(R.id.realnameEt);
-        phoneEt = findViewById(R.id.phoneEt);
-        passEt = findViewById(R.id.passEt);
-        balanceEt = findViewById(R.id.balanceEt);
-        identifyBtn = findViewById(R.id.identifyBtn);
-        withdrawBtn = findViewById(R.id.withdrawBtn);
-        withdrawlistBtn = findViewById(R.id.withdrawlistBtn);
-        incomeBtn = findViewById(R.id.incomeBtn);
+        realnameEt = (TextView)findViewById(R.id.realnameEt);
+        phoneEt = (TextView)findViewById(R.id.phoneEt);
+        passEt = (TextView)findViewById(R.id.passEt);
+        balanceEt = (TextView)findViewById(R.id.balanceEt);
+        identifyBtn =(Button) findViewById(R.id.identifyBtn);
+        withdrawBtn = (Button)findViewById(R.id.withdrawBtn);
+        withdrawlistBtn = (Button)findViewById(R.id.withdrawlistBtn);
+        incomeBtn = (Button)findViewById(R.id.incomeBtn);
 
         identifyBtn.setEnabled(false);
         withdrawBtn.setEnabled(false);
@@ -77,7 +78,7 @@ public class TxActionActivity  extends Activity {
             public void onSuccess(LoginResult o) {
                 loginResult = o;
                 LoginResult.DataBean user = o.getData();
-                LogUtils.d(user.getDisplayName()+"<====>"+user.getOfficeTel());
+                showMessage(user.getDisplayName()+"<====>"+user.getOfficeTel());
 
                 if (user.isVertify()){
                     identifyBtn.setEnabled(false);
@@ -248,14 +249,14 @@ public class TxActionActivity  extends Activity {
                     DecimalFormat df = new DecimalFormat("0.00");
                     String format = df.format(random);
 
-                    LogUtils.v("随机数:"+format);
+                    showMessage("随机数:"+format);
 
                     String s1 = ApiService.syncIncome(id, token, format);
                     IncomeResult result1 = GsonUtil.fromJson(s1, IncomeResult.class);
-                    LogUtils.d(result1.getSuccessMessage());
+                    showMessage(result1.getSuccessMessage());
                     String s2 = ApiService.syncReward(id, token, format);
                     IncomeResult result2 = GsonUtil.fromJson(s2, IncomeResult.class);
-                    LogUtils.i(result2.getSuccessMessage());
+                    showMessage(result2.getSuccessMessage());
 
                     try {
                         Thread.sleep(10 * 1000);
