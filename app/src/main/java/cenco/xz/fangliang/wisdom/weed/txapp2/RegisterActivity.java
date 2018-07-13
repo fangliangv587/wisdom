@@ -32,7 +32,7 @@ import cenco.xz.fangliang.wisdom.weed.txapp2.bean.RegisterResult;
  * Created by Administrator on 2018/7/10.
  */
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends LogInfoActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
 
@@ -143,7 +143,7 @@ public class RegisterActivity extends Activity {
         ApiService.getCode(phone, new SimpleCallback<CodeResult>() {
             @Override
             public void onSuccess(CodeResult s) {
-//                showMessage("onSuccess:"+s);
+                showMessage("发送验证码:"+(s.isSuccess()?"成功":"失败"));
                 codeResultEt.setText(s.getTelCode());
             }
 
@@ -170,6 +170,7 @@ public class RegisterActivity extends Activity {
             public void onSuccess(RegisterResult s) {
                 ToastUtil.show(RegisterActivity.this, s.getData());
                 if (virtual && s.isSuccess()) {
+                    showMessage("账户注册成功");
                     registerCount++;
                     virtualUserAction(phone, pass);
                 }
@@ -192,6 +193,8 @@ public class RegisterActivity extends Activity {
         String format = df.format(money);
 
         String content = "账号:" + phone + ",密码:" + pass + ",MAC:" + mac + ",邀请码:" + visitCode + ",金额:" + format + "\r\n";
+
+        showMessage(content);
 
         String path = Utils.getVirtualRegisterFilePath(account);
         IOUtils.writeFileFromString(path, content, true);
@@ -226,8 +229,9 @@ public class RegisterActivity extends Activity {
                 }
 
                 Random random1 = new Random();
-                int count = random1.nextInt(5)+1;
+                int count = random1.nextInt(3)+1;
                 LogUtils.d(TAG, "金币增加次数:" + count);
+                showMessage("金币增加次数:"+count+"，总等待时间:"+(12*count)+"秒");
                 double money = 0;
                 for (int i = 0; i < count; i++) {
 
@@ -245,7 +249,7 @@ public class RegisterActivity extends Activity {
 
 
                     try {
-                        Thread.sleep(15 * 1000);
+                        Thread.sleep(12 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -257,10 +261,11 @@ public class RegisterActivity extends Activity {
 
                 try {
                     Random random = new Random();
-                    int min = 10 + random.nextInt(10);
+                    int min = 10 + random.nextInt(5);
                     int second = random.nextInt(60);
                     Thread.sleep((min * 60 + second )* 1000);
                     LogUtils.i(TAG,"等待"+min+"分"+second+"秒");
+                    showMessage("等待"+min+"分"+second+"秒");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -292,6 +297,7 @@ public class RegisterActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                showMessage("获取到手机号:"+phone);
                                 phoneEt.setText(phone);
                                 getCodeClick(null);
                             }
@@ -313,6 +319,7 @@ public class RegisterActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                showMessage("获取到验证码:"+code);
                                 codeEt.setText(code);
                                 registerClick(null);
                             }

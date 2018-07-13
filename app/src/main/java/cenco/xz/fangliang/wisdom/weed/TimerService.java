@@ -15,6 +15,7 @@ import cenco.xz.fangliang.wisdom.core.WisdomHelper;
 import cenco.xz.fangliang.wisdom.weed.coohua.CoohuaHelper;
 import cenco.xz.fangliang.wisdom.weed.qutoutiao.QuNewsHelper;
 import cenco.xz.fangliang.wisdom.weed.thumber.ThumberHelper;
+import cenco.xz.fangliang.wisdom.weed.txapp2.TxMoneyHelper;
 
 /**
  * Created by Administrator on 2018/4/27.
@@ -52,6 +53,10 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         thumberHelper = new ThumberHelper(this);
         thumberHelper.start();
 
+        //0.5
+        TxMoneyHelper moneyHelper = new TxMoneyHelper();
+
+
 
 
 //        //酷划
@@ -72,6 +77,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
+        timerHelper.addListener(moneyHelper);
 //        timerHelper.addListener(coohuaHelper);
 //        timerHelper.addListener(aiaixgHelper);
 //        timerHelper.addListener(xmgrHelper);

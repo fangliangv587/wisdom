@@ -85,6 +85,8 @@ public class LogInfoActivity extends Activity {
 
     public void setContentView(int res){
         contentView = LayoutInflater.from(this).inflate(res, null);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        contentView.setLayoutParams(params);
         contentLayout.addView(contentView);
     }
 

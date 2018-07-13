@@ -16,6 +16,10 @@ public class CodeResult {
     private String data;
     private String state;
 
+    public boolean isSuccess(){
+        return state.equals("success");
+    }
+
     public String getTelCode() {
         return telCode;
     }
