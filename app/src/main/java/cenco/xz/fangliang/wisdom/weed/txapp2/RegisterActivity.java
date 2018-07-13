@@ -270,7 +270,9 @@ public class RegisterActivity extends LogInfoActivity {
                     e.printStackTrace();
                 }
 
-                msgPhoneClick(null);
+                if (loop){
+                    msgPhoneClick(null);
+                }
 
             }
         });
@@ -340,7 +342,18 @@ public class RegisterActivity extends LogInfoActivity {
         });
     }
 
+    private boolean loop;
+
     public void loopRegisterClick(View view) {
+
+        loop = true;
         msgPhoneClick(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        loop = false;
+        super.onDestroy();
+
     }
 }
