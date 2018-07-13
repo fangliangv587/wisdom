@@ -38,6 +38,7 @@ public class WeedListActivity extends ListActivity {
         data.add("0.5");
         data.add("測試");
 
+
         return data;
     }
 

@@ -27,11 +27,11 @@ public class ApiService {
     }
 
 
-    public static void register(String phone, String pass, String mac, String codeResult, String code, SimpleCallback simpleCallback) {
+    public static void register(String phone, String pass, String mac, String codeResult, String code,String visitCode, SimpleCallback simpleCallback) {
         HttpParams params = new HttpParams();
         params.put("loginName",Utils.encode(phone));
         params.put("password",Utils.encode(pass));
-        params.put("homeinvite","");
+        params.put("homeinvite",Utils.encode(visitCode));
         params.put("mac",mac);
         params.put("telCode",codeResult);
         params.put("code",Utils.encode(code));

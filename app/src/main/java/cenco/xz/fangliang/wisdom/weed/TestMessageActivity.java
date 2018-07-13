@@ -4,6 +4,9 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cenco.lib.common.ThreadManager;
+import com.cenco.lib.common.http.HttpUtil;
+import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.R;
 
 import cenco.xz.fangliang.wisdom.weed.qutoutiao.QuNewsHelper;
@@ -14,6 +17,8 @@ import cenco.xz.fangliang.wisdom.weed.qutoutiao.QuNewsHelper;
 
 public class TestMessageActivity extends LogInfoActivity {
 
+    private static final String TAG = TestMessageActivity.class.getSimpleName();
+
     private int position;
 
     @Override
@@ -23,17 +28,19 @@ public class TestMessageActivity extends LogInfoActivity {
         TextView tv =(TextView) findViewById(R.id.text);
         tv.setText("hhhh");
 
-        QuNewsHelper helper = new QuNewsHelper();
-        helper.start();
+
 
     }
 
     public void btnClick(View view) {
-        position++;
+        ThreadManager.getPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
 
 
 
 
-        showMessage("click"+position);
+            }
+        });
     }
 }

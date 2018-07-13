@@ -29,7 +29,8 @@ public class TxMoneyHelper  implements TimerHelper.TimerListener {
 
     private List<Account> userlist;
 
-    private final int  total = 30 * 60;//30分钟
+//    private final int  total = 30 * 60;//30分钟
+    private final int  total = 24 * 60 * 60;//24小时
 
     private Date upDate;
     private Date downDate;
@@ -38,6 +39,7 @@ public class TxMoneyHelper  implements TimerHelper.TimerListener {
         userlist = Utils.getAccount();
         upDate = DateUtil.createDate(2018,1,1,23,59,0);
         downDate = DateUtil.createDate(2018,1,1,9,0,0);
+
     }
 
 
@@ -138,7 +140,8 @@ public class TxMoneyHelper  implements TimerHelper.TimerListener {
 
     @Override
     public void onTimerRunning(int current, int n, boolean b) {
-        if (current % total == 0 && isValidTime() ){
+
+        if (current % total == 1 && isValidTime() ){
             action();
         }
     }
@@ -146,6 +149,9 @@ public class TxMoneyHelper  implements TimerHelper.TimerListener {
     private boolean isValidTime(){
         boolean valid = DateUtil.isInPeriodDate(new Date(), downDate, upDate, DateUtil.FORMAT_HMS);
         LogUtils.i(TAG,"时间段检查："+valid);
+
+
+
         return valid;
     }
 }

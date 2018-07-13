@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
@@ -32,6 +34,14 @@ public class WisdomHelper implements TimerHelper.TimerListener {
     private TextView mFloatTv;
     private WindowManager mWindowManager;
     private LinearLayout mFloatLayout;
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            action();
+        }
+    };
 
     public WisdomHelper(Context context) {
         this.service = context;
@@ -150,7 +160,7 @@ public class WisdomHelper implements TimerHelper.TimerListener {
 
         tempTotal--;
         if (tempTotal == 0) {
-            action();
+            handler.sendEmptyMessage(0);
         }
     }
 

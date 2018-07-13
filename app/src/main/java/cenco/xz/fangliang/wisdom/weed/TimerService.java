@@ -83,9 +83,12 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
 
     }
 
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
         return binder;
     }
 

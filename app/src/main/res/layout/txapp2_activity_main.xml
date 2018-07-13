@@ -7,12 +7,19 @@
     tools:context="cenco.xz.fangliang.wisdom.weed.txapp2.TxAppActivity">
 
     <Button
+        android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/registerBtn"
-        android:text="注册"
         android:onClick="registerClick"
-        />
+        android:text="真实注册" />
+
+    <Button
+        android:id="@+id/vitrualRegisterBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/registerBtn"
+        android:onClick="vitrualRegisterClick"
+        android:text="虚拟注册" />
 
     <Button
         android:layout_width="wrap_content"

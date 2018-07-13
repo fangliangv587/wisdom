@@ -39,6 +39,7 @@ public class TxAppActivity extends LogInfoActivity implements TimerHelper.TimerL
 
     private final static int type_register = 0x0001;
     private final static int type_login = 0x0002;
+    private final static int type_register_virtual = 0x0003;
 
     private int type;
     private Button addMoneyBtn;
@@ -67,8 +68,9 @@ public class TxAppActivity extends LogInfoActivity implements TimerHelper.TimerL
         for (int i=0;i<userlist.size();i++){
             Account account = userlist.get(i);
             TextView textView = new TextView(this);
-            textView.setPadding(10,10,10,10);
+            textView.setPadding(10,30,10,30);
             textView.setText(account.getIndentify());
+            textView.setTextSize(16);
             textView.setTag(account);
             layout.addView(textView);
             textView.setOnClickListener(userClickListener);
@@ -100,6 +102,16 @@ public class TxAppActivity extends LogInfoActivity implements TimerHelper.TimerL
                 }
                 Intent intent = new Intent(TxAppActivity.this, TxActionActivity.class);
                 intent.putExtra("account",account);
+                startActivity(intent);
+            }else if (type==type_register_virtual){
+                if (!account.isRegister()){
+                    ToastUtil.show(TxAppActivity.this,"该用户已经注册");
+                    showMessage("该用户已经注册");
+                    return;
+                }
+                Intent intent = new Intent(TxAppActivity.this, RegisterActivity.class);
+                intent.putExtra("account",account);
+                intent.putExtra("virtual",true);
                 startActivity(intent);
             }
         }
@@ -244,5 +256,10 @@ public class TxAppActivity extends LogInfoActivity implements TimerHelper.TimerL
     @Override
     public void onTimerRunning(int i, int i1, boolean b) {
 
+    }
+
+    public void vitrualRegisterClick(View view) {
+        type = type_register_virtual;
+        showUsers();
     }
 }

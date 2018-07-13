@@ -22,8 +22,9 @@ public class Account implements Serializable{
     private String withdrawStatus;
     private String txmoney;
     private String txtime;
+    private String visitCode;
 
-    public Account(String phone, String phoneName,String pass, String mac,String sex,String aliPhone,String aliName,boolean isRegister) {
+    public Account(String phone, String phoneName,String pass, String mac,String sex,String aliPhone,String aliName,boolean isRegister,String visitCode) {
         this.phone = phone;
         this.phoneName = phoneName;
         this.mac = mac;
@@ -32,6 +33,15 @@ public class Account implements Serializable{
         this.isRegister = isRegister;
         this.aliName = aliName;
         this.aliPhone = aliPhone;
+        this.visitCode = visitCode;
+    }
+
+    public String getVisitCode() {
+        return visitCode;
+    }
+
+    public void setVisitCode(String visitCode) {
+        this.visitCode = visitCode;
     }
 
     public String getTxmoney() {
