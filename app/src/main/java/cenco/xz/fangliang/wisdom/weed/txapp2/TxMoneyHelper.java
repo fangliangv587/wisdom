@@ -165,7 +165,7 @@ public class TxMoneyHelper  implements TimerHelper.TimerListener {
         int h = difsecond / (60 * 60);
         int m = difsecond % (60 * 60) / 60;
         int s = difsecond % (60 * 60) % 60;
-        LogUtils.d(TAG,"间隔时间:"+h+"时"+m+"分"+s+"秒");
+//        LogUtils.d(TAG,"间隔时间:"+h+"时"+m+"分"+s+"秒");
 
         int delaysecond = 8 * 60 +47;
 
