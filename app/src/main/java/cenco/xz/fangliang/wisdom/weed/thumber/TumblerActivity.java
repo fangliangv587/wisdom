@@ -65,7 +65,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
 
     private ThumberApiService request;
     private List<Account> users;
-    private String TAG = "Thumbler";
+    private String TAG = TumblerActivity.class.getSimpleName();
     TextView textTv;
     LinearLayout layout;
     TimerHelper timerHelper;
@@ -142,18 +142,22 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         for (int i=0;i<users.size();i++){
             final Account account = users.get(i);
             View view = LayoutInflater.from(this).inflate(R.layout.item_thumber, null);
-            final TextView infoTv = view.findViewById(R.id.infoTv);
+            final TextView nameTv = view.findViewById(R.id.nameTv);
+            final TextView accountTv = view.findViewById(R.id.accountTv);
+            final TextView balanceTv = view.findViewById(R.id.balanceTv);
             CheckBox checkbox = view.findViewById(R.id.checkbox);
             View  updateBtn= view.findViewById(R.id.updateBtn);
             final int index = i;
             updateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateUserInfo(index,account,infoTv);
+                    updateUserInfo(index,account,balanceTv);
                 }
             });
 //            account.setCheckBox(checkbox);
-            infoTv.setText(i+1+"-"+account.getUsername()+"("+account.getPeopleName()+")==>"+account.getBalance());
+            nameTv.setText(i+1+"-"+account.getPeopleName());
+            accountTv.setText(account.getUsername());
+            balanceTv.setText(account.getBalance());
             layout.addView(view);
 
             BetAccount betAccount = new BetAccount();
@@ -208,7 +212,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                                 @Override
                                 public void run() {
                                     dismissProgressDialog();
-                                    infoTv.setText(index+1+"-"+account.getUsername()+"("+account.getPeopleName()+")==>"+account.getBalance());
+                                    infoTv.setText(account.getBalance());
                                 }
                             });
                         } catch (IOException e) {
@@ -468,11 +472,12 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 code.subscribe(new Observer<Response<ResponseBody>>() {
 
                     public void onError(Throwable e) {
-                        LogUtils.d("--->onError:" + e.getMessage());
+                        LogUtils.d(TAG,"--->onError:" + e.getMessage());
+                        showMessage(e.getMessage());
                     }
 
                     public void onComplete() {
-                        LogUtils.d("--->onCompleted");
+                        LogUtils.d(TAG,"--->onCompleted");
                     }
 
                     public void onSubscribe(Disposable disposable) {
@@ -480,7 +485,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                     }
 
                     public void onNext(Response<ResponseBody> response) {
-                        LogUtils.d("--->onNext");
+                        LogUtils.d(TAG,"--->onNext");
                         printResponse(response,"");
 
                         try {
@@ -488,7 +493,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                             Gson gson = new Gson();
                             RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
                             RecordNumResult.ListBean bean = result.getList().get(0);
-                            LogUtils.w("投注期号:"+bean.getIssuenum());
+                            LogUtils.w(TAG,"投注期号:"+bean.getIssuenum());
                             showMessage("投注期号:"+bean.getIssuenum());
 
 
@@ -498,11 +503,11 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                                     .subscribe(new Observer<Response<ResponseBody>>() {
 
                                         public void onError(Throwable e) {
-                                            LogUtils.d("--->onError:" + e.getMessage());
+                                            LogUtils.d(TAG,"--->onError:" + e.getMessage());
                                         }
 
                                         public void onComplete() {
-                                            LogUtils.d("--->onCompleted");
+                                            LogUtils.d(TAG,"--->onCompleted");
                                         }
 
                                         public void onSubscribe(Disposable disposable) {
@@ -510,14 +515,14 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                                         }
 
                                         public void onNext(Response<ResponseBody> response) {
-                                            LogUtils.d("--->onNext");
+                                            LogUtils.d(TAG,"--->onNext");
                                             printResponse(response,"");
 
                                             try {
                                                 String str = response.body().string();
                                                 Gson gson = new Gson();
                                                 BetResult result = gson.fromJson(str, BetResult.class);
-                                                LogUtils.i(account1.getIndentify()+"(正):"+result.getMsg());
+                                                LogUtils.i(TAG,account1.getIndentify()+"(正):"+result.getMsg());
                                                 showMessage(account1.getIndentify()+"(正):"+result.getMsg());
                                             } catch (IOException e) {
                                                 LogUtils.e(e);
@@ -531,11 +536,11 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                                     .subscribe(new Observer<Response<ResponseBody>>() {
 
                                         public void onError(Throwable e) {
-                                            LogUtils.d("--->onError:" + e.getMessage());
+                                            LogUtils.d(TAG,"--->onError:" + e.getMessage());
                                         }
 
                                         public void onComplete() {
-                                            LogUtils.d("--->onCompleted");
+                                            LogUtils.d(TAG,"--->onCompleted");
                                         }
 
                                         public void onSubscribe(Disposable disposable) {
@@ -543,14 +548,14 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                                         }
 
                                         public void onNext(Response<ResponseBody> response) {
-                                            LogUtils.d("--->onNext");
+                                            LogUtils.d(TAG,"--->onNext");
                                             printResponse(response,"");
 
                                             try {
                                                 String str = response.body().string();
                                                 Gson gson = new Gson();
                                                 BetResult result = gson.fromJson(str, BetResult.class);
-                                                LogUtils.i(account2.getIndentify()+"(反):"+result.getMsg());
+                                                LogUtils.i(TAG,account2.getIndentify()+"(反):"+result.getMsg());
                                                 showMessage(account2.getIndentify()+"(反):"+result.getMsg());
 
                                             } catch (IOException e) {
@@ -601,7 +606,13 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
 
     @Override
     public void onTimerRunning(int i, int i1, boolean b) {
-       textTv.setText("时间:"+ DateUtil.getDateString());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textTv.setText("时间:"+ DateUtil.getDateString());
+            }
+        });
+
     }
 
     public void refreshClick(View view) {

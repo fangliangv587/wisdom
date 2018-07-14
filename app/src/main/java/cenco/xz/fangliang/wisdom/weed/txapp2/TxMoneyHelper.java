@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.IOUtils;
+import com.cenco.lib.common.SPUtil;
 import com.cenco.lib.common.ThreadManager;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.json.GsonUtil;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.Account;
 import cenco.xz.fangliang.wisdom.weed.txapp2.bean.IncomeResult;
@@ -28,14 +30,16 @@ public class TxMoneyHelper  implements TimerHelper.TimerListener {
     private static final String TAG = TxMoneyHelper.class.getSimpleName();
 
     private List<Account> userlist;
+    private Context context;
 
-//    private final int  total = 30 * 60;//30分钟
-    private final int  total = 24 * 60 * 60;//24小时
+//    private final int  interval = 30 * 60;//30分钟
+    private final int interval = 24 * 60 * 60;//24小时
 
     private Date upDate;
     private Date downDate;
 
-    public TxMoneyHelper() {
+    public TxMoneyHelper(Context context) {
+        this.context = context;
         userlist = Utils.getAccount();
         upDate = DateUtil.createDate(2018,1,1,23,59,0);
         downDate = DateUtil.createDate(2018,1,1,9,0,0);
@@ -141,17 +145,43 @@ public class TxMoneyHelper  implements TimerHelper.TimerListener {
     @Override
     public void onTimerRunning(int current, int n, boolean b) {
 
-        if (current % total == 1 && isValidTime() ){
+        if ( isValidTime() ){
+            SPUtil.put(context,"txmoney_action_time",new Date().getTime());
             action();
         }
     }
 
     private boolean isValidTime(){
-        boolean valid = DateUtil.isInPeriodDate(new Date(), downDate, upDate, DateUtil.FORMAT_HMS);
-        LogUtils.i(TAG,"时间段检查："+valid);
+
+//        boolean valid = DateUtil.isInPeriodDate(new Date(), downDate, upDate, DateUtil.FORMAT_HMS);
+//        LogUtils.i(TAG,"时间段检查："+valid);
+
+        //2018-07-13 15:26:22
+        long actionTime = (long) SPUtil.get(context, "txmoney_action_time", 1531466782000L);
+        long currentTime = new Date().getTime();
+
+        int difsecond = (int) ((currentTime - actionTime)/1000);
+
+        int h = difsecond / (60 * 60);
+        int m = difsecond % (60 * 60) / 60;
+        int s = difsecond % (60 * 60) % 60;
+        LogUtils.d(TAG,"间隔时间:"+h+"时"+m+"分"+s+"秒");
+
+        int delaysecond = 8 * 60 +47;
+
+        if (difsecond >= (interval+delaysecond)){
+            return true;
+        }
+
+        return false;
+    }
 
 
-
-        return valid;
+    public int getDelayInterval(){
+        Random random = new Random();
+        int m = random.nextInt(12)+10;
+        int s = random.nextInt(60)+6;
+        int time = interval + m * 60 + s;
+        return time;
     }
 }

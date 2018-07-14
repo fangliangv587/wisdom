@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ public class RegisterActivity extends LogInfoActivity {
     TextView msgInfoTv;
     TextView msgErrorTv;
     TextView registeCountTv;
+    Button loopRegisterBtn;
 
     Account account;
     boolean virtual;
@@ -70,6 +72,7 @@ public class RegisterActivity extends LogInfoActivity {
         msgInfoTv = (TextView) findViewById(R.id.msgInfoTv);
         msgErrorTv = (TextView) findViewById(R.id.msgErrorTv);
         registeCountTv = (TextView) findViewById(R.id.registeCountTv);
+        loopRegisterBtn = (Button) findViewById(R.id.loopRegisterBtn);
 
         if (virtual) {
             realnameEt.setText(account.getAliName() + " 增加推广");
@@ -312,6 +315,7 @@ public class RegisterActivity extends LogInfoActivity {
                             @Override
                             public void run() {
                                 msgErrorTv.setText(reason);
+                                registerClick(null);
                             }
                         });
                     }
@@ -345,7 +349,7 @@ public class RegisterActivity extends LogInfoActivity {
     private boolean loop;
 
     public void loopRegisterClick(View view) {
-
+        view.setEnabled(false);
         loop = true;
         msgPhoneClick(null);
     }

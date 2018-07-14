@@ -248,7 +248,7 @@ public class TxAppActivity extends LogInfoActivity implements TimerHelper.TimerL
     public void timerClick(View view) {
 
         TimerHelper helper = new TimerHelper(this);
-        TxMoneyHelper moneyHelper = new TxMoneyHelper();
+        TxMoneyHelper moneyHelper = new TxMoneyHelper(this);
         helper.addListener(moneyHelper);
         helper.start();
     }

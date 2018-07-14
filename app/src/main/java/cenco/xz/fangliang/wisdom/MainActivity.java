@@ -38,10 +38,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main_wp);
         initView();
         commonPermission();
-        actionReady();
 
-
-        startTimer();
     }
 
     private void actionReady() {
@@ -71,7 +68,18 @@ public class MainActivity extends BaseActivity {
 
     private void commonPermission() {
         PermissionManager manager = new PermissionManager(this);
-        manager.requestPermission(null, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        manager.requestPermission(new PermissionManager.PermissionCallback(){
+            @Override
+            public void onGrant() {
+                actionReady();
+                startTimer();
+            }
+
+            @Override
+            public void onDeny() {
+
+            }
+        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @Override
@@ -134,9 +142,9 @@ public class MainActivity extends BaseActivity {
 
 
     private void startTimer() {
-        if (BuildConfig.DEBUG) {
-            return;
-        }
+//        if (BuildConfig.DEBUG) {
+//            return;
+//        }
         Intent intent = new Intent(MainActivity.this, TimerService.class);
         startService(intent);
 

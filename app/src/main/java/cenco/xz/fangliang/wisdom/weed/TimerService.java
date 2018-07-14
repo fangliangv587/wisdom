@@ -54,7 +54,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         thumberHelper.start();
 
         //0.5
-        TxMoneyHelper moneyHelper = new TxMoneyHelper();
+        TxMoneyHelper moneyHelper = new TxMoneyHelper(this);
 
 
 
@@ -73,7 +73,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
 
 
         timerHelper = new TimerHelper(this);
-        timerHelper.setInterval(60);
+        timerHelper.setInterval(1);
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);

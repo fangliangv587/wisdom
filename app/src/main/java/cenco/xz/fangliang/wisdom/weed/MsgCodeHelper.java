@@ -137,6 +137,9 @@ public class MsgCodeHelper {
             }
 
         }
+
+
+        listener.onMsgCodeFail("20次请求未获取到验证码");
     }
 
 
