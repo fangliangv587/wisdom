@@ -29,6 +29,8 @@ import com.xz.cenco.wisdom.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -119,10 +121,12 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 if (forceNetCB.isChecked()){
                     for (int i=0;i<users.size();i++){
                         Account account = users.get(i);
-                        sign(account);
+                        sign(account,null);
                     }
                 }
                 LogUtils.w(TAG,"所有账户登录成功");
+
+
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -138,6 +142,25 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
 
     private List<BetAccount>  betAccountList;
     private void showUserInfo() {
+
+        //排序
+        Collections.sort(users, new Comparator<Account>() {
+            @Override
+            public int compare(Account o1, Account o2) {
+                double d1 = Double.parseDouble(o1.getBalance());
+                double d2 = Double.parseDouble(o2.getBalance());
+                if (d1==d2){
+                    return 0;
+                }
+
+                if (d1>d2){
+                    return -1;
+                }else {
+                    return 1;
+                }
+            }
+        });
+
         betAccountList = new ArrayList<>();
         for (int i=0;i<users.size();i++){
             final Account account = users.get(i);
@@ -174,59 +197,13 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
-                if (account.getCookie()==null){
-                    showMessage("cookie为空");
-                    return;
-                }
-                Observable<Response<ResponseBody>> personInfo = request.personInfo(account.getCookie());
-
-
-                personInfo .subscribe(new Observer<Response<ResponseBody>>() {
-
-                    public void onError(Throwable e) {
-                        LogUtils.e(TAG, "onError:" + e.getMessage());
-
-
-                    }
-
-                    public void onComplete() {
-                        LogUtils.w(TAG, "onCompleted");
-
-                    }
-
-                    public void onSubscribe(Disposable disposable) {
-
-                    }
-
-                    public void onNext(Response<ResponseBody> response) {
-                        LogUtils.d(TAG, ">onNext");
-                        printResponse(response, "获取账户余额请求成功");
-
-                        try {
-                            String accountBalance = getAccountBalance(response.body().string());
-                            account.setBalance(accountBalance);
-                            LogUtils.w(TAG, account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
-                            showMessage(account.getUsername()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dismissProgressDialog();
-                                    infoTv.setText(account.getBalance());
-                                }
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
+                sign(account,infoTv);
             }
         });
     }
 
 
-    public void sign(final Account account) {
+    public void sign(final Account account,final TextView infoTv) {
 
         Observable<Response<ResponseBody>> observable1 = request.init();
 
@@ -359,10 +336,22 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                         printResponse(response, "获取账户余额请求成功");
 
                         try {
-                            String accountBalance = getAccountBalance(response.body().string());
+                            final String accountBalance = getAccountBalance(response.body().string());
                             account.setBalance(accountBalance);
                             LogUtils.w(TAG, account.getIndentify()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
                             showMessage(account.getIndentify()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
+
+                            if (infoTv!=null){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        infoTv.setText(accountBalance);
+                                        dismissProgressDialog();
+                                        showUserInfo();
+                                    }
+                                });
+                            }
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -396,6 +385,11 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     }
 
     public void actionClick(View view) {
+
+        if (!isRefresh){
+            ToastUtil.show(this,"token已失效，请选择强制刷新登录");
+            return;
+        }
 
         List<Account> list = new ArrayList<>();
         for (int i=0;i<betAccountList.size();i++){
@@ -615,7 +609,13 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
 
     }
 
+    boolean isRefresh = false;
     public void refreshClick(View view) {
+        if (!forceNetCB.isChecked()){
+            return;
+        }
+
+        isRefresh = true;
         layout.removeAllViews();
         action();
     }

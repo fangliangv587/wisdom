@@ -42,9 +42,10 @@ public class Util {
         List<Account> list = new ArrayList<Account>();
         list.add(new Account("13468006640","lllqycyl0909","李琦","支付宝","",true));
         list.add(new Account("13047488791","13047488791","邱士菊","支付宝","",true));
+        list.add(new Account("13221809346","qwertyuiop","辛忠","支付宝","468531247@qq.com",true));
+
         list.add(new Account("13237522180","13237522180li","李琦","建行","13237522180@126.com",false));
         list.add(new Account("15588591960","xin03531883","辛忠","招商","",false));
-        list.add(new Account("13221809346","qwertyuiop","辛忠","支付宝","468531247@qq.com",false));
         list.add(new Account("15665851629","binbin1629","霍彬彬","工商","",false));
         list.add(new Account("15764125171","asdfghjkl","霍彬彬","支付宝","15764125171@qq.com",false));
         list.add(new Account("18579013870","18579013870xin","辛子财","支付宝","18579013870@126.com",false));
