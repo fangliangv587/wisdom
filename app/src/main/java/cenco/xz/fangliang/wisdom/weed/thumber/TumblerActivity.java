@@ -16,17 +16,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
+import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.ImageUtil;
 import com.cenco.lib.common.ThreadManager;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.ToastUtil;
 import com.cenco.lib.common.http.HttpUtil;
 import com.cenco.lib.common.http.SimpleCallback;
+import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.google.gson.Gson;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.xz.cenco.wisdom.R;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,6 +130,16 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 LogUtils.w(TAG,"所有账户登录成功");
 
 
+                File file = new File(Util.getPath());
+                if (!file.getParentFile().exists()){
+                    file.getParentFile().mkdirs();
+                }
+                if (!file.exists()){
+                    LogUtils.d(TAG,"保存操作记录");
+                    String s = GsonUtil.toJson(users);
+                    IOUtils.writeFileFromString(file,s);
+                }
+
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -168,6 +181,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
             final TextView nameTv = view.findViewById(R.id.nameTv);
             final TextView accountTv = view.findViewById(R.id.accountTv);
             final TextView balanceTv = view.findViewById(R.id.balanceTv);
+            final TextView cookieTimeTv = view.findViewById(R.id.cookieTimeTv);
             CheckBox checkbox = view.findViewById(R.id.checkbox);
             View  updateBtn= view.findViewById(R.id.updateBtn);
             final int index = i;
@@ -181,6 +195,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
             nameTv.setText(i+1+"-"+account.getPeopleName());
             accountTv.setText(account.getUsername());
             balanceTv.setText(account.getBalance());
+            cookieTimeTv.setText(account.getCookieTime()+"");
             layout.addView(view);
 
             BetAccount betAccount = new BetAccount();

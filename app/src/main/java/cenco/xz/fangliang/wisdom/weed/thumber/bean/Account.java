@@ -2,6 +2,8 @@ package cenco.xz.fangliang.wisdom.weed.thumber.bean;
 
 import android.widget.CheckBox;
 
+import com.cenco.lib.common.DateUtil;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,6 +19,7 @@ public class Account {
     private String email;
     private String balance;
     private String cookie;
+    private String cookieTime;
     private String peopleName;
     private int signDays;
     private boolean isDesposited;
@@ -36,11 +39,18 @@ public class Account {
 
     public void setCookie(String cookie) {
         this.cookie = cookie;
+        setCookieTime(DateUtil.getDateString());
     }
 
+    public String getCookieTime() {
+        return cookieTime;
+    }
 
+    public void setCookieTime(String cookieTime) {
+        this.cookieTime = cookieTime;
+    }
 
-    public Account(String username, String password, String peopleName,String bank,String email,boolean isDesposited) {
+    public Account(String username, String password, String peopleName, String bank, String email, boolean isDesposited) {
         this.username = username;
         this.password = password;
         this.bank = bank;

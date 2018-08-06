@@ -53,11 +53,6 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         thumberHelper = new ThumberHelper(this);
         thumberHelper.start();
 
-        //0.5
-        TxMoneyHelper moneyHelper = new TxMoneyHelper(this);
-
-
-
 
 //        //酷划
 //        coohuaHelper = new CoohuaHelper(this);
@@ -78,7 +73,7 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         timerHelper.start();
         timerHelper.addListener(wisdomHelper);
         timerHelper.addListener(thumberHelper);
-        timerHelper.addListener(moneyHelper);
+
 //        timerHelper.addListener(coohuaHelper);
 //        timerHelper.addListener(aiaixgHelper);
 //        timerHelper.addListener(xmgrHelper);

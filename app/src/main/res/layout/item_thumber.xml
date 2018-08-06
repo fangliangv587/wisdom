@@ -32,6 +32,15 @@
         android:text="c"
         android:id="@+id/balanceTv"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/checkbox"
+        android:layout_below="@+id/balanceTv"
+        android:textSize="16sp"
+        android:text="d"
+        android:id="@+id/cookieTimeTv"/>
+
 
 
     <CheckBox
@@ -53,7 +62,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_below="@+id/balanceTv"
+        android:layout_below="@+id/cookieTimeTv"
         android:background="#DDDDDD"/>
 
 </RelativeLayout>
