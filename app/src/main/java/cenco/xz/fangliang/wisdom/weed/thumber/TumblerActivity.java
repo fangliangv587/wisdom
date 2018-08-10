@@ -456,7 +456,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         builder.create().show();
 
     }
-
+    String issuenum1 = null;
     private void bet(final Account account1, final Account account2, final int money) {
 
         if (account1==null || account2==null || account1.getCookie()==null || account2.getCookie()==null){
@@ -472,17 +472,80 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
             return;
         }
 
+
+
+        Observable<Response<ResponseBody>> code1 = request.getLastNum(account1.getCookie(), false);
+        code1.subscribeOn(Schedulers.io())
+                .flatMap(new Function<Response<ResponseBody>, ObservableSource<Response<ResponseBody>>>() { // 作变换，即作嵌套网络请求
+            public ObservableSource<Response<ResponseBody>> apply(Response<ResponseBody> response) throws Exception {
+
+                String str = response.body().string();
+                Gson gson = new Gson();
+                RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
+                RecordNumResult.ListBean bean = result.getList().get(0);
+                issuenum1 = bean.getIssuenum();
+                LogUtils.w(TAG,"投注期号:"+bean.getIssuenum());
+                showMessage("投注期号:"+bean.getIssuenum());
+
+                Observable<Response<ResponseBody>> code2 = request.getLastNum(account2.getCookie(), false);;
+                return code2;
+            }
+        }).subscribe(new Observer<Response<ResponseBody>>() {
+
+            public void onError(Throwable e) {
+                LogUtils.d(TAG,"--->onError:" + e.getMessage());
+                showMessage(e.getMessage());
+            }
+
+            public void onComplete() {
+                LogUtils.d(TAG,"--->onCompleted");
+            }
+
+            public void onSubscribe(Disposable disposable) {
+
+            }
+
+            public void onNext(Response<ResponseBody> response) {
+                LogUtils.d(TAG,"--->onNext");
+                printResponse(response,"");
+
+                try {
+                    String str = response.body().string();
+                    Gson gson = new Gson();
+                    RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
+                    RecordNumResult.ListBean bean = result.getList().get(0);
+                    LogUtils.w(TAG,"投注期号:"+bean.getIssuenum());
+                    showMessage("投注期号:"+bean.getIssuenum());
+
+
+                    doubleBet(bean.getIssuenum(), account1, money, account2);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+
+    }
+
+    private void doubleBet(final String issuenum, final Account account1, final int money, final Account account2) {
+
         ThreadManager.getPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
 
-                Observable<Response<ResponseBody>> code = request.getLastNum(account1.getCookie(), false);
 
-                code.subscribe(new Observer<Response<ResponseBody>>() {
+
+        Observable<Response<ResponseBody>> bet1 = getBetRequest(request,account1.getCookie(),issuenum,true,money);
+        Observable<Response<ResponseBody>> bet2 = getBetRequest(request,account2.getCookie(),issuenum,false,money);
+        bet1. subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response<ResponseBody>>() {
 
                     public void onError(Throwable e) {
                         LogUtils.d(TAG,"--->onError:" + e.getMessage());
-                        showMessage(e.getMessage());
                     }
 
                     public void onComplete() {
@@ -500,88 +563,50 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                         try {
                             String str = response.body().string();
                             Gson gson = new Gson();
-                            RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
-                            RecordNumResult.ListBean bean = result.getList().get(0);
-                            LogUtils.w(TAG,"投注期号:"+bean.getIssuenum());
-                            showMessage("投注期号:"+bean.getIssuenum());
-
-
-                            Observable<Response<ResponseBody>> bet1 = getBetRequest(request,account1.getCookie(),bean.getIssuenum(),true,money);
-                            Observable<Response<ResponseBody>> bet2 = getBetRequest(request,account2.getCookie(),bean.getIssuenum(),false,money);
-                            bet1. subscribeOn(Schedulers.io())
-                                    .subscribe(new Observer<Response<ResponseBody>>() {
-
-                                        public void onError(Throwable e) {
-                                            LogUtils.d(TAG,"--->onError:" + e.getMessage());
-                                        }
-
-                                        public void onComplete() {
-                                            LogUtils.d(TAG,"--->onCompleted");
-                                        }
-
-                                        public void onSubscribe(Disposable disposable) {
-
-                                        }
-
-                                        public void onNext(Response<ResponseBody> response) {
-                                            LogUtils.d(TAG,"--->onNext");
-                                            printResponse(response,"");
-
-                                            try {
-                                                String str = response.body().string();
-                                                Gson gson = new Gson();
-                                                BetResult result = gson.fromJson(str, BetResult.class);
-                                                LogUtils.i(TAG,account1.getIndentify()+"(正):"+result.getMsg());
-                                                showMessage(account1.getIndentify()+"(正):"+result.getMsg());
-                                            } catch (IOException e) {
-                                                LogUtils.e(e);
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    });
-
-                            bet2. subscribeOn(Schedulers.io())
-                                    .subscribe(new Observer<Response<ResponseBody>>() {
-
-                                        public void onError(Throwable e) {
-                                            LogUtils.d(TAG,"--->onError:" + e.getMessage());
-                                        }
-
-                                        public void onComplete() {
-                                            LogUtils.d(TAG,"--->onCompleted");
-                                        }
-
-                                        public void onSubscribe(Disposable disposable) {
-
-                                        }
-
-                                        public void onNext(Response<ResponseBody> response) {
-                                            LogUtils.d(TAG,"--->onNext");
-                                            printResponse(response,"");
-
-                                            try {
-                                                String str = response.body().string();
-                                                Gson gson = new Gson();
-                                                BetResult result = gson.fromJson(str, BetResult.class);
-                                                LogUtils.i(TAG,account2.getIndentify()+"(反):"+result.getMsg());
-                                                showMessage(account2.getIndentify()+"(反):"+result.getMsg());
-
-                                            } catch (IOException e) {
-                                                LogUtils.e(e);
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    });
-
+                            BetResult result = gson.fromJson(str, BetResult.class);
+                            LogUtils.i(TAG,account1.getIndentify()+"(正):"+result.getMsg());
+                            showMessage(account1.getIndentify()+"(正):"+result.getMsg());
                         } catch (IOException e) {
+                            LogUtils.e(e);
                             e.printStackTrace();
                         }
 
                     }
                 });
 
+        bet2. subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response<ResponseBody>>() {
+
+                    public void onError(Throwable e) {
+                        LogUtils.d(TAG,"--->onError:" + e.getMessage());
+                    }
+
+                    public void onComplete() {
+                        LogUtils.d(TAG,"--->onCompleted");
+                    }
+
+                    public void onSubscribe(Disposable disposable) {
+
+                    }
+
+                    public void onNext(Response<ResponseBody> response) {
+                        LogUtils.d(TAG,"--->onNext");
+                        printResponse(response,"");
+
+                        try {
+                            String str = response.body().string();
+                            Gson gson = new Gson();
+                            BetResult result = gson.fromJson(str, BetResult.class);
+                            LogUtils.i(TAG,account2.getIndentify()+"(反):"+result.getMsg());
+                            showMessage(account2.getIndentify()+"(反):"+result.getMsg());
+
+                        } catch (IOException e) {
+                            LogUtils.e(e);
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
 
             }
         });
