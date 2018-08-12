@@ -1,7 +1,10 @@
 package cenco.xz.fangliang.wisdom.weed.thumber;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
+import com.cenco.lib.common.BitmapUtil;
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.TimerHelper;
@@ -17,8 +20,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import cenco.xz.fangliang.wisdom.App;
 import cenco.xz.fangliang.wisdom.core.C;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.Account;
+import cenco.xz.fangliang.wisdom.weed.thumber.bean.BDOrcResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.CarNumberBody;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.LoginResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.OrcResult;
@@ -168,35 +173,36 @@ public class ThumberHelper implements TimerHelper.TimerListener {
                 })
 
 
-                .flatMap(new Function<Response<ResponseBody>, ObservableSource<Response<OrcResult>>>() { // 作变换，即作嵌套网络请求
-                    public ObservableSource<Response<OrcResult>> apply(Response<ResponseBody> response) throws Exception {
+                .flatMap(new Function<Response<ResponseBody>, ObservableSource<Response<BDOrcResult>>>() { // 作变换，即作嵌套网络请求
+                    public ObservableSource<Response<BDOrcResult>> apply(Response<ResponseBody> response) throws Exception {
 
                         printResponse(response, "获取图片验证码请求成功");
 
                         byte[] bytes = response.body().bytes();
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                        BitmapUtil.saveBitmap(bitmap, C.file.thumber_sign+DateUtil.getDateString()+".png");
                         String encode = Base64Util.encode(bytes);
-                        String authorization = Util.getYTAuthorization();
-                        CarNumberBody carNumberBody = new CarNumberBody(Util.Constant.APP_ID, encode);
-                        Gson gson = new Gson();
-                        String json = gson.toJson(carNumberBody);
-                        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                        Observable<Response<OrcResult>> observable2 = request.ocrText(authorization, body);
-                        return observable2;
+                        Observable<Response<BDOrcResult>> orc = request.baiduOrc(App.bdOrcToken, encode);
+                        return orc;
                     }
                 })
-                .flatMap(new Function<Response<OrcResult>, ObservableSource<Response<LoginResult>>>() { // 作变换，即作嵌套网络请求
-                    public ObservableSource<Response<LoginResult>> apply(Response<OrcResult> response) throws Exception {
+                .flatMap(new Function<Response<BDOrcResult>, ObservableSource<Response<LoginResult>>>() { // 作变换，即作嵌套网络请求
+                    public ObservableSource<Response<LoginResult>> apply(Response<BDOrcResult> response) throws Exception {
 
                         printResponse(response, "解析图片验证码请求成功");
-
-                        OrcResult result = response.body();
-                        List<OrcResult.ItemsBean> items = result.getItems();
+                        BDOrcResult orcResult = response.body();
+                        if (orcResult==null){
+                            return Observable.error(new Throwable("图片文字识别返回为空"));
+                        }
+                        List<BDOrcResult.WordsResultBean> items = orcResult.getWords_result();
                         if (items == null || items.size() == 0) {
                             return Observable.error(new Throwable("图片文字识别返回为空"));
                         }
 
-                        OrcResult.ItemsBean itemsBean = items.get(0);
-                        String code = itemsBean.getItemstring();
+                        BDOrcResult.WordsResultBean bean = items.get(0);
+
+
+                        String code = bean.getWords();
                         String format = Util.getFormatCode(code);
                         LogUtils.d(TAG, "原code:" + code + ",格式化code:" + format);
                         if (format.length() != 4) {
@@ -338,8 +344,8 @@ public class ThumberHelper implements TimerHelper.TimerListener {
     private <T> void printResponse(Response<T> result, String tag) {
         String url = result.raw().request().toString();
         LogUtils.i(TAG, tag + ":" + url);
-        T body = result.body();
-        LogUtils.d(TAG, "结果:" + body.toString());
+//        T body = result.body();
+//        LogUtils.d(TAG, "结果:" + body.toString());
 
     }
 

@@ -1,6 +1,8 @@
 package cenco.xz.fangliang.wisdom.weed.thumber;
 
 
+import cenco.xz.fangliang.wisdom.weed.thumber.bean.AccessToken;
+import cenco.xz.fangliang.wisdom.weed.thumber.bean.BDOrcResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.LoginResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.OrcResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.SignResult;
@@ -88,10 +90,16 @@ public interface ThumberApiService {
     Observable<Response<ResponseBody>> personInfo(@Header("Cookie") String cookie);
 
 
+    @FormUrlEncoded
+    @POST("https://aip.baidubce.com/oauth/2.0/token?")
+    Observable<AccessToken> baiduInit(@Field("client_id") String clientId, @Field("client_secret") String clientSecret, @Field("grant_type") String grantType);
 
-//    @FormUrlEncoded
-//    @POST("https://aip.baidubce.com/oauth/2.0/token?")
-//    Observable<AccessToken> baiduInit(@Field("client_id") String clientId, @Field("client_secret") String clientSecret, @Field("grant_type") String grantType);
+    @Headers({
+            "Content-Type: application/x-www-form-urlencoded"
+    })
+    @FormUrlEncoded
+    @POST("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic")
+    Observable<Response<BDOrcResult>> baiduOrc(@Query("access_token") String  token, @Field("image") String image);
 
 
     //腾通优图 识别车牌图片文字

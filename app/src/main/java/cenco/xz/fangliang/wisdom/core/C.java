@@ -34,6 +34,8 @@ public class C {
         public static final String txapp_aliaccount = root_path+"/txapp/alipay/";
         public static final String thumber_sign = root_path+"/thumber/sign/";
         public static final String txapp_action = root_path+"/txapp/money/";
+        public static final String authentication_path = root_path+"/authentication/";
+        public static final String bd_ocr = authentication_path+"/baidu/ocr.data";
     }
 
     /**

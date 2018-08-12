@@ -28,6 +28,8 @@ public class App extends Application {
     public static boolean isTimer;
     public static DBHelper helper;
 
+    public static String bdOrcToken;
+
     @Override
     public void onCreate() {
         super.onCreate();

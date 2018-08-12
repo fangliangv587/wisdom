@@ -12,7 +12,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cenco.lib.common.AssetUtil;
+import com.cenco.lib.common.DateUtil;
+import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.PermissionManager;
+import com.cenco.lib.common.http.HttpUtil;
+import com.cenco.lib.common.http.SimpleCallback;
+import com.lzy.okgo.model.HttpParams;
+import com.mysql.jdbc.Field;
 import com.xz.cenco.wisdom.BuildConfig;
 
 import cenco.xz.fangliang.wisdom.core.BaseActivity;
@@ -20,11 +26,15 @@ import cenco.xz.fangliang.wisdom.core.BaseActivity;
 import com.xz.cenco.wisdom.R;
 import com.yanzhenjie.alertdialog.AlertDialog;
 
+import java.io.File;
+import java.util.Date;
+
 import cenco.xz.fangliang.wisdom.core.C;
 import cenco.xz.fangliang.wisdom.core.SettingActivity;
 import cenco.xz.fangliang.wisdom.core.WisdomHelper;
 import cenco.xz.fangliang.wisdom.weed.TimerService;
 import cenco.xz.fangliang.wisdom.weed.WeedListActivity;
+import cenco.xz.fangliang.wisdom.weed.thumber.bean.AccessToken;
 import ezy.assist.compat.SettingsCompat;
 
 public class MainActivity extends BaseActivity {
@@ -43,6 +53,44 @@ public class MainActivity extends BaseActivity {
 
     private void actionReady() {
         AssetUtil.copyFiles(this, "card", C.file.card_path);
+
+        initBaiduOrcToken();
+    }
+
+    private void initBaiduOrcToken() {
+//Observable<AccessToken> bdtoken = request.baiduInit("cqGMtaescoBvbh8svWxKnqPV", "V5tTFeY869h4RaOcP7oG31OZw05MtVjq", "client_credentials");
+
+        File file = new File(C.file.bd_ocr);
+        if (file.exists()){
+            long lastModified = file.lastModified();
+            long curTime = new Date().getTime();
+            long  dis = curTime - lastModified;
+            //30天期限 29天校验
+            if (dis<29 * 24 * 3600 *1000){
+                App.bdOrcToken = IOUtils.readFile2String(file);
+                return;
+            }
+
+        }
+
+        String url  = "https://aip.baidubce.com/oauth/2.0/token";
+        HttpParams params = new HttpParams();
+        params.put("client_id","cqGMtaescoBvbh8svWxKnqPV");
+        params.put("client_secret","V5tTFeY869h4RaOcP7oG31OZw05MtVjq");
+        params.put("grant_type","client_credentials");
+        HttpUtil.post(url, params, new SimpleCallback<AccessToken>() {
+            @Override
+            public void onSuccess(AccessToken o) {
+                String token = o.getAccess_token();
+                App.bdOrcToken = token;
+                IOUtils.writeFileFromString(C.file.bd_ocr,token);
+            }
+
+            @Override
+            public void onError(String reason) {
+
+            }
+        });
     }
 
     // 此方法用来判断当前应用的辅助功能服务是否开启

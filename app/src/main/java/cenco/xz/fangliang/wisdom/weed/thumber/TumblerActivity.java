@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -160,6 +161,14 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         Collections.sort(users, new Comparator<Account>() {
             @Override
             public int compare(Account o1, Account o2) {
+                if(o1==null || TextUtils.isEmpty(o1.getBalance())){
+                    return 0;
+                }
+                if (o2==null || TextUtils.isEmpty(o2.getBalance())){
+                    return 0;
+                }
+
+
                 double d1 = Double.parseDouble(o1.getBalance());
                 double d2 = Double.parseDouble(o2.getBalance());
                 if (d1==d2){
