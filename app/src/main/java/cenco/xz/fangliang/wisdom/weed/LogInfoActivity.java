@@ -40,39 +40,51 @@ public class LogInfoActivity extends Activity {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        createLogView(layout);
+        createControlView(layout);
+
+        RelativeLayout relativeLayout = new RelativeLayout(this);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        layout.addView(relativeLayout,params1);
 
         contentLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        contentLayout.setLayoutParams(params1);
-        layout.addView(contentLayout);
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        relativeLayout.addView(contentLayout,params2);
+
+        messageTv = new TextView(this);
+        messageTv.setVisibility(View.INVISIBLE);
+        messageTv.setBackgroundColor(Color.parseColor("#99666666"));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        messageTv.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        relativeLayout.addView(messageTv,params);
 
         return layout;
     }
 
-    private void createLogView(LinearLayout layout) {
-        RelativeLayout relativeLayout = new RelativeLayout(this);
-        LinearLayout.LayoutParams paramsRelative = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, getMessageHeight());
-        layout.addView(relativeLayout,paramsRelative);
-
-        messageTv = new TextView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        messageTv.setMovementMethod(ScrollingMovementMethod.getInstance());
-        messageTv.setBackgroundColor(Color.YELLOW);
-
-        relativeLayout.addView(messageTv,params);
+    private void createControlView(LinearLayout layout) {
+//        RelativeLayout relativeLayout = new RelativeLayout(this);
+//        LinearLayout.LayoutParams paramsRelative = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, getMessageHeight());
+//        layout.addView(relativeLayout,paramsRelative);
+//
+//        messageTv = new TextView(this);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+//        messageTv.setMovementMethod(ScrollingMovementMethod.getInstance());
+//        messageTv.setBackgroundColor(Color.YELLOW);
+//
+//        relativeLayout.addView(messageTv,params);
 
 
         Button button = new Button(this);
-        button.setText("清 空");
-        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        relativeLayout.addView(button,params1);
+        button.setText("显隐日志");
+        layout.addView(button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messageTv.setText("");
-                messageTv.scrollTo(0,0);
+                if (messageTv.getVisibility()==View.VISIBLE){
+                    messageTv.setVisibility(View.INVISIBLE);
+                }else {
+                    messageTv.setVisibility(View.VISIBLE);
+                }
             }
         });
 

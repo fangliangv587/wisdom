@@ -1,6 +1,5 @@
 package cenco.xz.fangliang.wisdom.weed.thumber;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -12,21 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
 import com.cenco.lib.common.IOUtils;
-import com.cenco.lib.common.ImageUtil;
 import com.cenco.lib.common.ThreadManager;
 import com.cenco.lib.common.TimerHelper;
 import com.cenco.lib.common.ToastUtil;
-import com.cenco.lib.common.http.HttpUtil;
-import com.cenco.lib.common.http.SimpleCallback;
 import com.cenco.lib.common.json.GsonUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.xz.cenco.wisdom.R;
 
@@ -38,26 +34,23 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import cenco.xz.fangliang.wisdom.App;
 import cenco.xz.fangliang.wisdom.weed.LogInfoActivity;
-import cenco.xz.fangliang.wisdom.weed.thumber.ThumberApiService;
-import cenco.xz.fangliang.wisdom.weed.thumber.Util;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.Account;
+import cenco.xz.fangliang.wisdom.weed.thumber.bean.BDOrcResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.BetAccount;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.BetResult;
-import cenco.xz.fangliang.wisdom.weed.thumber.bean.CarNumberBody;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.LoginResult;
-import cenco.xz.fangliang.wisdom.weed.thumber.bean.OrcResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.bean.RecordNumResult;
 import cenco.xz.fangliang.wisdom.weed.thumber.sign.Base64Util;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -73,7 +66,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     private List<Account> users;
     private String TAG = TumblerActivity.class.getSimpleName();
     TextView textTv;
-    LinearLayout layout;
+    LinearLayout accountlayout;
     TimerHelper timerHelper;
     CheckBox forceNetCB;
 
@@ -99,7 +92,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     public void init() {
 
         textTv = (TextView)findViewById(R.id.textTv);
-        layout = (LinearLayout)findViewById(R.id.layout);
+        accountlayout = (LinearLayout)findViewById(R.id.layout);
         forceNetCB = (CheckBox)findViewById(R.id.forceNetCB);
 
         timerHelper = new TimerHelper(this);
@@ -125,7 +118,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 if (forceNetCB.isChecked()){
                     for (int i=0;i<users.size();i++){
                         Account account = users.get(i);
-                        sign(account,null);
+                        sign(account);
                     }
                 }
                 LogUtils.w(TAG,"所有账户登录成功");
@@ -151,6 +144,23 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 });
             }
         });
+    }
+
+    private void updateAccount(Account account){
+        File file = new File(Util.getPath());
+        String s = IOUtils.readFile2String(file);
+        List<Account> users = GsonUtil.fromJson(s,new TypeToken<List<Account>>(){}.getType());
+        for (int i=0;i<users.size();i++){
+            Account account1 = users.get(i);
+            if (account.getUsername().equals(account1.getUsername())){
+                users.set(i,account);
+                break;
+            }
+        }
+
+        String s1 = GsonUtil.toJson(users);
+        IOUtils.writeFileFromString(file,s1);
+
     }
 
 
@@ -184,6 +194,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         });
 
         betAccountList = new ArrayList<>();
+        accountlayout.removeAllViews();
         for (int i=0;i<users.size();i++){
             final Account account = users.get(i);
             View view = LayoutInflater.from(this).inflate(R.layout.item_thumber, null);
@@ -205,7 +216,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
             accountTv.setText(account.getUsername());
             balanceTv.setText(account.getBalance());
             cookieTimeTv.setText(account.getCookieTime()+"");
-            layout.addView(view);
+            accountlayout.addView(view);
 
             BetAccount betAccount = new BetAccount();
             betAccount.setAccount(account);
@@ -218,21 +229,18 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     private void updateUserInfo(final int index, final Account account, final TextView infoTv) {
 
         dialog = ProgressDialog.show(this,"请稍后...","");
-        ThreadManager.getPoolProxy().execute(new Runnable() {
-            @Override
-            public void run() {
-                sign(account,infoTv);
-            }
-        });
+
+        sign(account);
+
     }
 
 
-    public void sign(final Account account,final TextView infoTv) {
+    public void sign(final Account account) {
 
         Observable<Response<ResponseBody>> observable1 = request.init();
 
         observable1
-
+                .subscribeOn(Schedulers.io())
                 .doOnNext(new Consumer<Response<ResponseBody>>() {
                     public void accept(Response<ResponseBody> response) {
 
@@ -266,35 +274,36 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 })
 
 
-                .flatMap(new Function<Response<ResponseBody>, ObservableSource<Response<OrcResult>>>() { // 作变换，即作嵌套网络请求
-                    public ObservableSource<Response<OrcResult>> apply(Response<ResponseBody> response) throws Exception {
+                .flatMap(new Function<Response<ResponseBody>, ObservableSource<Response<BDOrcResult>>>() { // 作变换，即作嵌套网络请求
+                    public ObservableSource<Response<BDOrcResult>> apply(Response<ResponseBody> response) throws Exception {
 
                         printResponse(response, "获取图片验证码请求成功");
 
                         byte[] bytes = response.body().bytes();
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                        BitmapUtil.saveBitmap(bitmap, C.file.thumber_sign+DateUtil.getDateString()+".png");
                         String encode = Base64Util.encode(bytes);
-                        String authorization = Util.getYTAuthorization();
-                        CarNumberBody carNumberBody = new CarNumberBody(Util.Constant.APP_ID, encode);
-                        Gson gson = new Gson();
-                        String json = gson.toJson(carNumberBody);
-                        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                        Observable<Response<OrcResult>> observable2 = request.ocrText(authorization, body);
-                        return observable2;
+                        Observable<Response<BDOrcResult>> orc = request.baiduOrc(App.bdOrcToken, encode);
+                        return orc;
                     }
                 })
-                .flatMap(new Function<Response<OrcResult>, ObservableSource<Response<LoginResult>>>() { // 作变换，即作嵌套网络请求
-                    public ObservableSource<Response<LoginResult>> apply(Response<OrcResult> response) throws Exception {
+                .flatMap(new Function<Response<BDOrcResult>, ObservableSource<Response<LoginResult>>>() { // 作变换，即作嵌套网络请求
+                    public ObservableSource<Response<LoginResult>> apply(Response<BDOrcResult> response) throws Exception {
 
                         printResponse(response, "解析图片验证码请求成功");
-
-                        OrcResult result = response.body();
-                        List<OrcResult.ItemsBean> items = result.getItems();
+                        BDOrcResult orcResult = response.body();
+                        if (orcResult==null){
+                            return Observable.error(new Throwable("图片文字识别返回为空"));
+                        }
+                        List<BDOrcResult.WordsResultBean> items = orcResult.getWords_result();
                         if (items == null || items.size() == 0) {
                             return Observable.error(new Throwable("图片文字识别返回为空"));
                         }
 
-                        OrcResult.ItemsBean itemsBean = items.get(0);
-                        String code = itemsBean.getItemstring();
+                        BDOrcResult.WordsResultBean bean = items.get(0);
+
+
+                        String code = bean.getWords();
                         String format = Util.getFormatCode(code);
                         LogUtils.d(TAG, "原code:" + code + ",格式化code:" + format);
                         if (format.length() != 4) {
@@ -337,12 +346,13 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 })
 
 
-
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<ResponseBody>>() {
 
                     public void onError(Throwable e) {
                         LogUtils.e(TAG, "onError:" + e.getMessage());
-
+                        ToastUtil.show(TumblerActivity.this,"error:"+e.getMessage());
+                        dismissProgressDialog();
 
                     }
 
@@ -365,16 +375,18 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                             LogUtils.w(TAG, account.getIndentify()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
                             showMessage(account.getIndentify()+" 余额：" + accountBalance +",连续签到天数:"+account.getSignDays());
 
-                            if (infoTv!=null){
+                            updateAccount(account);
+
+
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        infoTv.setText(accountBalance);
+
                                         dismissProgressDialog();
                                         showUserInfo();
                                     }
                                 });
-                            }
+
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -410,10 +422,6 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
 
     public void actionClick(View view) {
 
-        if (!isRefresh){
-            ToastUtil.show(this,"token已失效，请选择强制刷新登录");
-            return;
-        }
 
         List<Account> list = new ArrayList<>();
         for (int i=0;i<betAccountList.size();i++){
@@ -438,6 +446,22 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
     }
 
     public void showMoneyDialog(final Account account1, final Account account2){
+
+        String cookieTime1 = account1.getCookieTime();
+        String cookieTime2 = account2.getCookieTime();
+        long date1 = DateUtil.getDate(cookieTime1, DateUtil.FORMAT_YMDHMS).getTime();
+        long date2 = DateUtil.getDate(cookieTime2, DateUtil.FORMAT_YMDHMS).getTime();
+        long date = new Date().getTime();
+        //14:28
+        if (date-date1>=(3600-5*60)*1000){
+            ToastUtil.show(this,account1.getIndentify()+"token过期，请重新登录");
+            return;
+        }
+        if (date-date2>=(3600-5*60)*1000){
+            ToastUtil.show(this,account2.getIndentify()+"token过期，请重新登录");
+            return;
+        }
+
 
         int money1 = (int)Double.parseDouble(account1.getBalance());
         int money2 = (int)Double.parseDouble(account2.getBalance());
@@ -493,13 +517,15 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
                 RecordNumResult.ListBean bean = result.getList().get(0);
                 issuenum1 = bean.getIssuenum();
-                LogUtils.w(TAG,"投注期号:"+bean.getIssuenum());
-                showMessage("投注期号:"+bean.getIssuenum());
+                LogUtils.w(TAG,"投注期号("+account1.toString()+"):"+bean.getIssuenum());
+                showMessage("投注期号("+account1.toString()+"):"+bean.getIssuenum());
 
                 Observable<Response<ResponseBody>> code2 = request.getLastNum(account2.getCookie(), false);;
                 return code2;
             }
-        }).subscribe(new Observer<Response<ResponseBody>>() {
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<ResponseBody>>() {
 
             public void onError(Throwable e) {
                 LogUtils.d(TAG,"--->onError:" + e.getMessage());
@@ -523,11 +549,12 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                     Gson gson = new Gson();
                     RecordNumResult result = gson.fromJson(str, RecordNumResult.class);
                     RecordNumResult.ListBean bean = result.getList().get(0);
-                    LogUtils.w(TAG,"投注期号:"+bean.getIssuenum());
-                    showMessage("投注期号:"+bean.getIssuenum());
+                    LogUtils.w(TAG,"投注期号("+account2.toString()+"):"+bean.getIssuenum());
+                    showMessage("投注期号("+account2.toString()+"):"+bean.getIssuenum());
+                    if (bean.getIssuenum().equalsIgnoreCase(issuenum1)){
+                        doubleBet(bean.getIssuenum(), account1, money, account2);
+                    }
 
-
-                    doubleBet(bean.getIssuenum(), account1, money, account2);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -551,6 +578,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         Observable<Response<ResponseBody>> bet1 = getBetRequest(request,account1.getCookie(),issuenum,true,money);
         Observable<Response<ResponseBody>> bet2 = getBetRequest(request,account2.getCookie(),issuenum,false,money);
         bet1. subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<ResponseBody>>() {
 
                     public void onError(Throwable e) {
@@ -584,6 +612,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
                 });
 
         bet2. subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<ResponseBody>>() {
 
                     public void onError(Throwable e) {
@@ -665,7 +694,7 @@ public class TumblerActivity extends LogInfoActivity implements TimerHelper.Time
         }
 
         isRefresh = true;
-        layout.removeAllViews();
+
         action();
     }
 }

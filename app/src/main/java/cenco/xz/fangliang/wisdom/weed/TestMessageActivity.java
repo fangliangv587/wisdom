@@ -19,7 +19,6 @@ public class TestMessageActivity extends LogInfoActivity {
 
     private static final String TAG = TestMessageActivity.class.getSimpleName();
 
-    private int position;
 
     @Override
     protected void onCreate() {
@@ -31,16 +30,12 @@ public class TestMessageActivity extends LogInfoActivity {
 
 
     }
+    int position=0;
 
     public void btnClick(View view) {
-        ThreadManager.getPoolProxy().execute(new Runnable() {
-            @Override
-            public void run() {
 
-
-
-
-            }
-        });
+        for (int i=0;i<10;i++){
+            showMessage("btnclick"+position++);
+        }
     }
 }
