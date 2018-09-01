@@ -23,7 +23,6 @@ import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.ThreadManager;
 import com.cenco.lib.common.TimerHelper;
 import com.xz.cenco.wisdom.R;
-import com.zhy.base.fileprovider.FileProvider7;
 
 import cenco.xz.fangliang.wisdom.App;
 import cenco.xz.fangliang.wisdom.widget.MarqueeText;
@@ -188,7 +187,7 @@ public class WisdomHelper implements MarqueeText.MarqueeListener {
     @Override
     public void onMarqueeNext() {
         synchronized (lock){
-            if (list==null){
+            if (list==null || list.size()==0){
                 mFloatTv.setText("世界那么大,我想去看看！");
                 return;
             }

@@ -13,9 +13,11 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -28,7 +30,6 @@ import com.cenco.lib.common.FileUtils;
 import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.R;
-import com.zhy.base.fileprovider.FileProvider7;
 
 import java.io.File;
 
@@ -149,11 +150,25 @@ public class SettingActivity extends Activity implements  SeekBar.OnSeekBarChang
         intent.setAction(Intent.ACTION_VIEW);
         //获取文件file的MIME类型
         String type = getMimeType(file.getAbsolutePath());
-//        //设置intent的data和Type属性。
-//        Uri uri = FileProvider7.getUriForFile(context, file);
-//        intent.setDataAndType(uri, type);
 
-        FileProvider7.setIntentDataAndType(context,intent,type,file,true);
+        //FileProvider 配置 https://www.jianshu.com/p/56b9fb319310
+        Uri fileUri = null;
+        if (Build.VERSION.SDK_INT >= 24) {
+            fileUri = FileProvider.getUriForFile(context, "com.jph.takephoto.fileprovider", file);//通过FileProvider创建一个content类型的Uri
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            fileUri = Uri.fromFile(file);
+        }
+        intent.setDataAndType(fileUri, type);
+
+//        FileProvider7.setIntentDataAndType(context,intent,type,file,true);
+
+//        Uri imageUri = FileProvider.getUriForFile(context, "com.jph.takephoto.fileprovider", file);//通过FileProvider创建一个content类型的Uri
+//        Intent intent = new Intent();
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+//        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//将拍取的照片保存到指定URI
+//        startActivityForResult(intent,1006);
         //跳转
         context.startActivity(intent);
 
