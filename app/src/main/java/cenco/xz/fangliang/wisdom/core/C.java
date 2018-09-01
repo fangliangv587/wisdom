@@ -25,6 +25,7 @@ public class C {
      */
     public static final class file{
         public static final String root_path = Environment.getExternalStorageDirectory()+ File.separator+"1wisdom";
+        public static final String wisdom_path = root_path + File.separator +"wisdom.txt";
         public static final String log_path = root_path + File.separator +"log";
         public static final String backup_path = root_path + File.separator +"backup";
         public static final String backup_data_path = backup_path + File.separator +"data.txt";

@@ -2,46 +2,51 @@ package cenco.xz.fangliang.wisdom.core;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.webkit.MimeTypeMap;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cenco.lib.common.DateUtil;
+import com.cenco.lib.common.IOUtils;
 import com.cenco.lib.common.ScreenUtil;
+import com.cenco.lib.common.ThreadManager;
 import com.cenco.lib.common.TimerHelper;
 import com.xz.cenco.wisdom.R;
-import cenco.xz.fangliang.wisdom.App;
+import com.zhy.base.fileprovider.FileProvider7;
 
+import cenco.xz.fangliang.wisdom.App;
+import cenco.xz.fangliang.wisdom.widget.MarqueeText;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 
-public class WisdomHelper implements TimerHelper.TimerListener {
+public class WisdomHelper implements MarqueeText.MarqueeListener {
 
 
     private Context service;
-    private int total;
-    private int tempTotal;
-    private TextView mFloatTv;
+    private MarqueeText mFloatTv;
     private WindowManager mWindowManager;
     private LinearLayout mFloatLayout;
+    private List<String> list;
+    private int index;
+    private Object lock = new Object();
+    private int timerInterval = 3600 * 1000;
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            action();
-        }
-    };
 
     public WisdomHelper(Context context) {
         this.service = context;
@@ -94,7 +99,8 @@ public class WisdomHelper implements TimerHelper.TimerListener {
         mWindowManager.addView(mFloatLayout, wmParams);
 
         //浮动窗口按钮
-        mFloatTv = (TextView) mFloatLayout.findViewById(R.id.float_id);
+        mFloatTv = (MarqueeText) mFloatLayout.findViewById(R.id.float_id);
+        mFloatTv.setListener(this);
     }
 
     public void resetFloatView() {
@@ -135,34 +141,68 @@ public class WisdomHelper implements TimerHelper.TimerListener {
 
     private String getShowWisdom() {return "世界那么大,我想去看看！";}
 
-
+    private CountDownTimer timer;
 
     private void action() {
-        String wisdom = getShowWisdom();
-        mFloatTv.setText(wisdom);
-        mFloatTv.setSelected(true);
 
-        int textLength = wisdom.length();
-        int textTime = textLength * 2;
-        int interval = SPUtil.getInterval(service);
-        int max = textTime > interval ? textTime : interval;
-//        LogUtils.d(wisdom + "----显示时间:" + max);
 
-        total = max;
-        tempTotal = total;
+        mFloatTv.startScroll();
+        resetData();
 
+        timer = new CountDownTimer(timerInterval,timerInterval){
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                timer.start();
+                resetData();
+            }
+        };
+
+        timer.start();
+
+    }
+
+    public void resetData(){
+        ThreadManager.getPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<String> strings = IOUtils.readFile2List(C.file.wisdom_path);
+                if (strings==null){
+                    return;
+                }
+                synchronized (lock){
+                    list.clear();
+                    list.addAll(strings);
+                }
+
+            }
+        });
 
     }
 
 
     @Override
-    public void onTimerRunning(int current, int total, boolean isOver) {
-
-        tempTotal--;
-        if (tempTotal == 0) {
-            handler.sendEmptyMessage(0);
+    public void onMarqueeNext() {
+        synchronized (lock){
+            if (list==null){
+                mFloatTv.setText("世界那么大,我想去看看！");
+                return;
+            }
+            if (index>=list.size()){
+                index=0;
+            }
+            String str = list.get(index);
+            mFloatTv.setText(str);
+            index++;
         }
+
+
     }
+
 
 
 }

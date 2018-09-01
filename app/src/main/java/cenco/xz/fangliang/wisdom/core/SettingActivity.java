@@ -12,19 +12,25 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
+import com.cenco.lib.common.FileUtils;
 import com.cenco.lib.common.ScreenUtil;
 import com.cenco.lib.common.log.LogUtils;
 import com.xz.cenco.wisdom.R;
+import com.zhy.base.fileprovider.FileProvider7;
+
+import java.io.File;
 
 import cenco.xz.fangliang.wisdom.weed.TimerService;
 
@@ -126,6 +132,37 @@ public class SettingActivity extends Activity implements  SeekBar.OnSeekBarChang
 
     }
 
+    public void openWisdomFileClick(View v) {
+        boolean fileExists = FileUtils.isFileExists(C.file.wisdom_path);
+        if (!fileExists){
+            FileUtils.createOrExistsFile(C.file.wisdom_path);
+        }
+
+        openFile(this,new File(C.file.wisdom_path));
+    }
+
+    public  void openFile(Context context,File file) {
+        //Uri uri = Uri.parse("file://"+file.getAbsolutePath());
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //设置intent的Action属性
+        intent.setAction(Intent.ACTION_VIEW);
+        //获取文件file的MIME类型
+        String type = getMimeType(file.getAbsolutePath());
+//        //设置intent的data和Type属性。
+//        Uri uri = FileProvider7.getUriForFile(context, file);
+//        intent.setDataAndType(uri, type);
+
+        FileProvider7.setIntentDataAndType(context,intent,type,file,true);
+        //跳转
+        context.startActivity(intent);
+
+    }
+
+    private String getMimeType(String filePath) {
+        String ext = MimeTypeMap.getFileExtensionFromUrl(filePath);
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
+    }
     public void colorClick(View v) {
 
         int request = 0;

@@ -23,9 +23,9 @@ import cenco.xz.fangliang.wisdom.weed.txapp2.TxMoneyHelper;
 
 public class TimerService extends Service implements TimerHelper.TimerListener{
 
-    private TimerHelper timerHelper;
+//    private TimerHelper timerHelper;
     private WisdomHelper wisdomHelper;
-    private ThumberHelper thumberHelper;
+//    private ThumberHelper thumberHelper;
     private QuNewsHelper quNewsHelper;
     private CoohuaHelper coohuaHelper;
     private PowerManager.WakeLock mWakeLock;
@@ -50,8 +50,8 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         wisdomHelper.start();
 
         //不倒翁
-        thumberHelper = new ThumberHelper(this);
-        thumberHelper.start();
+//        thumberHelper = new ThumberHelper(this);
+//        thumberHelper.start();
 
 
 //        //酷划
@@ -67,12 +67,12 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
 //        xmgrHelper.start();
 
 
-        timerHelper = new TimerHelper(this);
-        timerHelper.setShowLog(false);
-        timerHelper.setInterval(1);
-        timerHelper.start();
-        timerHelper.addListener(wisdomHelper);
-        timerHelper.addListener(thumberHelper);
+//        timerHelper = new TimerHelper(this);
+//        timerHelper.setShowLog(false);
+//        timerHelper.setInterval(1);
+//        timerHelper.start();
+//        timerHelper.addListener(wisdomHelper);
+//        timerHelper.addListener(thumberHelper);
 
 //        timerHelper.addListener(coohuaHelper);
 //        timerHelper.addListener(aiaixgHelper);
@@ -105,15 +105,13 @@ public class TimerService extends Service implements TimerHelper.TimerListener{
         if (quNewsHelper!=null){
             quNewsHelper.stop();
         }
-        if (timerHelper!=null){
-            timerHelper.stop();
-        }
+
         if (coohuaHelper!=null){
             coohuaHelper.stop();
         }
-        if (thumberHelper!=null){
-            thumberHelper.stop();
-        }
+//        if (thumberHelper!=null){
+//            thumberHelper.stop();
+//        }
 
     }
 
