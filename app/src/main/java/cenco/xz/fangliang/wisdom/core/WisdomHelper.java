@@ -42,7 +42,7 @@ public class WisdomHelper implements MarqueeText.MarqueeListener {
     private MarqueeText mFloatTv;
     private WindowManager mWindowManager;
     private LinearLayout mFloatLayout;
-    private List<String> list;
+    private List<String> list = new ArrayList<>();
     private int index;
     private Object lock = new Object();
     private int timerInterval = 3600 * 1000;
