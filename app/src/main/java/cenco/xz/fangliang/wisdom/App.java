@@ -43,7 +43,7 @@ public class App extends Application {
 
     private void initCommonLib() {
         int level = Level.DEBUG;
-        LogUtils.init("appwisdom", level, C.file.log_path);
+        LogUtils.init("a", level, C.file.log_path);
         HttpUtil.init(this);
     }
 
