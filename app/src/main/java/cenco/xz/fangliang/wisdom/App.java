@@ -36,9 +36,6 @@ public class App extends Application {
 
         initBugly();
         initCommonLib();
-        //1
-        //
-        //
 
     }
 
