@@ -36,18 +36,14 @@ public class App extends Application {
 
         initBugly();
         initCommonLib();
-        //1
-        //2
-        //a
-        //b
-        //c
+
     }
 
 
 
     private void initCommonLib() {
         int level = Level.DEBUG;
-        LogUtils.init("c", level, C.file.log_path);
+        LogUtils.init("appwisdom", level, C.file.log_path);
         HttpUtil.init(this);
     }
 
