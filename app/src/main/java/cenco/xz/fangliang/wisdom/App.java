@@ -38,7 +38,6 @@ public class App extends Application {
         initCommonLib();
         //1
         //2
-        //3
 
     }
 
